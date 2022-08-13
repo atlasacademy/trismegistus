@@ -5,37 +5,61 @@ import { Servant } from "@/types";
 import { ServantThumbnail } from "./ServantThumbnail";
 
 const BaseMockServant: Servant = {
-  name: "",
-  skills: [{ name: "1" }, { name: "2" }, { name: "3" }],
+  info: {
+    name: "",
+    skills: [{ name: "1" }, { name: "2" }, { name: "3" }],
+    portraitUrl: "",
+  },
+  level: 90,
+  noblePhantasmLevel: 5,
+  attack: 10000,
+  attackFou: 1000,
 };
 export function PartyView() {
   return (
-    <section>
-      Party
-      <section className="flex border">
-        <ServantThumbnail
-          servant={produce(BaseMockServant, (draft) => {
-            draft.name = "Lancelot";
-          })}
-        />
-        <ServantThumbnail
-          servant={produce(BaseMockServant, (draft) => {
-            draft.name = "Nero Bride";
-          })}
-        />
-        <ServantThumbnail
-          servant={produce(BaseMockServant, (draft) => {
-            draft.name = "Skadi";
-          })}
-        />
-      </section>
-      <section>
-        <ServantThumbnail
-          mini
-          servant={produce(BaseMockServant, (draft) => {
-            draft.name = "Skadi";
-          })}
-        />
+    <section className="flex">
+      <div className="flex flex-col items-end">
+        <div className="flex">
+          <ServantThumbnail
+            {...produce(BaseMockServant, (draft) => {
+              draft.info.name = "Lancelot";
+            })}
+          />
+          <ServantThumbnail
+            {...produce(BaseMockServant, (draft) => {
+              draft.info.name = "Nero Bride";
+            })}
+          />
+          <ServantThumbnail
+            {...produce(BaseMockServant, (draft) => {
+              draft.info.name = "Skadi";
+            })}
+          />
+        </div>
+        <div className="flex">
+          <ServantThumbnail
+            mini
+            {...produce(BaseMockServant, (draft) => {
+              draft.info.name = "Skadi";
+            })}
+          />
+          <ServantThumbnail
+            mini
+            {...produce(BaseMockServant, (draft) => {
+              draft.info.name = "Arash";
+            })}
+          />
+          <ServantThumbnail
+            mini
+            {...produce(BaseMockServant, (draft) => {
+              draft.info.name = "Gong";
+            })}
+          />
+        </div>
+      </div>
+      <section className="border">
+        Mystic Code
+        <div>Plugsuit</div>
       </section>
     </section>
   );

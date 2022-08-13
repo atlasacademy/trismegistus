@@ -1,31 +1,43 @@
 import { Servant } from "@/types";
 
+import { AttributeLabel } from "./AttributeLabel";
+import { ServantPortrait } from "./ServantPortrait";
 import { SkillButton } from "./SkillButton";
 
-export interface ServantThumbnailProps {
+export interface ServantThumbnailProps extends Servant {
   mini?: boolean;
-  servant: Servant;
 }
 
 export function ServantThumbnail({
-  servant: { name, skills },
+  mini,
+  info: { name, skills, portraitUrl },
+  level,
+  attack,
+  attackFou,
+  noblePhantasmLevel,
 }: ServantThumbnailProps) {
-  return (
-    <div className="m-2 flex flex-col items-center border">
-      <div className="m-2 flex h-60 w-60 items-center justify-center border text-gray-300">
-        picture
+  if (mini)
+    return (
+      <div>
+        <ServantPortrait mini={mini} url={portraitUrl} />
       </div>
+    );
+  return (
+    <div className="mx-2 flex flex-col items-center border">
+      <div className="text-lg">{name}</div>
+      <ServantPortrait url={portraitUrl}>
+        <AttributeLabel name="Lv" value={level} />
+        <AttributeLabel name="NP" value={noblePhantasmLevel} />
+      </ServantPortrait>
       <div className="flex">
         {skills.map((skill, index) => (
           <SkillButton key={index} skill={skill} />
         ))}
       </div>
       <div className="flex">
-        <div>Lv:</div>
-        <div>NP:</div>
-        <div>Fou:</div>
+        <AttributeLabel name="ATK" value={attack} />
+        <AttributeLabel name="Fou" value={attackFou} />
       </div>
-      <div>{name}</div>
     </div>
   );
 }
