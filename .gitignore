@@ -13,3 +13,7 @@ node_modules/*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Local
+.idea
+keybindings.json
