@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.icon {
+  @apply relative mb-0.5 inline-flex h-5 w-5 self-center;
+}
