@@ -23,7 +23,7 @@ export function ServantThumbnail({
       </div>
     );
   return (
-    <div className="mx-2 flex flex-col items-center border">
+    <div className="mx-2 inline-block flex-col items-center border">
       <div className="text-lg">{name}</div>
       <ServantPortrait url={portraitUrl}>
         <AttributeLabel name="Lv" value={level} />
