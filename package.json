@@ -11,7 +11,9 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@atlasacademy/api-connector": "^3.0.122",
     "@tabler/icons": "^1.82.0",
+    "fgo-calc": "^1.22.2",
     "immer": "^9.0.15",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
