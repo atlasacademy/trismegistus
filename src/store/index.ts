@@ -3,12 +3,17 @@ import { createHashHistory } from "history";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { createReduxHistoryContext } from "redux-first-history";
 
+import { PartyReducer } from "./PartyReducer";
+import { ServantReducer } from "./ServantReducer";
+
 export function prepareStore() {
   const { createReduxHistory, routerMiddleware, routerReducer } =
     createReduxHistoryContext({ history: createHashHistory() });
 
   const store = configureStore({
     reducer: {
+      servant: ServantReducer,
+      party: PartyReducer,
       router: routerReducer,
     },
     middleware(defaultMiddlewares) {

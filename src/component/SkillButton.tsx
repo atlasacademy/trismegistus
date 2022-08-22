@@ -1,7 +1,7 @@
-import { Skill } from "@/types";
+import { Skill } from "@atlasacademy/api-connector";
 
 export interface SkillButtonProps {
-  skill: Skill;
+  skill: Skill.Skill;
 }
 
 export function SkillButton({ skill: { name } }: SkillButtonProps) {

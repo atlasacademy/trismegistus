@@ -1,17 +1,17 @@
+import { Skill } from "@atlasacademy/api-connector/dist/Schema/Skill";
+
 export interface ServantInfo {
   name: string;
   portraitUrl: string;
-  skills: [Skill, Skill, Skill];
+  skills: Skill[];
 }
 
-export interface Servant {
-  info: ServantInfo;
-  level: number;
-  attack: number;
-  attackFou: number;
-  noblePhantasmLevel: number;
-}
-
-export interface Skill {
+export interface MysticCode {
   name: string;
+  portraitUrl: string;
+  skills: Skill[];
 }
+
+export type Party = [number?, number?, number?, number?, number?, number?];
+
+export type PartySlot = 0 | 1 | 2 | 3 | 4 | 5;

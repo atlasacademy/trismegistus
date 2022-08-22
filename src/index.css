@@ -5,3 +5,11 @@
 .icon {
   @apply relative mb-0.5 inline-flex h-5 w-5 self-center;
 }
+
+.size-mini {
+  @apply h-16 w-16;
+}
+
+.size-normal {
+  @apply h-52 w-52;
+}

@@ -5,14 +5,14 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 
-import { App } from "./App";
 import { history, store } from "./store";
+import { Trismegistus } from "./Trismegistus";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
       <Router history={history}>
-        <App />
+        <Trismegistus />
       </Router>
     </Provider>
   </React.StrictMode>
