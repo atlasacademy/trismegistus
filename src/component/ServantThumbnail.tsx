@@ -10,21 +10,27 @@ export interface ServantThumbnailProps {
 
 export function ServantThumbnail({
   mini,
-  servant: { name, lvMax: level, skills, atkGrowth, ascensionImage },
+  servant: { name, lvMax: level, skills, atkGrowth, extraAssets },
 }: ServantThumbnailProps) {
   if (mini)
     return (
       <div>
-        <div className="size-mini mx-2 border text-gray-300" />
+        <img
+          src={extraAssets?.faces?.ascension?.[1] ?? ""}
+          alt={name}
+          className="size-mini mx-2 border text-gray-300"
+        />
       </div>
     );
   return (
-    <div className="mx-2 inline-block flex-col items-center border">
+    <div className="mx-2 inline-block flex-col items-center border px-2">
       <div className="text-lg">{name}</div>
-      <div
-        style={{ backgroundImage: `url(${ascensionImage[0]})` }}
-        className="size-normal mx-2 flex items-end justify-between border text-gray-300"
-      >
+      <img
+        src={extraAssets?.status?.ascension?.[1] ?? ""}
+        alt={name}
+        className="size-normal flex items-center justify-center border text-gray-300"
+      />
+      <div className="size-normal-overlay flex items-end justify-between px-2">
         <AttributeLabel name="Lv" value={level} />
         <AttributeLabel name="NP" value={1} />
       </div>

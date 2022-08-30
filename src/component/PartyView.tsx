@@ -1,12 +1,5 @@
-import { MysticCode, Party } from "@/types";
-
 import { MysticCodeView } from "./MysticCodeView";
 import { ServantView } from "./ServantView";
-
-export interface PartyViewProps {
-  party: Party;
-  mysticCode: MysticCode;
-}
 
 export function PartyView() {
   return (
@@ -19,7 +12,7 @@ export function PartyView() {
         </div>
         <div className="flex w-full justify-between">
           <section className="border">
-            <MysticCodeView name="boi" portraitUrl="" skills={[]} />
+            <MysticCodeView />
           </section>
           <div className="flex">
             <ServantView mini slot={3} />

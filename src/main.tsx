@@ -2,13 +2,15 @@ import "./index.css";
 
 import React from "react";
 import { createRoot } from "react-dom/client";
+import ReactModal from "react-modal";
 import { Provider } from "react-redux";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 
 import { history, store } from "./store";
 import { Trismegistus } from "./Trismegistus";
 
-createRoot(document.getElementById("root")!).render(
+const appElement = document.getElementById("root")!;
+createRoot(appElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <Router history={history}>
@@ -17,3 +19,4 @@ createRoot(document.getElementById("root")!).render(
     </Provider>
   </React.StrictMode>
 );
+ReactModal.setAppElement(appElement);

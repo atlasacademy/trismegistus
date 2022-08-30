@@ -4,18 +4,18 @@ import useSWR from "swr";
 
 import { client } from "@/api";
 
-export interface ServantSelectProps {
+export interface MysticCodeSelectProps {
   isOpen: boolean;
   onRequestClose(): void;
-  onSelect(servantId: number): void;
+  onSelect(mysticCodeId: number): void;
 }
 
-export function ServantSelect({
+export function MysticCodeSelect({
   isOpen,
   onSelect,
   onRequestClose,
-}: ServantSelectProps) {
-  const { data } = useSWR("servant", client.getServantList);
+}: MysticCodeSelectProps) {
+  const { data } = useSWR("mysticCode", client.getMysticCodes);
   return (
     <Modal
       isOpen={isOpen}
@@ -23,10 +23,10 @@ export function ServantSelect({
       shouldCloseOnEsc
       shouldCloseOnOverlayClick
     >
-      {data?.map((svt) => (
-        <button key={svt.id} className="block" onClick={() => onSelect(svt.id)}>
+      {data?.map(({ id, name }) => (
+        <button key={id} className="block" onClick={() => onSelect(id)}>
           <IconChevronRight />
-          {svt.name}
+          {name}
         </button>
       ))}
     </Modal>

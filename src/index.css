@@ -10,6 +10,14 @@
   @apply h-16 w-16;
 }
 
+.size-mini-overlay {
+  @apply -mt-16 h-16 w-16;
+}
+
 .size-normal {
   @apply h-52 w-52;
+}
+
+.size-normal-overlay {
+  @apply -mt-52 h-52 w-52;
 }

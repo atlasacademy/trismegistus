@@ -18,6 +18,15 @@ function sortSkills(skills: Skill.Skill[]) {
 }
 
 export function SkillBar({ skills }: SkillBarProps) {
+  if (skills.length === 3) {
+    return (
+      <div className="flex">
+        {skills.map((skill, index) => (
+          <SkillButton key={index} skill={skill} />
+        ))}
+      </div>
+    );
+  }
   const sortedSkills = sortSkills(skills);
   return (
     <div className="flex">

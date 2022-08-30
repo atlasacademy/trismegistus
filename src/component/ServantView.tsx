@@ -4,7 +4,10 @@ import classnames from "classnames";
 import { useCallback, useMemo, useState } from "react";
 
 import { useMainDispatch, useMainSelector } from "@/store";
-import { partySlotSelectorCreator, setPartySlot } from "@/store/PartyReducer";
+import {
+  createPartyServantSlotSelector,
+  setPartySlot,
+} from "@/store/PartyReducer";
 import { fetchServant } from "@/store/ServantReducer";
 import { PartySlot } from "@/types";
 
@@ -18,7 +21,10 @@ export interface ServantViewProps {
 
 export function ServantView({ mini, slot }: ServantViewProps) {
   const dispatch = useMainDispatch();
-  const slotSelector = useMemo(() => partySlotSelectorCreator(slot), [slot]);
+  const slotSelector = useMemo(
+    () => createPartyServantSlotSelector(slot),
+    [slot]
+  );
   const servant = useMainSelector(slotSelector);
 
   const [isSelecting, setSelecting] = useState(false);

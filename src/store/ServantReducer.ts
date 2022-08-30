@@ -19,7 +19,12 @@ const {
 
 export const fetchServant = createAsyncThunk(
   "fetchServant",
-  async (id: number) => {
+  async (id: number, { getState }) => {
+    const state = getState() as MainState;
+    const servant = getServant(state, id);
+    if (servant != null) {
+      return servant;
+    }
     return client.getServant(id);
   }
 );
