@@ -51,6 +51,11 @@ export function ServantView({ mini, slot }: ServantViewProps) {
     ItemComponent: BasicServantIcon,
   });
 
+  const openModal = useCallback(() => {
+    fetchServants();
+    openSelection();
+  }, [fetchServants, openSelection]);
+
   if (mini)
     return (
       <div>
@@ -61,7 +66,7 @@ export function ServantView({ mini, slot }: ServantViewProps) {
             className="size-mini mx-2 border text-gray-300"
           />
         ) : (
-          <button className="size-mini block" onClick={openSelection}>
+          <button className="size-mini block" onClick={openModal}>
             <IconPlus />
           </button>
         )}
@@ -84,13 +89,7 @@ export function ServantView({ mini, slot }: ServantViewProps) {
           </div>
         </>
       ) : (
-        <button
-          className="size-normal block"
-          onClick={() => {
-            fetchServants();
-            openSelection();
-          }}
-        >
+        <button className="size-normal block" onClick={openModal}>
           <IconPlus />
         </button>
       )}
