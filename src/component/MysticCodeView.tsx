@@ -1,52 +1,63 @@
-import { isFulfilled } from "@reduxjs/toolkit";
-import { IconPlus } from "@tabler/icons";
-import { useCallback, useState } from "react";
+import { MysticCode } from "@atlasacademy/api-connector";
+import { IconChevronLeft, IconPlus } from "@tabler/icons";
+import { useCallback } from "react";
 
+import { useLazyMysticCodeListQuery, useMysticCodeQuery } from "@/api";
 import { useMainDispatch, useMainSelector } from "@/store";
-import { fetchMysticCode } from "@/store/MysticCodeReducer";
-import { getPartyMysticCode, setPartyMysticCode } from "@/store/PartyReducer";
+import { getPartyMysticCodeId, setPartyMysticCode } from "@/store/PartyReducer";
 
-import { MysticCodeSelect } from "./MysticCodeSelect";
 import { SkillBar } from "./SkillBar";
+import { useSelectionModal } from "./useSelectionModal";
+
+function BasicMysticIcon({ name }: MysticCode.MysticCodeBasic) {
+  return (
+    <>
+      <IconChevronLeft />
+      {name}
+    </>
+  );
+}
 
 export function MysticCodeView() {
   const dispatch = useMainDispatch();
+  const mysticCodeId = useMainSelector(getPartyMysticCodeId);
 
-  const mysticCode = useMainSelector(getPartyMysticCode);
+  const { data: mysticCode } = useMysticCodeQuery(mysticCodeId);
+  const [fetchMysticCodes, { data: mysticCodes }] =
+    useLazyMysticCodeListQuery();
+  const onSelectMysticCode = useCallback(
+    ({ id }: MysticCode.MysticCodeBasic) => {
+      dispatch(setPartyMysticCode(id));
+    },
+    [dispatch]
+  );
+  const { openSelection, modalElement } = useSelectionModal({
+    data: { items: mysticCodes ?? [], idSelector: ({ id }) => id },
+    onSelect: onSelectMysticCode,
+    ItemComponent: BasicMysticIcon,
+  });
 
-  const [isSelecting, setSelecting] = useState(false);
-  const openSelection = useCallback(() => setSelecting(true), [setSelecting]);
-  const closeSelection = useCallback(() => setSelecting(false), [setSelecting]);
-
-  if (mysticCode != null) {
-    return (
-      <section className="flex items-center">
+  return (
+    <section className="flex items-center">
+      {mysticCode != null ? (
         <img
           src={mysticCode.extraAssets.item.male}
           alt={mysticCode.name}
           className="size-mini border"
         />
-        <SkillBar skills={mysticCode.skills} />
-      </section>
-    );
-  }
-  return (
-    <>
-      <button className="size-mini block" onClick={openSelection}>
-        <IconPlus />
-      </button>
-      <MysticCodeSelect
-        isOpen={isSelecting}
-        onRequestClose={closeSelection}
-        onSelect={(id) => {
-          dispatch(fetchMysticCode(id)).then((action) => {
-            if (isFulfilled(action)) {
-              dispatch(setPartyMysticCode(id));
-              closeSelection();
-            }
-          });
-        }}
-      />
-    </>
+      ) : (
+        <button
+          className="size-mini block"
+          onClick={() => {
+            fetchMysticCodes();
+            openSelection();
+          }}
+        >
+          <IconPlus />
+        </button>
+      )}
+      <SkillBar skills={mysticCode?.skills} />
+      {modalElement}
+    </section>
   );
 }

@@ -8,6 +8,10 @@ import { base64ToBytes, bytesToBase64 } from "@/util/base64";
 import { MainListerners, MainState } from ".";
 import { getParty, setParty } from "./PartyReducer";
 
+function getLocation(state: MainState) {
+  return state.router.location?.pathname;
+}
+
 export function serializeUserState(state: MainState) {
   const party = getParty(state);
   const msgpack = encode(party);
@@ -39,17 +43,18 @@ export function setupBidirectionalURISync(listeners: MainListerners) {
     predicate(action, state, previousState) {
       return (
         action.type == LOCATION_CHANGE &&
-        !deepEquals(
-          state.router.location?.pathname,
-          previousState.router.location?.pathname
-        )
+        !deepEquals(getLocation(state), getLocation(previousState))
       );
     },
     effect: async (_action, listenerApi) => {
-      const uri = listenerApi.getState().router.location?.pathname;
-      if (uri != null) {
-        const party = deserializeUserState(uri);
-        listenerApi.dispatch(setParty(party));
+      const path = getLocation(listenerApi.getState());
+      if (path != null) {
+        try {
+          const party = deserializeUserState(path);
+          listenerApi.dispatch(setParty(party));
+        } catch (error) {
+          listenerApi.dispatch(push(""));
+        }
       }
     },
   });

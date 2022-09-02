@@ -1,59 +1,108 @@
-import { isFulfilled } from "@reduxjs/toolkit";
-import { IconPlus } from "@tabler/icons";
-import classnames from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { Servant } from "@atlasacademy/api-connector";
+import { IconChevronLeft, IconPlus } from "@tabler/icons";
+import { useCallback, useMemo } from "react";
 
+import { useLazyServantListQuery, useServantQuery } from "@/api";
 import { useMainDispatch, useMainSelector } from "@/store";
 import {
   createPartyServantSlotSelector,
   setPartySlot,
 } from "@/store/PartyReducer";
-import { fetchServant } from "@/store/ServantReducer";
 import { PartySlot } from "@/types";
 
-import { ServantSelect } from "./ServantSelect";
-import { ServantThumbnail } from "./ServantThumbnail";
+import { AttributeLabel } from "./AttributeLabel";
+import { SkillBar } from "./SkillBar";
+import { useSelectionModal } from "./useSelectionModal";
 
 export interface ServantViewProps {
   mini?: boolean;
   slot: PartySlot;
 }
 
+function BasicServantIcon({ name }: Servant.ServantBasic) {
+  return (
+    <>
+      <IconChevronLeft />
+      {name}
+    </>
+  );
+}
+
 export function ServantView({ mini, slot }: ServantViewProps) {
   const dispatch = useMainDispatch();
-  const slotSelector = useMemo(
+  const partyServantSelector = useMemo(
     () => createPartyServantSlotSelector(slot),
     [slot]
   );
-  const servant = useMainSelector(slotSelector);
+  const servantId = useMainSelector(partyServantSelector);
 
-  const [isSelecting, setSelecting] = useState(false);
-  const openSelection = useCallback(() => setSelecting(true), [setSelecting]);
-  const closeSelection = useCallback(() => setSelecting(false), [setSelecting]);
+  const { data: servant } = useServantQuery(servantId);
+  const [fetchServants, { data: servants }] = useLazyServantListQuery();
+  const onSelectServant = useCallback(
+    ({ id: servantId }: Servant.ServantBasic) => {
+      dispatch(setPartySlot({ slot, servantId }));
+    },
+    [dispatch]
+  );
 
-  if (servant != null) {
-    return <ServantThumbnail mini={mini} servant={servant} />;
-  }
+  const { openSelection, modalElement } = useSelectionModal({
+    data: { items: servants ?? [], idSelector: ({ id }) => id },
+    onSelect: onSelectServant,
+    ItemComponent: BasicServantIcon,
+  });
+
+  if (mini)
+    return (
+      <div>
+        {servant != null ? (
+          <img
+            src={servant.extraAssets?.faces?.ascension?.[1] ?? ""}
+            alt={servant.name}
+            className="size-mini mx-2 border text-gray-300"
+          />
+        ) : (
+          <button className="size-mini block" onClick={openSelection}>
+            <IconPlus />
+          </button>
+        )}
+        {modalElement}
+      </div>
+    );
   return (
-    <>
-      <button
-        className={classnames(mini ? "size-mini" : "size-normal", "border")}
-        onClick={openSelection}
-      >
-        <IconPlus />
-      </button>
-      <ServantSelect
-        isOpen={isSelecting}
-        onRequestClose={closeSelection}
-        onSelect={(servantId) =>
-          dispatch(fetchServant(servantId)).then((action) => {
-            if (isFulfilled(action)) {
-              dispatch(setPartySlot({ slot, servantId }));
-              setSelecting(false);
-            }
-          })
-        }
-      />
-    </>
+    <div className="mx-2 inline-block flex-col items-center border px-2">
+      <div className="text-lg">{servant?.name ?? "Select a servant"}</div>
+      {servant != null ? (
+        <>
+          <img
+            src={servant.extraAssets?.status?.ascension?.[1] ?? ""}
+            alt={servant.name}
+            className="size-normal flex items-center justify-center border text-gray-300"
+          />
+          <div className="size-normal-overlay flex items-end justify-between px-2">
+            <AttributeLabel name="Lv" value={servant?.lvMax ?? ""} />
+            <AttributeLabel name="NP" value={""} />
+          </div>
+        </>
+      ) : (
+        <button
+          className="size-normal block"
+          onClick={() => {
+            fetchServants();
+            openSelection();
+          }}
+        >
+          <IconPlus />
+        </button>
+      )}
+      <SkillBar skills={servant?.skills} />
+      <div className="flex">
+        <AttributeLabel
+          name="ATK"
+          value={servant?.atkGrowth?.[servant.lvMax] ?? ""}
+        />
+        <AttributeLabel name="Fou" value={""} />
+      </div>
+      {modalElement}
+    </div>
   );
 }

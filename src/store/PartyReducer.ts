@@ -3,8 +3,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Party, PartySlot } from "@/types";
 
 import { MainState } from ".";
-import { getMysticCode } from "./MysticCodeReducer";
-import { getServant } from "./ServantReducer";
 
 const partySlice = createSlice({
   name: "party",
@@ -39,15 +37,9 @@ export function getPartyMysticCodeId(state: MainState) {
   return getParty(state).mysticCode;
 }
 
-export function getPartyMysticCode(state: MainState) {
-  const mysticCodeId = getPartyMysticCodeId(state);
-  return mysticCodeId ? getMysticCode(state, mysticCodeId) : undefined;
-}
-
 export function createPartyServantSlotSelector(slot: PartySlot) {
   return (state: MainState) => {
-    const servantId = getPartyServantAtSlot(state, slot);
-    return servantId ? getServant(state, servantId) : undefined;
+    return getPartyServantAtSlot(state, slot);
   };
 }
 export const {

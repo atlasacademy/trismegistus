@@ -1,6 +1,6 @@
 export interface AttributeLabelProps {
   name: string;
-  value: number;
+  value: number | string;
 }
 
 export function AttributeLabel({ name, value }: AttributeLabelProps) {

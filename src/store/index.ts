@@ -7,28 +7,29 @@ import { createHashHistory } from "history";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { createReduxHistoryContext } from "redux-first-history";
 
-import { MysticCodeReducer } from "./MysticCodeReducer";
+import { gameProviderApi } from "@/api";
+
 import { PartyReducer } from "./PartyReducer";
-import { ServantReducer } from "./ServantReducer";
-import { deserializeUserState, setupBidirectionalURISync } from "./URI";
+import { setupBidirectionalURISync } from "./URI";
 
 export function prepareStore() {
   const { createReduxHistory, routerMiddleware, routerReducer } =
-    createReduxHistoryContext({ history: createHashHistory() });
-
+    createReduxHistoryContext({
+      history: createHashHistory(),
+    });
   const listeners = createListenerMiddleware();
   setupBidirectionalURISync(listeners as any);
 
   const store = configureStore({
     reducer: {
       router: routerReducer,
-      mysticCode: MysticCodeReducer,
-      servant: ServantReducer,
+      [gameProviderApi.reducerPath]: gameProviderApi.reducer,
       party: PartyReducer,
     },
     middleware(defaultMiddlewares) {
       return defaultMiddlewares()
         .concat(routerMiddleware)
+        .concat(gameProviderApi.middleware)
         .prepend(listeners.middleware);
     },
   });
