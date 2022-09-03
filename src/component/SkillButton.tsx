@@ -6,8 +6,11 @@ export interface SkillButtonProps {
 
 export function SkillButton({ skill }: SkillButtonProps) {
   return (
-    <div className="mx-2 flex h-12 w-12 items-center justify-center border">
-      {skill?.name}
-    </div>
+    <button
+      disabled={skill == null}
+      className="mx-2 flex h-12 w-12 items-center justify-center"
+    >
+      {skill && <img src={skill.icon} alt={skill.name} />}
+    </button>
   );
 }

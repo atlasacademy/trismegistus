@@ -3,7 +3,7 @@ import { ServantView } from "./ServantView";
 
 export function PartyView() {
   return (
-    <section className="flex">
+    <section className="flex rounded-sm border p-4 shadow-md">
       <div className="flex flex-col items-end">
         <div className="flex">
           <ServantView slot={0} />
@@ -11,7 +11,7 @@ export function PartyView() {
           <ServantView slot={2} />
         </div>
         <div className="flex w-full justify-between">
-          <section className="border">
+          <section className="">
             <MysticCodeView />
           </section>
           <div className="flex">

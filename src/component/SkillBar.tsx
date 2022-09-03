@@ -10,6 +10,9 @@ function organizeSkills(skills?: Skill.Skill[]): (Skill.Skill | undefined)[] {
   if (skills == null) {
     return [undefined, undefined, undefined];
   }
+  if (skills.length === 3) {
+    return skills;
+  }
   const result = [[], [], []] as [Skill.Skill[], Skill.Skill[], Skill.Skill[]];
   for (let i = 0; i < skills.length; i++) {
     const skill = skills[i];
@@ -23,7 +26,7 @@ function organizeSkills(skills?: Skill.Skill[]): (Skill.Skill | undefined)[] {
 export function SkillBar({ skills }: SkillBarProps) {
   const setSkills = organizeSkills(skills);
   return (
-    <div className="flex">
+    <div className="flex justify-center">
       {setSkills.map((skill, index) => (
         <SkillButton key={index} skill={skill} />
       ))}

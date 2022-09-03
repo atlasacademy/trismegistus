@@ -43,7 +43,7 @@ export function MysticCodeView() {
         <img
           src={mysticCode.extraAssets.item.male}
           alt={mysticCode.name}
-          className="size-mini border"
+          className="size-mini"
         />
       ) : (
         <button

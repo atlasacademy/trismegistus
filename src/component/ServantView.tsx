@@ -74,14 +74,14 @@ export function ServantView({ mini, slot }: ServantViewProps) {
       </div>
     );
   return (
-    <div className="mx-2 inline-block flex-col items-center border px-2">
+    <div className="mx-2 inline-block flex-col items-center justify-center px-2">
       <div className="text-lg">{servant?.name ?? "Select a servant"}</div>
       {servant != null ? (
         <>
           <img
             src={servant.extraAssets?.status?.ascension?.[1] ?? ""}
             alt={servant.name}
-            className="size-normal flex items-center justify-center border text-gray-300"
+            className="size-normal flex items-center justify-center text-gray-300"
           />
           <div className="size-normal-overlay flex items-end justify-between px-2">
             <AttributeLabel name="Lv" value={servant?.lvMax ?? ""} />
