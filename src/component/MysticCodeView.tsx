@@ -6,8 +6,8 @@ import { useLazyMysticCodeListQuery, useMysticCodeQuery } from "@/api";
 import { useMainDispatch, useMainSelector } from "@/store";
 import { getPartyMysticCodeId, setPartyMysticCode } from "@/store/PartyReducer";
 
+import { useSelectionModal } from "../hook/useSelectionModal";
 import { SkillBar } from "./SkillBar";
-import { useSelectionModal } from "./useSelectionModal";
 
 function BasicMysticIcon({ name }: MysticCode.MysticCodeBasic) {
   return (

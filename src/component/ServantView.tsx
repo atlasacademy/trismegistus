@@ -10,9 +10,9 @@ import {
 } from "@/store/PartyReducer";
 import { PartySlot } from "@/types";
 
+import { useSelectionModal } from "../hook/useSelectionModal";
 import { AttributeLabel } from "./AttributeLabel";
 import { SkillBar } from "./SkillBar";
-import { useSelectionModal } from "./useSelectionModal";
 
 export interface ServantViewProps {
   mini?: boolean;

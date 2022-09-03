@@ -4,16 +4,22 @@ import { Party, PartySlot } from "@/types";
 
 import { MainState } from ".";
 
+export interface ServantSlot {
+  servantId: number;
+  slot: PartySlot;
+}
+
+const initialState: Party = { servants: [] };
+
 const partySlice = createSlice({
   name: "party",
-  initialState: { servants: [] } as Party,
+  initialState,
   reducers: {
-    setPartySlot(
-      state,
-      {
-        payload: { slot, servantId },
-      }: PayloadAction<{ slot: PartySlot; servantId: number }>
-    ) {
+    resetParty() {
+      return initialState;
+    },
+    setPartySlot(state, { payload }: PayloadAction<ServantSlot>) {
+      const { slot, servantId } = payload;
       state.servants[slot] = servantId;
     },
     setPartyMysticCode(state, { payload }: PayloadAction<number>) {
@@ -44,5 +50,5 @@ export function createPartyServantSlotSelector(slot: PartySlot) {
 }
 export const {
   reducer: PartyReducer,
-  actions: { setParty, setPartySlot, setPartyMysticCode },
+  actions: { resetParty, setParty, setPartySlot, setPartyMysticCode },
 } = partySlice;
