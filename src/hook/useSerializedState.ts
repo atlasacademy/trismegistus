@@ -19,6 +19,7 @@ export function useSerializedState() {
     if (state != null) {
       dispatch(setParty(state));
     } else {
+      setSearchParams("");
       dispatch(resetParty());
     }
   }, [serializedState]);
