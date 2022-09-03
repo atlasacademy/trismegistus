@@ -11,9 +11,7 @@ export function PartyView() {
           <ServantView slot={2} />
         </div>
         <div className="flex w-full justify-between">
-          <section className="">
-            <MysticCodeView />
-          </section>
+          <MysticCodeView />
           <div className="flex">
             <ServantView mini slot={3} />
             <ServantView mini slot={4} />
