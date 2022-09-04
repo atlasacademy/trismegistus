@@ -1,8 +1,8 @@
-import { MainListeners, MainState } from ".";
+import { TrismegistusListeners, TrismegistusState } from ".";
 
 export interface SetupSerializerListenerOptions<T> {
-  listeners: MainListeners;
-  selector: (state: MainState) => T;
+  listeners: TrismegistusListeners;
+  selector: (state: TrismegistusState) => T;
   serializer: (state: T) => string;
   onComplete: (serializedState: string) => void;
 }

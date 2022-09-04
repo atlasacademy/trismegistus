@@ -3,14 +3,14 @@ import { IconChevronLeft, IconPlus } from "@tabler/icons";
 import { useCallback, useMemo } from "react";
 
 import { useLazyServantListQuery, useServantQuery } from "@/api";
-import { useMainDispatch, useMainSelector } from "@/store";
+import { useSelectionModal } from "@/hook/useSelectionModal";
+import { useDispatch, useSelector } from "@/store";
 import {
   createPartyServantSlotSelector,
-  setPartySlot,
+  setPartyServant,
 } from "@/store/PartyReducer";
 import { PartySlot } from "@/types";
 
-import { useSelectionModal } from "../hook/useSelectionModal";
 import { AttributeLabel } from "./AttributeLabel";
 import { SkillBar } from "./SkillBar";
 
@@ -29,18 +29,18 @@ function BasicServantIcon({ name }: Servant.ServantBasic) {
 }
 
 export function ServantView({ mini, slot }: ServantViewProps) {
-  const dispatch = useMainDispatch();
+  const dispatch = useDispatch();
   const partyServantSelector = useMemo(
     () => createPartyServantSlotSelector(slot),
     [slot]
   );
-  const servantId = useMainSelector(partyServantSelector);
+  const servantId = useSelector(partyServantSelector);
 
   const { data: servant } = useServantQuery(servantId);
   const [fetchServants, { data: servants }] = useLazyServantListQuery();
   const onSelectServant = useCallback(
     ({ id: servantId }: Servant.ServantBasic) => {
-      dispatch(setPartySlot({ slot, servantId }));
+      dispatch(setPartyServant({ slot, servantId }));
     },
     [dispatch]
   );

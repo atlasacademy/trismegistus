@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Party, PartySlot } from "@/types";
 
-import { MainState } from ".";
+import { TrismegistusState } from ".";
 
 export interface ServantSlot {
   servantId: number;
@@ -18,7 +18,7 @@ const partySlice = createSlice({
     resetParty() {
       return initialState;
     },
-    setPartySlot(state, { payload }: PayloadAction<ServantSlot>) {
+    setPartyServant(state, { payload }: PayloadAction<ServantSlot>) {
       const { slot, servantId } = payload;
       state.servants[slot] = servantId;
     },
@@ -31,24 +31,24 @@ const partySlice = createSlice({
   },
 });
 
-export function getParty(state: MainState) {
+export function selectParty(state: TrismegistusState) {
   return state.party;
 }
 
-export function getPartyServantAtSlot(state: MainState, slot: PartySlot) {
-  return getParty(state).servants[slot];
+export function selectPartyServant(state: TrismegistusState, slot: PartySlot) {
+  return selectParty(state).servants[slot];
 }
 
-export function getPartyMysticCodeId(state: MainState) {
-  return getParty(state).mysticCode;
+export function selectPartyMysticCode(state: TrismegistusState) {
+  return selectParty(state).mysticCode;
 }
 
 export function createPartyServantSlotSelector(slot: PartySlot) {
-  return (state: MainState) => {
-    return getPartyServantAtSlot(state, slot);
+  return (state: TrismegistusState) => {
+    return selectPartyServant(state, slot);
   };
 }
 export const {
   reducer: PartyReducer,
-  actions: { resetParty, setParty, setPartySlot, setPartyMysticCode },
+  actions: { resetParty, setParty, setPartyServant, setPartyMysticCode },
 } = partySlice;

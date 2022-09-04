@@ -4,7 +4,11 @@ import {
   ListenerMiddlewareInstance,
 } from "@reduxjs/toolkit";
 import { createHashHistory } from "history";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import {
+  TypedUseSelectorHook,
+  useDispatch as useReduxDispatch,
+  useSelector as useReduxSelector,
+} from "react-redux";
 import { createReduxHistoryContext } from "redux-first-history";
 
 import { gameProviderApi } from "@/api";
@@ -32,10 +36,14 @@ export const store = configureStore({
 
 export const history = createReduxHistory(store);
 
-export type MainState = ReturnType<typeof store.getState>;
-export type MainDispatch = typeof store.dispatch;
-export type MainListeners = ListenerMiddlewareInstance<MainState, MainDispatch>;
+export type TrismegistusState = ReturnType<typeof store.getState>;
+export type TrismegistusDispatch = typeof store.dispatch;
+export type TrismegistusListeners = ListenerMiddlewareInstance<
+  TrismegistusState,
+  TrismegistusDispatch
+>;
 
-export const listeners = listenersMiddleware as MainListeners;
-export const useMainDispatch: () => MainDispatch = useDispatch;
-export const useMainSelector: TypedUseSelectorHook<MainState> = useSelector;
+export const listeners = listenersMiddleware as TrismegistusListeners;
+export const useDispatch: () => TrismegistusDispatch = useReduxDispatch;
+export const useSelector: TypedUseSelectorHook<TrismegistusState> =
+  useReduxSelector;

@@ -3,8 +3,11 @@ import { IconChevronLeft, IconPlus } from "@tabler/icons";
 import { useCallback } from "react";
 
 import { useLazyMysticCodeListQuery, useMysticCodeQuery } from "@/api";
-import { useMainDispatch, useMainSelector } from "@/store";
-import { getPartyMysticCodeId, setPartyMysticCode } from "@/store/PartyReducer";
+import { useDispatch, useSelector } from "@/store";
+import {
+  selectPartyMysticCode,
+  setPartyMysticCode,
+} from "@/store/PartyReducer";
 
 import { useSelectionModal } from "../hook/useSelectionModal";
 import { SkillBar } from "./SkillBar";
@@ -19,8 +22,8 @@ function BasicMysticIcon({ name }: MysticCode.MysticCodeBasic) {
 }
 
 export function MysticCodeView() {
-  const dispatch = useMainDispatch();
-  const mysticCodeId = useMainSelector(getPartyMysticCodeId);
+  const dispatch = useDispatch();
+  const mysticCodeId = useSelector(selectPartyMysticCode);
 
   const { data: mysticCode } = useMysticCodeQuery(mysticCodeId);
   const [fetchMysticCodes, { data: mysticCodes }] =
