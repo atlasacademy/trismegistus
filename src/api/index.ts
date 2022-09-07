@@ -61,22 +61,21 @@ export const gameProviderApi = createApi({
       return { error: apiError };
     }
   },
-  endpoints(build) {
-    return {
-      servant: build.query<Servant.Servant, number | undefined>({
-        query: (id) => ({ query: "servant", param: id }),
-      }),
-      servantList: build.query<Servant.ServantBasic[], void>({
-        query: () => ({ query: "servantList", param: undefined }),
-      }),
-      mysticCode: build.query<MysticCode.MysticCode, number | undefined>({
-        query: (id: number) => ({ query: "mysticCode", param: id }),
-      }),
-      mysticCodeList: build.query<MysticCode.MysticCodeBasic[], void>({
-        query: () => ({ query: "mysticCodeList", param: undefined }),
-      }),
-    };
-  },
+  tagTypes: ["Data"],
+  endpoints: (build) => ({
+    servant: build.query<Servant.Servant, number | undefined>({
+      query: (id) => ({ query: "servant", param: id }),
+    }),
+    servantList: build.query<Servant.ServantBasic[], void>({
+      query: () => ({ query: "servantList", param: undefined }),
+    }),
+    mysticCode: build.query<MysticCode.MysticCode, number | undefined>({
+      query: (id: number) => ({ query: "mysticCode", param: id }),
+    }),
+    mysticCodeList: build.query<MysticCode.MysticCodeBasic[], void>({
+      query: () => ({ query: "mysticCodeList", param: undefined }),
+    }),
+  }),
 });
 
 export const {
