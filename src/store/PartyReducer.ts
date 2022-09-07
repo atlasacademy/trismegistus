@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Party, PartySlot } from "@/types";
+import { BattleAction } from "@/battle";
+import { Party, PartySlot, SkillNum } from "@/types";
 
 import { TrismegistusState } from ".";
 
@@ -9,7 +10,12 @@ export interface ServantSlot {
   slot: PartySlot;
 }
 
-const initialState: Party = { servants: [] };
+export interface ServantSlotSkill {
+  slot: PartySlot;
+  skillNum: SkillNum;
+}
+
+const initialState: Party = { servants: [], actions: [] };
 
 const partySlice = createSlice({
   name: "party",
@@ -27,6 +33,9 @@ const partySlice = createSlice({
     },
     setParty(_state, { payload }: PayloadAction<Party>) {
       return payload;
+    },
+    addBattleAction(state, { payload }: PayloadAction<BattleAction<any>>) {
+      state.actions.push(payload);
     },
   },
 });
