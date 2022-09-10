@@ -10,10 +10,9 @@ import {
   useSelector as useReduxSelector,
 } from "react-redux";
 import { createReduxHistoryContext } from "redux-first-history";
-import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import { persistStore } from "redux-persist";
 
-import { gameProviderApi } from "@/api";
+import { apiMiddleware, apiReducer, apiReducerPath } from "@/api";
 
 import { PartyReducer } from "./PartyReducer";
 
@@ -23,25 +22,17 @@ const { createReduxHistory, routerMiddleware, routerReducer } =
   });
 
 const listenersMiddleware = createListenerMiddleware();
-const { reducerPath, reducer: gameProviderReducer } = gameProviderApi;
-const apiReducer = persistReducer(
-  {
-    key: "api",
-    storage,
-  },
-  gameProviderReducer
-);
 
 export const store = configureStore({
   reducer: {
     router: routerReducer,
-    [reducerPath]: apiReducer,
+    [apiReducerPath]: apiReducer,
     party: PartyReducer,
   },
   middleware(defaultMiddlewares) {
     return defaultMiddlewares()
       .concat(routerMiddleware)
-      .concat(gameProviderApi.middleware)
+      .concat(apiMiddleware)
       .prepend(listenersMiddleware.middleware);
   },
 });
