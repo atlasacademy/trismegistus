@@ -20,7 +20,7 @@ export function setupSerializerListener<T>({
     effect: async (_, listenerApi) => {
       const { cancelActiveListeners, delay, getState } = listenerApi;
       cancelActiveListeners();
-      await delay(1000);
+      await delay(250);
       const state = selector(getState());
       const serializedState = serializer(state);
       onComplete(serializedState);
