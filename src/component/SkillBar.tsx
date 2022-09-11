@@ -1,4 +1,5 @@
 import { Skill } from "@atlasacademy/api-connector";
+import { useMemo } from "react";
 
 import { SkillButton } from "./SkillButton";
 
@@ -13,21 +14,26 @@ function organizeSkills(skills?: Skill.Skill[]): (Skill.Skill | undefined)[] {
   if (skills.length === 3) {
     return skills;
   }
-  const result = [[], [], []] as [Skill.Skill[], Skill.Skill[], Skill.Skill[]];
-  for (let i = 0; i < skills.length; i++) {
-    const skill = skills[i];
-    if (skill.num != null) {
-      result[skill.num - 1]?.push(skill);
+  return skills.reduce((acc, nextSkill) => {
+    if (nextSkill.num != null) {
+      const current = acc[nextSkill.num];
+      if (current != null) {
+        if ((current?.priority ?? -1) < (nextSkill?.priority ?? -1)) {
+          acc[nextSkill.num] = nextSkill;
+        }
+      } else {
+        acc[nextSkill.num] = nextSkill;
+      }
     }
-  }
-  return result.map((skillP) => skillP[0]);
+    return acc;
+  }, [] as Skill.Skill[]);
 }
 
 export function SkillBar({ skills }: SkillBarProps) {
-  const setSkills = organizeSkills(skills);
+  const organizedSkills = useMemo(() => organizeSkills(skills), [skills]);
   return (
     <div className="flex justify-center">
-      {setSkills.map((skill, index) => (
+      {organizedSkills.map((skill, index) => (
         <SkillButton key={index} skill={skill} />
       ))}
     </div>
