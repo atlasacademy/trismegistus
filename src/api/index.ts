@@ -1,12 +1,13 @@
 import {
   ApiConnector,
+  Info,
   MysticCode,
   Region,
   Servant,
 } from "@atlasacademy/api-connector";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
-const cacheDuration = -1;
+import { createPersistReducer } from "@/store/persist";
 
 function createApiConnectorMap() {
   const connectorMap = new Map<Region, ApiConnector>();
@@ -20,21 +21,24 @@ function createApiConnectorMap() {
 
 const apiConnector = createApiConnectorMap();
 export const gameDataProvider = (region: Region) => ({
-  servant(id?: number) {
-    return id != null
-      ? apiConnector.get(region)!.servant(id, false, cacheDuration)
+  servant(servantId?: number) {
+    return servantId != null
+      ? apiConnector.get(region)!.servant(servantId, false)
       : Promise.resolve(undefined);
   },
   servantList() {
-    return apiConnector.get(region)!.servantList(cacheDuration);
+    return apiConnector.get(region)!.servantList();
   },
-  mysticCode(id?: number) {
-    return id != null
-      ? apiConnector.get(region)!.mysticCode(id, cacheDuration)
+  mysticCode(mysticCodeId?: number) {
+    return mysticCodeId != null
+      ? apiConnector.get(region)!.mysticCode(mysticCodeId)
       : Promise.resolve(undefined);
   },
   mysticCodeList() {
-    return apiConnector.get(region)!.mysticCodeList(cacheDuration);
+    return apiConnector.get(region)!.mysticCodeList();
+  },
+  info() {
+    return apiConnector.get(region)!.info();
   },
 });
 
@@ -48,7 +52,8 @@ type GameDataBaseQueryOptions = {
   };
 }[keyof GameDataProvider];
 
-export const gameProviderApi = createApi({
+const gameProviderApi = createApi({
+  reducerPath: "api",
   baseQuery: async ({
     query,
     param,
@@ -65,20 +70,31 @@ export const gameProviderApi = createApi({
   endpoints: (build) => ({
     servant: build.query<Servant.Servant, number | undefined>({
       query: (id) => ({ query: "servant", param: id }),
+      providesTags: ["Data"],
     }),
     servantList: build.query<Servant.ServantBasic[], void>({
       query: () => ({ query: "servantList", param: undefined }),
+      providesTags: ["Data"],
     }),
     mysticCode: build.query<MysticCode.MysticCode, number | undefined>({
       query: (id: number) => ({ query: "mysticCode", param: id }),
+      providesTags: ["Data"],
     }),
     mysticCodeList: build.query<MysticCode.MysticCodeBasic[], void>({
       query: () => ({ query: "mysticCodeList", param: undefined }),
+      providesTags: ["Data"],
+    }),
+    checkRegionInfo: build.query<Info.Info, void>({
+      query: () => ({ query: "info", param: undefined }),
     }),
   }),
 });
 
+export const apiReducer = createPersistReducer("api", gameProviderApi.reducer);
+
 export const {
+  reducerPath: apiReducerPath,
+  middleware: apiMiddleware,
   useLazyServantQuery,
   useServantQuery,
   useLazyServantListQuery,
@@ -87,4 +103,5 @@ export const {
   useMysticCodeQuery,
   useLazyMysticCodeListQuery,
   useMysticCodeListQuery,
+  useCheckRegionInfoQuery,
 } = gameProviderApi;
