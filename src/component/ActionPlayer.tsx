@@ -1,3 +1,4 @@
+import { ActionIcon } from "@/component/ActionIcon";
 import { NPButton } from "@/component/NPButton";
 import { useSelector } from "@/store";
 
@@ -14,9 +15,12 @@ export function ActionPlayer() {
         </div>
       </div>
       <div>
-        {actions.map((action, index) => (
-          <div key={index}>{JSON.stringify(action)}</div>
-        ))}
+        {actions.map((action, index) => {
+          return <ActionIcon key={index} action={action} />;
+        })}
+      </div>
+      <div>
+        <button className="border">End Turn</button>
       </div>
     </section>
   );
