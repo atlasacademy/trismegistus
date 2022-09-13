@@ -39,7 +39,7 @@ const apiSlice = createApi({
   baseQuery: gameDataBaseQuery(),
   extractRehydrationInfo(action, { reducerPath }) {
     if (action.type === REHYDRATE) {
-      return action.payload[reducerPath];
+      return action?.payload?.[reducerPath];
     }
   },
   tagTypes: ["Data"],
