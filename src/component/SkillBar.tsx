@@ -1,9 +1,12 @@
 import { Skill } from "@atlasacademy/api-connector";
 import { useMemo } from "react";
 
+import { ActionSource } from "@/types";
+
 import { SkillButton } from "./SkillButton";
 
 export interface SkillBarProps {
+  owner?: ActionSource;
   skills?: Skill.Skill[];
 }
 
@@ -15,27 +18,28 @@ function organizeSkills(skills?: Skill.Skill[]): (Skill.Skill | undefined)[] {
     return skills;
   }
   return skills.reduce((acc, nextSkill) => {
-    if (nextSkill.num != null) {
-      const current = acc[nextSkill.num];
+    const { num } = nextSkill;
+    if (num != null) {
+      const current = acc[num - 1];
       if (current != null) {
         if ((current?.priority ?? -1) < (nextSkill?.priority ?? -1)) {
-          acc[nextSkill.num] = nextSkill;
+          acc[num - 1] = nextSkill;
         }
       } else {
-        acc[nextSkill.num] = nextSkill;
+        acc[num - 1] = nextSkill;
       }
     }
     return acc;
   }, [] as Skill.Skill[]);
 }
 
-export function SkillBar({ skills }: SkillBarProps) {
+export function SkillBar({ owner, skills }: SkillBarProps) {
   const organizedSkills = useMemo(() => organizeSkills(skills), [skills]);
   return (
     <div className="flex justify-center">
-      {organizedSkills.map((skill, index) => (
-        <SkillButton key={index} skill={skill} />
-      ))}
+      <SkillButton owner={owner} skillNum={1} skill={organizedSkills[0]} />
+      <SkillButton owner={owner} skillNum={2} skill={organizedSkills[1]} />
+      <SkillButton owner={owner} skillNum={3} skill={organizedSkills[2]} />
     </div>
   );
 }

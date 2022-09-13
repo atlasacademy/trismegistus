@@ -5,6 +5,7 @@ specifiers:
   '@msgpack/msgpack': 2.8.0
   '@reduxjs/toolkit': 1.8.5
   '@tabler/icons': 1.93.0
+  '@types/node': 18.7.16
   '@types/react': 18.0.18
   '@types/react-dom': 18.0.6
   '@types/react-modal': 3.13.1
@@ -64,6 +65,7 @@ dependencies:
   redux-persist: 6.0.0_react@18.2.0+redux@4.2.0
 
 devDependencies:
+  '@types/node': 18.7.16
   '@types/react': 18.0.18
   '@types/react-dom': 18.0.6
   '@types/react-modal': 3.13.1
@@ -552,6 +554,10 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/node/18.7.16:
+    resolution: {integrity: sha512-EQHhixfu+mkqHMZl1R2Ovuvn47PUw18azMJOTwSZr9/fhzHNGXAJ0ma0dayRVchprpCj0Kc1K1xKoWaATWF1qg==}
     dev: true
 
   /@types/prettier/2.7.0:

@@ -1,8 +1,8 @@
-import { SkillNum, StartingMember } from "@/types";
+import { ActionSource, SkillNum } from "@/types";
 
 export interface BattleAction<T extends string> {
   type: T;
-  slot: StartingMember;
+  source: ActionSource;
 }
 
 export interface SkillBattleAction extends BattleAction<"skill"> {

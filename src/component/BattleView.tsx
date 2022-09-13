@@ -1,3 +1,4 @@
+import { CalcView } from "@/component/CalcView";
 import { PartyView } from "@/component/PartyView";
 
 import { ActionPlayer } from "./ActionPlayer";
@@ -5,8 +6,11 @@ import { ActionPlayer } from "./ActionPlayer";
 export function BattleView() {
   return (
     <section className="flex">
-      <PartyView />
-      <ActionPlayer />
+      <div>
+        <PartyView />
+        <ActionPlayer />
+      </div>
+      <CalcView />
     </section>
   );
 }
