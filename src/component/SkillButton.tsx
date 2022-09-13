@@ -2,7 +2,7 @@ import { Skill } from "@atlasacademy/api-connector";
 import { useCallback } from "react";
 
 import { useDispatch } from "@/store";
-import { activateSkill } from "@/store/PartyReducer";
+import { activateSkill } from "@/store/partySlice";
 import { ActionSource, SkillNum } from "@/types";
 
 export interface SkillButtonProps {

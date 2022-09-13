@@ -8,7 +8,7 @@ export type Party = {
 
 export type SkillNum = 1 | 2 | 3;
 
-export type FieldMember = 0 | 1 | 2;
-export type SubMember = 3 | 4 | 5;
-export type PartySlot = FieldMember | SubMember;
-export type ActionSource = FieldMember | "mysticCode";
+export type FieldMemberSlot = 0 | 1 | 2;
+export type SubMemberSlot = 3 | 4 | 5;
+export type PartySlot = FieldMemberSlot | SubMemberSlot;
+export type ActionSource = FieldMemberSlot | "mysticCode";

@@ -1,44 +1,13 @@
-import { MysticCode } from "@atlasacademy/api-connector";
-import { IconChevronLeft, IconPlus } from "@tabler/icons";
-import { useCallback } from "react";
+import { IconPlus } from "@tabler/icons";
 
-import { useLazyMysticCodeListQuery, useMysticCodeQuery } from "@/api";
-import { useDispatch, useSelector } from "@/store";
-import {
-  selectPartyMysticCode,
-  setPartyMysticCode,
-} from "@/store/PartyReducer";
+import { useMysticCodeModal } from "@/hook/useMysticCodeModal";
+import { usePartyMysticCode } from "@/hook/usePartyMysticCode";
 
-import { useSelectionModal } from "../hook/useSelectionModal";
 import { SkillBar } from "./SkillBar";
 
-function BasicMysticIcon({ name }: MysticCode.MysticCodeBasic) {
-  return (
-    <>
-      <IconChevronLeft />
-      {name}
-    </>
-  );
-}
-
 export function MysticCodeView() {
-  const dispatch = useDispatch();
-  const mysticCodeId = useSelector(selectPartyMysticCode);
-
-  const { data: mysticCode } = useMysticCodeQuery(mysticCodeId);
-  const [fetchMysticCodes, { data: mysticCodes }] =
-    useLazyMysticCodeListQuery();
-  const onSelectMysticCode = useCallback(
-    ({ id }: MysticCode.MysticCodeBasic) => {
-      dispatch(setPartyMysticCode(id));
-    },
-    [dispatch]
-  );
-  const { openSelection, modalElement } = useSelectionModal({
-    data: { items: mysticCodes ?? [], idSelector: ({ id }) => id },
-    onSelect: onSelectMysticCode,
-    ItemComponent: BasicMysticIcon,
-  });
+  const mysticCode = usePartyMysticCode();
+  const { openMysticCodeModal, modalElement } = useMysticCodeModal();
 
   return (
     <section className="flex items-center">
@@ -49,13 +18,7 @@ export function MysticCodeView() {
           className="size-mini"
         />
       ) : (
-        <button
-          className="size-mini block"
-          onClick={() => {
-            fetchMysticCodes();
-            openSelection();
-          }}
-        >
+        <button className="size-mini block" onClick={openMysticCodeModal}>
           <IconPlus />
         </button>
       )}

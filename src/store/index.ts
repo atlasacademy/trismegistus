@@ -11,10 +11,19 @@ import {
 } from "react-redux";
 import { createReduxHistoryContext } from "redux-first-history";
 import { persistStore } from "redux-persist";
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from "redux-persist/es/constants";
 
 import { apiMiddleware, apiReducer, apiReducerPath } from "@/api";
+import { userReducer } from "@/store/userSlice";
 
-import { PartyReducer } from "./PartyReducer";
+import { partyReducer } from "./partySlice";
 
 const { createReduxHistory, routerMiddleware, routerReducer } =
   createReduxHistoryContext({
@@ -27,10 +36,15 @@ export const store = configureStore({
   reducer: {
     router: routerReducer,
     [apiReducerPath]: apiReducer,
-    party: PartyReducer,
+    user: userReducer,
+    party: partyReducer,
   },
   middleware(defaultMiddlewares) {
-    return defaultMiddlewares()
+    return defaultMiddlewares({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    })
       .concat(routerMiddleware)
       .concat(apiMiddleware)
       .prepend(listenersMiddleware.middleware);

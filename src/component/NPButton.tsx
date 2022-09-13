@@ -1,7 +1,7 @@
-import { FieldMember } from "@/types";
+import { FieldMemberSlot } from "@/types";
 
 export interface NPButtonProps {
-  slot: FieldMember;
+  slot: FieldMemberSlot;
 }
 
 export function NPButton({ slot }: NPButtonProps) {

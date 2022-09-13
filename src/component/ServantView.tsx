@@ -1,78 +1,19 @@
-import { Servant } from "@atlasacademy/api-connector";
-import { IconChevronLeft, IconPlus } from "@tabler/icons";
-import { useCallback, useMemo } from "react";
+import { IconPlus } from "@tabler/icons";
 
-import { useLazyServantListQuery, useServantQuery } from "@/api";
-import { useSelectionModal } from "@/hook/useSelectionModal";
-import { useDispatch, useSelector } from "@/store";
-import {
-  createPartyServantSlotSelector,
-  setPartyServant,
-} from "@/store/PartyReducer";
-import { PartySlot } from "@/types";
+import { usePartyServant } from "@/hook/usePartyServant";
+import { useServantModal } from "@/hook/useServantModal";
+import { FieldMemberSlot } from "@/types";
 
 import { AttributeLabel } from "./AttributeLabel";
 import { SkillBar } from "./SkillBar";
 
 export interface ServantViewProps {
-  mini?: boolean;
-  slot: PartySlot;
+  slot: FieldMemberSlot;
 }
 
-function BasicServantIcon({ name }: Servant.ServantBasic) {
-  return (
-    <>
-      <IconChevronLeft />
-      {name}
-    </>
-  );
-}
-
-export function ServantView({ mini, slot }: ServantViewProps) {
-  const dispatch = useDispatch();
-  const partyServantSelector = useMemo(
-    () => createPartyServantSlotSelector(slot),
-    [slot]
-  );
-  const servantId = useSelector(partyServantSelector);
-
-  const { data: servant } = useServantQuery(servantId);
-  const [fetchServants, { data: servants }] = useLazyServantListQuery();
-  const onSelectServant = useCallback(
-    ({ id: servantId }: Servant.ServantBasic) => {
-      dispatch(setPartyServant({ slot, servantId }));
-    },
-    [dispatch]
-  );
-
-  const { openSelection, modalElement } = useSelectionModal({
-    data: { items: servants ?? [], idSelector: ({ id }) => id },
-    onSelect: onSelectServant,
-    ItemComponent: BasicServantIcon,
-  });
-
-  const openModal = useCallback(() => {
-    fetchServants();
-    openSelection();
-  }, [fetchServants, openSelection]);
-
-  if (mini)
-    return (
-      <div>
-        {servant != null ? (
-          <img
-            src={servant.extraAssets?.faces?.ascension?.[1] ?? ""}
-            alt={servant.name}
-            className="size-mini mx-2 border text-gray-300"
-          />
-        ) : (
-          <button className="size-mini block" onClick={openModal}>
-            <IconPlus />
-          </button>
-        )}
-        {modalElement}
-      </div>
-    );
+export function ServantView({ slot }: ServantViewProps) {
+  const servant = usePartyServant(slot);
+  const { modalElement, openServantModal } = useServantModal(slot);
   return (
     <div className="mx-2 inline-block flex-col items-center justify-center px-2">
       <div className="text-lg">{servant?.name ?? "Select a servant"}</div>
@@ -89,7 +30,7 @@ export function ServantView({ mini, slot }: ServantViewProps) {
           </div>
         </>
       ) : (
-        <button className="size-normal block" onClick={openModal}>
+        <button className="size-normal block" onClick={openServantModal}>
           <IconPlus />
         </button>
       )}

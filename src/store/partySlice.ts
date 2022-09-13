@@ -1,18 +1,13 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { BattleAction, NPBattleAction, SkillBattleAction } from "@/battle";
-import { Party, PartySlot, SkillNum } from "@/types";
+import { NPBattleAction, SkillBattleAction } from "@/battle";
+import { Party, PartySlot } from "@/types";
 
 import { TrismegistusState } from ".";
 
 export interface ServantSlot {
   servantId: number;
   slot: PartySlot;
-}
-
-export interface ServantSlotSkill {
-  slot: PartySlot;
-  skillNum: SkillNum;
 }
 
 const initialState: Party = { servants: [], actions: [] };
@@ -31,7 +26,7 @@ const partySlice = createSlice({
     setPartyMysticCode(state, { payload }: PayloadAction<number>) {
       state.mysticCode = payload;
     },
-    setParty(_state, { payload }: PayloadAction<Party>) {
+    setParty(_, { payload }: PayloadAction<Party>) {
       return payload;
     },
     activateSkill(state, { payload }: PayloadAction<SkillBattleAction>) {
@@ -47,21 +42,27 @@ export function selectParty(state: TrismegistusState) {
   return state.party;
 }
 
-export function selectPartyServant(state: TrismegistusState, slot: PartySlot) {
+export function selectPartyServantId(
+  state: TrismegistusState,
+  slot: PartySlot
+) {
   return selectParty(state).servants[slot];
 }
 
-export function selectPartyMysticCode(state: TrismegistusState) {
+export function selectPartyMysticCodeId(state: TrismegistusState) {
   return selectParty(state).mysticCode;
 }
 
-export function createPartyServantSlotSelector(slot: PartySlot) {
-  return (state: TrismegistusState) => {
-    return selectPartyServant(state, slot);
-  };
-}
+export const createPartyServantIdSelector = createSelector(
+  (slot: PartySlot) => slot,
+  (selectorSlot) => (state: TrismegistusState) => {
+    return selectPartyServantId(state, selectorSlot);
+  },
+  { memoizeOptions: { maxSize: 6 } }
+);
+
 export const {
-  reducer: PartyReducer,
+  reducer: partyReducer,
   actions: {
     resetParty,
     setParty,

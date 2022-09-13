@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { listeners, useDispatch } from "@/store";
-import { resetParty, selectParty, setParty } from "@/store/PartyReducer";
+import { resetParty, selectParty, setParty } from "@/store/partySlice";
 import { setupSerializerListener } from "@/store/setupSerializerListener";
 import { Party } from "@/types";
 import { deserializeState } from "@/util/deserialize";
