@@ -34,7 +34,7 @@ export function ServantView({ slot }: ServantViewProps) {
           <IconPlus />
         </button>
       )}
-      <SkillBar owner={slot} skills={servant?.skills} />
+      <SkillBar owner={slot} />
       <div className="flex">
         <AttributeLabel
           name="ATK"
