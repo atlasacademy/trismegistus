@@ -1,36 +1,67 @@
-import { Skill } from "@atlasacademy/api-connector";
 import { useCallback } from "react";
 
-import { useDispatch } from "@/store";
-import { activateSkill } from "@/store/partySlice";
+import {
+  createMysticCodeSkillSelector,
+  createPartyServantSkillSelector,
+} from "@/api/selectors";
+import { useDispatch, useSelector } from "@/store";
+import {
+  activateMysticCodeSkill,
+  activateServantSkill,
+} from "@/store/partySlice";
 import { ActionSource, SkillNum } from "@/types";
 
 export interface SkillButtonProps {
   skillNum: SkillNum;
   owner?: ActionSource;
-  skill?: Skill.Skill;
+  disabled?: boolean;
 }
 
-export function SkillButton({ skillNum, owner, skill }: SkillButtonProps) {
+function useSkillActivation(
+  skillNum: SkillNum,
+  owner: ActionSource | undefined
+) {
   const dispatch = useDispatch();
-  const onClick = useCallback(() => {
-    if (owner != null) {
+  return useCallback(() => {
+    if (owner == null) {
+      return;
+    }
+    if (owner === "mysticCode") {
       dispatch(
-        activateSkill({
-          type: "skill",
+        activateMysticCodeSkill({
           source: owner,
-          skillNum,
+          mysticCodeSkillNum: skillNum,
+        })
+      );
+    } else {
+      dispatch(
+        activateServantSkill({
+          source: owner,
+          servantSkillNum: skillNum,
         })
       );
     }
   }, [skillNum, owner]);
+}
+
+function useSkillSelector(skillNum: SkillNum, owner?: ActionSource) {
+  if (owner == null) {
+    return useSelector(() => undefined);
+  } else if (owner === "mysticCode") {
+    return useSelector(createMysticCodeSkillSelector(skillNum));
+  } else {
+    return useSelector(createPartyServantSkillSelector(owner, skillNum));
+  }
+}
+
+export function SkillButton({ skillNum, owner, disabled }: SkillButtonProps) {
+  const skillActivation = useSkillActivation(skillNum, owner);
+  const skill = useSkillSelector(skillNum, owner);
+  if (skill == null) return <button disabled className="h-12 w-12" />;
+  const { name, icon } = skill;
   return (
-    <button
-      disabled={skill == null}
-      className="mx-2 flex h-12 w-12 items-center justify-center"
-      onClick={onClick}
-    >
-      {skill && <img src={skill.icon} alt={skill.name} />}
+    <button className="h-12 w-12" disabled={disabled} onClick={skillActivation}>
+      <img src={icon} alt={name} />
     </button>
   );
 }

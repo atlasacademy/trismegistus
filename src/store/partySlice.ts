@@ -1,6 +1,10 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { NPBattleAction, SkillBattleAction } from "@/battle";
+import {
+  MysticCodeSkillBattleAction,
+  NPBattleAction,
+  ServantSkillBattleAction,
+} from "@/battle";
 import { Party, PartySlot } from "@/types";
 
 import { TrismegistusState } from ".";
@@ -29,7 +33,16 @@ const partySlice = createSlice({
     setParty(_, { payload }: PayloadAction<Party>) {
       return payload;
     },
-    activateSkill(state, { payload }: PayloadAction<SkillBattleAction>) {
+    activateServantSkill(
+      state,
+      { payload }: PayloadAction<ServantSkillBattleAction>
+    ) {
+      state.actions.push(payload);
+    },
+    activateMysticCodeSkill(
+      state,
+      { payload }: PayloadAction<MysticCodeSkillBattleAction>
+    ) {
       state.actions.push(payload);
     },
     fireNoblePhantasm(state, { payload }: PayloadAction<NPBattleAction>) {
@@ -68,7 +81,8 @@ export const {
     setParty,
     setPartyServant,
     setPartyMysticCode,
-    activateSkill,
+    activateMysticCodeSkill,
+    activateServantSkill,
     fireNoblePhantasm,
   },
 } = partySlice;

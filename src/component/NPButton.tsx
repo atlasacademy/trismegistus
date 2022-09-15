@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { Button } from "react-daisyui";
+
 import { FieldMemberSlot } from "@/types";
 
 export interface NPButtonProps {
@@ -5,5 +8,14 @@ export interface NPButtonProps {
 }
 
 export function NPButton({ slot }: NPButtonProps) {
-  return <button className="size-mini border">Servant {slot + 1}</button>;
+  const [active, setActive] = useState(false);
+  return (
+    <Button
+      className="size-mini"
+      variant={active ? undefined : "outline"}
+      onClick={() => setActive(!active)}
+    >
+      {slot + 1}
+    </Button>
+  );
 }

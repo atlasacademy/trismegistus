@@ -22,7 +22,7 @@ export function MysticCodeView() {
           <IconPlus />
         </button>
       )}
-      <SkillBar skills={mysticCode?.skills} />
+      <SkillBar owner="mysticCode" />
       {modalElement}
     </section>
   );
