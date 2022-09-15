@@ -9,8 +9,8 @@ export function BattleView() {
       <div>
         <PartyView />
         <ActionPlayer />
+        <CalcView />
       </div>
-      <CalcView />
     </section>
   );
 }

@@ -16,7 +16,7 @@ export function SkillActionIcon({
 }: SkillActionIconProps) {
   const servant = useSelector(createPartyServantSelector(source));
   return (
-    <div className="flex items-end">
+    <div className="flex flex-none items-end">
       <img
         className="size-mini"
         src={servant?.extraAssets.commands.ascension?.[1]}

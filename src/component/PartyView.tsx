@@ -5,7 +5,7 @@ import { ServantView } from "./ServantView";
 
 export function PartyView() {
   return (
-    <section className="flex rounded-sm border p-4 shadow-md">
+    <section className="flex grow-0 rounded-sm border p-4 shadow-md">
       <div className="flex flex-col items-end">
         <div className="flex">
           <ServantView slot={0} />
