@@ -37,9 +37,9 @@ function gameDataBaseQuery(): BaseQueryFn<{
 const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: gameDataBaseQuery(),
-  extractRehydrationInfo(action, { reducerPath }) {
+  extractRehydrationInfo(action) {
     if (action.type === REHYDRATE) {
-      return action?.payload?.[reducerPath];
+      return action?.payload;
     }
   },
   tagTypes: ["Data"],
