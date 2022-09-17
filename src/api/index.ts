@@ -1,5 +1,6 @@
 import {
   ApiConnector,
+  CraftEssence,
   Info,
   MysticCode,
   Servant,
@@ -68,6 +69,17 @@ const apiSlice = createApi({
       query: () => (connector) => connector.mysticCodeList(),
       providesTags: ["Data"],
     }),
+    craftEssence: build.query<CraftEssence.CraftEssence, number | undefined>({
+      query: (craftEssenceId) => (connector) => {
+        return craftEssenceId != null
+          ? connector.craftEssence(craftEssenceId, false)
+          : Promise.resolve();
+      },
+    }),
+    craftEssenceList: build.query<CraftEssence.CraftEssenceBasic[], void>({
+      query: () => (connector) => connector.craftEssenceList(),
+      providesTags: ["Data"],
+    }),
     checkRegionInfo: build.query<Info.Info, void>({
       query: () => (connector) => connector.info(),
     }),
@@ -80,13 +92,10 @@ export const {
   reducerPath: apiReducerPath,
   middleware: apiMiddleware,
   endpoints: apiEndpoints,
-  useLazyServantQuery,
   useServantQuery,
-  useLazyServantListQuery,
   useServantListQuery,
-  useLazyMysticCodeQuery,
   useMysticCodeQuery,
-  useLazyMysticCodeListQuery,
   useMysticCodeListQuery,
-  useCheckRegionInfoQuery,
+  useCraftEssenceQuery,
+  useCraftEssenceListQuery,
 } = apiSlice;

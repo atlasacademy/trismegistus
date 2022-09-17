@@ -5,27 +5,40 @@ import {
   NPBattleAction,
   ServantSkillBattleAction,
 } from "@/battle";
-import { Party, PartySlot } from "@/types";
+import { Party, PartyMemberSlot } from "@/types";
 
 import { TrismegistusState } from ".";
 
 export interface ServantSlot {
   servantId: number;
-  slot: PartySlot;
+  slot: PartyMemberSlot;
 }
 
-const initialState: Party = { servants: [], actions: [] };
+export interface CraftEssenceSlot {
+  craftEssenceId: number;
+  slot: PartyMemberSlot;
+}
+
+const getInitialState = (): Party => ({
+  servants: [],
+  craftEssences: [],
+  actions: [],
+});
 
 const partySlice = createSlice({
   name: "party",
-  initialState,
+  initialState: getInitialState,
   reducers: {
     resetParty() {
-      return initialState;
+      return getInitialState();
     },
     setPartyServant(state, { payload }: PayloadAction<ServantSlot>) {
       const { slot, servantId } = payload;
       state.servants[slot] = servantId;
+    },
+    setPartyCraftEssence(state, { payload }: PayloadAction<CraftEssenceSlot>) {
+      const { slot, craftEssenceId } = payload;
+      state.craftEssences[slot] = craftEssenceId;
     },
     setPartyMysticCode(state, { payload }: PayloadAction<number>) {
       state.mysticCode = payload;
@@ -57,9 +70,16 @@ export function selectParty(state: TrismegistusState) {
 
 export function selectPartyServantId(
   state: TrismegistusState,
-  slot: PartySlot
+  slot: PartyMemberSlot
 ) {
   return selectParty(state).servants[slot];
+}
+
+function selectPartyCraftEssenceId(
+  state: TrismegistusState,
+  slot: PartyMemberSlot
+) {
+  return selectParty(state).craftEssences[slot];
 }
 
 export function selectPartyMysticCodeId(state: TrismegistusState) {
@@ -67,9 +87,17 @@ export function selectPartyMysticCodeId(state: TrismegistusState) {
 }
 
 export const createPartyServantIdSelector = createSelector(
-  (slot: PartySlot) => slot,
-  (selectorSlot) => (state: TrismegistusState) => {
-    return selectPartyServantId(state, selectorSlot);
+  (slot: PartyMemberSlot) => slot,
+  (slot) => (state: TrismegistusState) => {
+    return selectPartyServantId(state, slot);
+  },
+  { memoizeOptions: { maxSize: 6 } }
+);
+
+export const createPartyCraftEssenceIdSelector = createSelector(
+  (slot: PartyMemberSlot) => slot,
+  (slot) => (state: TrismegistusState) => {
+    return selectPartyCraftEssenceId(state, slot);
   },
   { memoizeOptions: { maxSize: 6 } }
 );
@@ -80,6 +108,7 @@ export const {
     resetParty,
     setParty,
     setPartyServant,
+    setPartyCraftEssence,
     setPartyMysticCode,
     activateMysticCodeSkill,
     activateServantSkill,

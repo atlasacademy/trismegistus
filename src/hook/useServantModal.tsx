@@ -6,7 +6,7 @@ import { useServantListQuery } from "@/api";
 import { useSelectionModal } from "@/hook/useSelectionModal";
 import { useDispatch } from "@/store";
 import { setPartyServant } from "@/store/partySlice";
-import { PartySlot } from "@/types";
+import { PartyMemberSlot } from "@/types";
 
 function ServantListItem({ name }: Servant.ServantBasic) {
   return (
@@ -17,7 +17,7 @@ function ServantListItem({ name }: Servant.ServantBasic) {
   );
 }
 
-export function useServantModal(slot: PartySlot) {
+export function useServantModal(slot: PartyMemberSlot) {
   const dispatch = useDispatch();
 
   const { data: servants = [] } = useServantListQuery();

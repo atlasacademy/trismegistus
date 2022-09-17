@@ -1,11 +1,11 @@
 import { IconPlus } from "@tabler/icons";
 
+import { CraftEssenceView } from "@/component/CraftEssenceView";
 import { usePartyServant } from "@/hook/usePartyServant";
 import { useServantModal } from "@/hook/useServantModal";
 import { FieldMemberSlot } from "@/types";
 
 import { AttributeLabel } from "./AttributeLabel";
-import { SkillBar } from "./SkillBar";
 
 export interface ServantViewProps {
   slot: FieldMemberSlot;
@@ -15,32 +15,38 @@ export function MemberView({ slot }: ServantViewProps) {
   const servant = usePartyServant(slot);
   const { modalElement, openServantModal } = useServantModal(slot);
   return (
-    <div className="mx-2 inline-block flex-col items-center justify-center px-2">
+    <div className="inline-block flex w-48 flex-col items-center justify-center align-middle">
       <div className="text-lg">{servant?.name ?? "Select a servant"}</div>
-      {servant != null ? (
-        <>
+      <div className="relative h-96 grow-0">
+        {servant != null ? (
           <img
-            src={servant.extraAssets?.status?.ascension?.[1] ?? ""}
+            src={servant.extraAssets?.narrowFigure?.ascension?.[1] ?? ""}
             alt={servant.name}
-            className="size-normal flex items-center justify-center text-gray-300"
+            className="mx-auto h-96 rounded-3xl"
           />
-          <div className="size-normal-overlay flex items-end justify-between px-2">
-            <AttributeLabel name="Lv" value={servant?.lvMax ?? ""} />
-            <AttributeLabel name="NP" value={""} />
+        ) : (
+          <button
+            className="block h-96 w-32 rounded-3xl border"
+            onClick={openServantModal}
+          >
+            <IconPlus />
+          </button>
+        )}
+        {servant && (
+          <div className="absolute bottom-0 w-full rounded-b-3xl bg-gray-900/80 text-white">
+            <CraftEssenceView slot={slot} />
+            <div className="mx-2 mb-1 text-left text-sm">
+              <AttributeLabel name="Level" value={servant?.lvMax ?? ""} />
+              <AttributeLabel
+                name="ATK"
+                value={servant?.atkGrowth?.[servant.lvMax] ?? ""}
+              />
+              <AttributeLabel name="Fou" value={""} />
+              <AttributeLabel name="Skills" value={"10/10/10"} />
+              <AttributeLabel name="Appends" value={"-/10/-"} />
+            </div>
           </div>
-        </>
-      ) : (
-        <button className="size-normal block" onClick={openServantModal}>
-          <IconPlus />
-        </button>
-      )}
-      <SkillBar owner={slot} />
-      <div className="flex">
-        <AttributeLabel
-          name="ATK"
-          value={servant?.atkGrowth?.[servant.lvMax] ?? ""}
-        />
-        <AttributeLabel name="Fou" value={""} />
+        )}
       </div>
       {modalElement}
     </div>

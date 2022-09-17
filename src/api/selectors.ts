@@ -7,10 +7,10 @@ import {
   createPartyServantIdSelector,
   selectPartyMysticCodeId,
 } from "@/store/partySlice";
-import { PartySlot, SkillNum } from "@/types";
+import { PartyMemberSlot, SkillNum } from "@/types";
 
 export const createPartyServantSelector = createSelector(
-  [(slot: PartySlot) => slot, createPartyServantIdSelector],
+  [(slot: PartyMemberSlot) => slot, createPartyServantIdSelector],
   (selectorSlot, servantIdSelector) => (state: TrismegistusState) => {
     const servantId = servantIdSelector(state);
     const endpoint = apiEndpoints.servant.select(servantId)(state);
@@ -21,7 +21,7 @@ export const createPartyServantSelector = createSelector(
 
 export const createPartyServantSkillSelector = createSelector(
   [
-    (slot: PartySlot) => slot,
+    (slot: PartyMemberSlot) => slot,
     (_, skillNum: SkillNum) => skillNum,
     createPartyServantSelector,
   ],
