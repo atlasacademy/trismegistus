@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.icon {
+  @apply relative mb-0.5 inline-flex h-5 w-5 self-center;
+}
+
+.size-mini {
+  @apply h-16 w-16;
+}
+
+.size-mini-overlay {
+  @apply -mt-16 h-16 w-16;
+}
+
+.size-normal {
+  @apply h-52 w-52;
+}
+
+.size-normal-overlay {
+  @apply -mt-52 h-52 w-52;
+}
