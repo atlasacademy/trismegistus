@@ -14,10 +14,18 @@ export interface MysticCodeSkillBattleAction
   mysticCodeSkillNum: SkillNum;
 }
 
-export function isSkillAction(
+export function isServantSkillAction(
   battleAction: BattleAction<any>
 ): battleAction is ServantSkillBattleAction {
   return battleAction.source in [0, 1, 2] && "servantSkillNum" in battleAction;
+}
+
+export function isMysticCodeSkillAction(
+  battleAction: BattleAction<any>
+): battleAction is MysticCodeSkillBattleAction {
+  return (
+    battleAction.source === "mysticCode" && "mysticCodeSkillNum" in battleAction
+  );
 }
 
 export interface NPBattleAction extends BattleAction<FieldMemberSlot> {}

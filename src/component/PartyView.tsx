@@ -1,16 +1,16 @@
 import { SubMemberView } from "@/component/SubMemberView";
 
+import { MemberView } from "./MemberView";
 import { MysticCodeView } from "./MysticCodeView";
-import { ServantView } from "./ServantView";
 
 export function PartyView() {
   return (
     <section className="flex grow-0 rounded-sm border p-4 shadow-md">
       <div className="flex flex-col items-end">
         <div className="flex">
-          <ServantView slot={0} />
-          <ServantView slot={1} />
-          <ServantView slot={2} />
+          <MemberView slot={0} />
+          <MemberView slot={1} />
+          <MemberView slot={2} />
         </div>
         <div className="flex w-full justify-between">
           <MysticCodeView />

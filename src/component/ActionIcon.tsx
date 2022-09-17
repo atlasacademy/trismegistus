@@ -1,19 +1,24 @@
-import { createPartyServantSelector } from "@/api/selectors";
+import {
+  createPartyServantSelector,
+  selectPartyMysticCode,
+} from "@/api/selectors";
 import {
   BattleAction,
-  isSkillAction,
+  isMysticCodeSkillAction,
+  isServantSkillAction,
+  MysticCodeSkillBattleAction,
   ServantSkillBattleAction,
 } from "@/battle";
 import { SkillButton } from "@/component/SkillButton";
 import { useSelector } from "@/store";
 
-interface SkillActionIconProps {
+interface ServantSkillActionIconProps {
   action: ServantSkillBattleAction;
 }
 
-export function SkillActionIcon({
+export function ServantSkillActionIcon({
   action: { source, servantSkillNum },
-}: SkillActionIconProps) {
+}: ServantSkillActionIconProps) {
   const servant = useSelector(createPartyServantSelector(source));
   return (
     <div className="flex flex-none items-end">
@@ -27,13 +32,35 @@ export function SkillActionIcon({
   );
 }
 
+export interface MysticCodeSkillActionIconProps {
+  action: MysticCodeSkillBattleAction;
+}
+
+export function MysticCodeSkillActionIcon({
+  action: { source, mysticCodeSkillNum },
+}: MysticCodeSkillActionIconProps) {
+  const mysticCode = useSelector(selectPartyMysticCode);
+  return (
+    <div className="flex flex-none items-end">
+      <img
+        className="size-mini"
+        src={mysticCode?.extraAssets.item.male}
+        alt="icon"
+      />
+      <SkillButton disabled owner={source} skillNum={mysticCodeSkillNum} />
+    </div>
+  );
+}
+
 export interface ActionIconProps {
   action: BattleAction<any>;
 }
 
 export function ActionIcon({ action }: ActionIconProps) {
-  if (isSkillAction(action)) {
-    return <SkillActionIcon action={action} />;
+  if (isServantSkillAction(action)) {
+    return <ServantSkillActionIcon action={action} />;
+  } else if (isMysticCodeSkillAction(action)) {
+    return <MysticCodeSkillActionIcon action={action} />;
   }
   return <></>;
 }

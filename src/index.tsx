@@ -2,7 +2,6 @@ import "./index.css";
 
 import React from "react";
 import { createRoot } from "react-dom/client";
-import ReactModal from "react-modal";
 import { Provider } from "react-redux";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 import { PersistGate } from "redux-persist/integration/react";
@@ -22,4 +21,3 @@ createRoot(appElement).render(
     </Provider>
   </React.StrictMode>
 );
-ReactModal.setAppElement(appElement);

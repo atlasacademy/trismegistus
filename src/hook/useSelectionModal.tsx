@@ -1,5 +1,5 @@
 import { ComponentType, useCallback, useState } from "react";
-import Modal from "react-modal";
+import { Modal } from "react-daisyui";
 
 export interface UseSelectionModalOptions<T> {
   data: { items: T[]; idSelector: (item: T) => string | number };
@@ -23,18 +23,24 @@ export function useSelectionModal<T>({
     [onSelect, closeSelection]
   );
   const modalElement = (
-    <Modal
-      isOpen={isSelecting}
-      onRequestClose={closeSelection}
-      shouldCloseOnEsc
-      shouldCloseOnOverlayClick
-    >
-      {items?.map((item) => (
-        <button key={idSelector(item)} className="block" onClick={select(item)}>
-          <ItemComponent {...item} />
-        </button>
-      ))}
+    <Modal responsive open={isSelecting} onClickBackdrop={closeSelection}>
+      <Modal.Body>
+        {items?.map((item) => (
+          <button
+            key={idSelector(item)}
+            className="block"
+            onClick={select(item)}
+          >
+            <ItemComponent {...item} />
+          </button>
+        ))}
+      </Modal.Body>
     </Modal>
   );
-  return { isSelecting, openSelection, closeSelection, modalElement };
+  return {
+    isSelecting,
+    openSelection,
+    closeSelection,
+    modalElement: isSelecting ? modalElement : undefined,
+  };
 }
