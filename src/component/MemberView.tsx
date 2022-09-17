@@ -11,7 +11,7 @@ export interface ServantViewProps {
   slot: FieldMemberSlot;
 }
 
-export function ServantView({ slot }: ServantViewProps) {
+export function MemberView({ slot }: ServantViewProps) {
   const servant = usePartyServant(slot);
   const { modalElement, openServantModal } = useServantModal(slot);
   return (
