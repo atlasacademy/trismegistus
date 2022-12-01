@@ -25,102 +25,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/*
-// This constant can also be computed with the following algorithm:
-const base64abc = [],
-	A = "A".charCodeAt(0),
-	a = "a".charCodeAt(0),
-	n = "0".charCodeAt(0);
-for (let i = 0; i < 26; ++i) {
-	base64abc.push(String.fromCharCode(A + i));
-}
-for (let i = 0; i < 26; ++i) {
-	base64abc.push(String.fromCharCode(a + i));
-}
-for (let i = 0; i < 10; ++i) {
-	base64abc.push(String.fromCharCode(n + i));
-}
-base64abc.push("+");
-base64abc.push("/");
-*/
-const base64abc = [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-  "0",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "_",
-  "-",
-];
+/**
+ * URL safe Base64 alphabet, as described in {@link https://www.rfc-editor.org/rfc/rfc4648#section-5 }
+ */
+const base64abc =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
 
 const base64codes = (() => {
   const l = 256;
-  const base64codes = new Uint8Array(l);
+  const base64bytes = new Uint8Array(l);
   for (let i = 0; i < l; ++i) {
-    base64codes[i] = 255; // invalid character
+    base64bytes[i] = 255; // invalid character
   }
-  base64abc.forEach((char, index) => {
-    base64codes[char.charCodeAt(0)] = index;
-  });
-  base64codes["=".charCodeAt(0)] = 0; // ignored anyway, so we just need to prevent an error
-  return base64codes;
+  for (let index = 0; index < base64abc.length; index++) {
+    const char = base64abc[index];
+    base64bytes[char.charCodeAt(0)] = index;
+  }
+  base64bytes["=".charCodeAt(0)] = 0; // ignored anyway, so we just need to prevent an error
+  return base64bytes;
 })();
 
 function getBase64Code(charCode: number) {

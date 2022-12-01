@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+enum MemberSlot {
+  NONE = 0;
+  FIELD_1 = 1;
+  FIELD_2 = 2;
+  FIELD_3 = 3;
+  SUB_1 = 4;
+  SUB_2 = 5;
+  SUB_3 = 6;
+}
+
+message ProtoMysticCode {
+  uint32 mysticCodeId = 2;
+  uint32 mysticCodeLevel = 3;
+}
+
+message ProtoCraftEssence {
+  MemberSlot slot = 1;
+  uint32 craftEssenceId = 2;
+  uint32 craftEssenceLevel = 3;
+}
+
+message ProtoServant {
+  MemberSlot slot = 1;
+  uint32 servantId = 2;
+  uint32 level = 3;
+  uint32 fou = 4;
+  uint32 noblePhantasmLevel = 5;
+  uint32 skill1 = 6;
+  uint32 skill2 = 7;
+  uint32 skill3 = 8;
+  uint32 append1 = 9;
+  uint32 append2 = 10;
+  uint32 append3 = 11;
+}
+
+enum CommandType {
+  NO_COMMAND = 0;
+  SKILL_1 = 1;
+  SKILL_2 = 2;
+  SKILL_3 = 3;
+  COMMAND_CARD = 4;
+  NOBLE_PHANTASM = 5;
+}
+
+message ProtoCommand {
+  uint32 order = 1;
+  uint32 wave = 2;
+  CommandType type = 3;
+  MemberSlot source = 4;
+  MemberSlot target = 5;
+}
+
+message ProtoTeam {
+  ProtoMysticCode mysticCode = 1;
+  repeated ProtoServant servants = 2;
+  repeated ProtoCraftEssence craftEssences = 3;
+  repeated ProtoCommand commandScripts = 4;
+}
+
+message ProtoTrismegistusState {
+  map<uint32, ProtoTeam> teams = 1;
+}

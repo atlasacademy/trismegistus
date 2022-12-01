@@ -1,35 +1,38 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { AnyAction } from "redux";
 
-import { listeners, useDispatch } from "@/store";
-import { resetParty, selectParty, setParty } from "@/store/partySlice";
-import { setupSerializerListener } from "@/store/setupSerializerListener";
-import { Party } from "@/types";
-import { deserializeState } from "@/util/deserialize";
-import { serializeState } from "@/util/serialize";
+import { listeners, TrismegistusState } from "@/store";
 
-const SEARCH_PARAM = "o";
+export interface UseSerializedStateOptions<T> {
+  searchParam: string;
+  predicate(
+    action: AnyAction,
+    currentState: TrismegistusState,
+    previousState: TrismegistusState
+  ): boolean;
+  selector(state: TrismegistusState): T;
+  serializer(state: T): string;
+}
 
-export function useSerializedState() {
-  const dispatch = useDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const serializedState = searchParams.get(SEARCH_PARAM) ?? "";
+export function useSerializedState<T>({
+  searchParam,
+  predicate,
+  selector,
+  serializer,
+}: UseSerializedStateOptions<T>) {
   useEffect(() => {
-    const state = deserializeState<Party>(serializedState);
-    if (state != null) {
-      dispatch(setParty(state));
-    } else {
-      setSearchParams("");
-      dispatch(resetParty());
-    }
-  }, [serializedState]);
-  useEffect(() => {
-    return setupSerializerListener({
-      selector: selectParty,
-      serializer: serializeState,
-      listeners: listeners,
-      onComplete(state) {
-        setSearchParams(`?${SEARCH_PARAM}=${state}`);
+    return listeners.startListening({
+      predicate,
+      effect: async (_, listenerApi) => {
+        const { cancelActiveListeners, delay, getState } = listenerApi;
+        cancelActiveListeners();
+        await delay(250);
+        const state = selector(getState());
+        const serializedState = serializer(state);
+        const queryParams = new URLSearchParams({
+          [searchParam]: serializedState,
+        }).toString();
+        window.history.replaceState(null, "", `?${queryParams}`);
       },
     });
   });

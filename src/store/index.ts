@@ -3,13 +3,11 @@ import {
   createListenerMiddleware,
   ListenerMiddlewareInstance,
 } from "@reduxjs/toolkit";
-import { createHashHistory } from "history";
 import {
   TypedUseSelectorHook,
   useDispatch as useReduxDispatch,
   useSelector as useReduxSelector,
 } from "react-redux";
-import { createReduxHistoryContext } from "redux-first-history";
 import { persistStore } from "redux-persist";
 import {
   FLUSH,
@@ -21,37 +19,38 @@ import {
 } from "redux-persist/es/constants";
 
 import { apiMiddleware, apiReducer, apiReducerPath } from "@/api";
-import { userReducer } from "@/store/userSlice";
-
-import { partyReducer } from "./partySlice";
-
-const { createReduxHistory, routerMiddleware, routerReducer } =
-  createReduxHistoryContext({
-    history: createHashHistory(),
-  });
+import { deserializeProtoState } from "@/store/deserializeProtoState";
+import { teamsReducer } from "@/store/slice/teamSlice";
+import { userReducer } from "@/store/slice/userSlice";
 
 const listenersMiddleware = createListenerMiddleware();
 
-export const store = configureStore({
-  reducer: {
-    router: routerReducer,
-    [apiReducerPath]: apiReducer,
-    user: userReducer,
-    party: partyReducer,
-  },
-  middleware(defaultMiddlewares) {
-    return defaultMiddlewares({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    })
-      .concat(routerMiddleware)
-      .concat(apiMiddleware)
-      .prepend(listenersMiddleware.middleware);
-  },
-});
+function createStore() {
+  const serializedInitialState = new URLSearchParams(
+    window.location.search
+  ).get("o");
+  const teams = deserializeProtoState(serializedInitialState);
 
-export const history = createReduxHistory(store);
+  return configureStore({
+    reducer: {
+      [apiReducerPath]: apiReducer,
+      user: userReducer,
+      teams: teamsReducer,
+    },
+    middleware(defaultMiddlewares) {
+      return defaultMiddlewares({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      })
+        .concat(apiMiddleware)
+        .prepend(listenersMiddleware.middleware);
+    },
+    preloadedState: { teams },
+  });
+}
+export const store = createStore();
+
 export const persistor = persistStore(store);
 
 export type TrismegistusState = ReturnType<typeof store.getState>;
@@ -65,3 +64,4 @@ export const listeners = listenersMiddleware as TrismegistusListeners;
 export const useDispatch: () => TrismegistusDispatch = useReduxDispatch;
 export const useSelector: TypedUseSelectorHook<TrismegistusState> =
   useReduxSelector;
+export { selectTeamServantWithDefaults } from "@/store/entity/servant";

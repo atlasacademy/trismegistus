@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 .icon {
-  @apply relative mb-0.5 inline-flex h-5 w-5 self-center;
+  @apply relative mb-0.5 inline-flex self-center;
+}
+
+.bg-overlay {
+  @apply bg-gray-900/80;
 }
 
 .size-mini {

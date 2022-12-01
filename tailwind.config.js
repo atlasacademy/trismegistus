@@ -1,16 +1,16 @@
+const colors = require("tailwindcss/colors");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./index.html",
-    "./src/**/*.{ts,tsx}",
-    "node_modules/daisyui/dist/**/*.js",
-    "node_modules/react-daisyui/dist/**/*.js",
-  ],
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: colors.blue,
+      },
+      spacing: {
+        full: "100%",
+      },
+    },
   },
-  daisyui: {
-    themes: ["wireframe"],
-  },
-  plugins: [require("daisyui")],
+  plugins: [require("tailwindcss-radix")()],
 };

@@ -11,7 +11,7 @@ import { REHYDRATE } from "redux-persist/es/constants";
 
 import { TrismegistusState } from "@/store";
 import { createPersistReducer } from "@/store/persist";
-import { selectRegion } from "@/store/userSlice";
+import { selectRegion } from "@/store/slice/userSlice";
 
 const host = "https://api.atlasacademy.io";
 const selectConnector = createSelector(
@@ -19,6 +19,8 @@ const selectConnector = createSelector(
   (region) => new ApiConnector({ host, region }),
   { memoizeOptions: { maxSize: 15 } }
 );
+
+const ONE_WEEK = 604800;
 
 function gameDataBaseQuery(): BaseQueryFn<{
   (apiConnector: ApiConnector): Promise<any>;
@@ -44,10 +46,11 @@ const apiSlice = createApi({
     }
   },
   tagTypes: ["Data"],
+  keepUnusedDataFor: ONE_WEEK,
   endpoints: (build) => ({
     servant: build.query<Servant.Servant, number | undefined>({
       query: (servantId) => (connector) => {
-        return servantId != null
+        return servantId
           ? connector.servant(servantId, false)
           : Promise.resolve();
       },
@@ -59,7 +62,7 @@ const apiSlice = createApi({
     }),
     mysticCode: build.query<MysticCode.MysticCode, number | undefined>({
       query: (mysticCodeId) => (connector) => {
-        return mysticCodeId != null
+        return mysticCodeId
           ? connector.mysticCode(mysticCodeId)
           : Promise.resolve();
       },
@@ -71,7 +74,7 @@ const apiSlice = createApi({
     }),
     craftEssence: build.query<CraftEssence.CraftEssence, number | undefined>({
       query: (craftEssenceId) => (connector) => {
-        return craftEssenceId != null
+        return craftEssenceId
           ? connector.craftEssence(craftEssenceId, false)
           : Promise.resolve();
       },
