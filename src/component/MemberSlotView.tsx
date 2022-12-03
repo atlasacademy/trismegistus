@@ -1,10 +1,10 @@
+import background from "@assets/background.png";
 import unknownFigure from "@assets/unknown-narrowfigure.png";
 import { Servant } from "@atlasacademy/api-connector";
 import { IconPlus } from "@tabler/icons";
 
 import { useServantQuery } from "@/api";
 import { CraftEssenceSlotView } from "@/component/CraftEssenceView";
-import { Portrait } from "@/component/Portrait";
 import { ServantSelection } from "@/component/selection/ServantSelection";
 import { Spinner } from "@/component/Spinner";
 import { AttackStatDisplay } from "@/component/stat/AttackStatDisplay";
@@ -20,50 +20,55 @@ interface MemberViewProps {
 function MemberView({ userServant, servant }: MemberViewProps) {
   const { level, noblePhantasmLevel, skills, appends } = userServant;
   return (
-    <Portrait
-      src={servant.extraAssets.narrowFigure.ascension?.[1] ?? unknownFigure}
-      placeholderText={servant.name}
-    >
-      <div className="flex h-full flex-col items-end justify-end align-bottom">
-        <div className="w-full rounded-b-3xl text-sm text-white">
-          <div className="flex justify-between whitespace-nowrap">
-            <div className="bg-overlay rounded-tr px-1">Lv: {level}</div>
-            <div className="bg-overlay rounded-tl px-1">
-              <AttackStatDisplay userServant={userServant} />
-            </div>
+    <>
+      <div className="relative shrink-0">
+        <img
+          src={servant.extraAssets.faces.ascension?.[1] ?? unknownFigure}
+          alt={servant.name}
+          className="object-cover"
+        />
+
+        <div className="bg-overlay absolute right-0 top-0 px-1">
+          Lv: {level}
+        </div>
+
+        <div className="absolute bottom-0 w-full">
+          <div className="bg-overlay px-1">
+            <AttackStatDisplay userServant={userServant} />
           </div>
           <CraftEssenceSlotView />
-          <div className="bg-overlay w-full rounded-b-3xl px-2 pb-1 text-left">
-            <div className="text-center">
-              <div className="flex justify-between">
-                <div className="w-full">NP</div>
-                <div className="w-full">{noblePhantasmLevel}</div>
-              </div>
-              <div className="flex justify-between">
-                <div className="w-full">Skills</div>
-                <div className="flex w-full">
-                  {skills.map((skill, index) => (
-                    <div key={index} className="w-1/3">
-                      {skill || "-"}
-                    </div>
-                  ))}
+        </div>
+      </div>
+      <div className="flex h-full w-full flex-col items-end justify-between align-bottom">
+        <div className="bg-overlay w-full font-bold">{servant.name}</div>
+        <div className="bg-overlay w-full px-2 pb-1 text-center">
+          <div className="flex justify-between">
+            <div className="w-full">NP</div>
+            <div className="w-full">{noblePhantasmLevel}</div>
+          </div>
+          <div className="flex justify-between">
+            <div className="w-full">Skills</div>
+            <div className="flex w-full">
+              {skills.map((skill, index) => (
+                <div key={index} className="w-1/3">
+                  {skill || "-"}
                 </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="w-full">Appends</div>
-                <div className="flex w-full">
-                  {appends.map((append, index) => (
-                    <div key={index} className="w-1/3">
-                      {append || "-"}
-                    </div>
-                  ))}
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <div className="w-full">Appends</div>
+            <div className="flex w-full">
+              {appends.map((append, index) => (
+                <div key={index} className="w-1/3">
+                  {append || "-"}
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
-    </Portrait>
+    </>
   );
 }
 
@@ -73,22 +78,29 @@ export function MemberSlotView() {
   const { servantId } = userServant;
   const { data: servant, isLoading } = useServantQuery(servantId);
   return (
-    <section className="flex h-96 w-36 grow-0 overflow-hidden rounded-3xl border bg-gray-300 text-gray-700">
-      {isLoading ? (
-        <span className="flex h-full w-full items-center justify-center align-middle">
-          <Spinner />
-        </span>
-      ) : servant != null ? (
-        <MemberView userServant={userServant} servant={servant} />
-      ) : (
-        <ServantSelection className="w-full">
-          {mode === TeamViewMode.EDIT ? (
-            <span className="mx-auto">
-              Add Servant <IconPlus />
-            </span>
-          ) : undefined}
-        </ServantSelection>
-      )}
+    <section className="flex h-36 w-96 grow-0 flex-nowrap overflow-hidden rounded-3xl border bg-gray-700 text-sm text-white">
+      <img
+        src={background}
+        alt="Background"
+        className="box-border w-full flex-none"
+      />
+      <section className="-ml-full flex w-full">
+        {isLoading ? (
+          <span className="flex h-full w-full items-center justify-center align-middle">
+            <Spinner />
+          </span>
+        ) : servant != null ? (
+          <MemberView userServant={userServant} servant={servant} />
+        ) : (
+          <ServantSelection className="w-full">
+            {mode === TeamViewMode.EDIT ? (
+              <span className="mx-auto">
+                Add Servant <IconPlus />
+              </span>
+            ) : undefined}
+          </ServantSelection>
+        )}
+      </section>
     </section>
   );
 }

@@ -64,15 +64,15 @@ export function TeamView({ teamId }: TeamCompViewProps) {
           <IconPlayerPlay /> Battle Script
         </ToggleGroup.Item>
       </ToggleGroup.Root>
-      <section className="flex">
-        <TeamContext.Provider value={mysticCode}>
-          <MysticCodeView />
-        </TeamContext.Provider>
+      <section className="flex flex-col">
         {member.map((contextData) => (
           <TeamContext.Provider key={contextData.slot} value={contextData}>
             <MemberSlotView />
           </TeamContext.Provider>
         ))}
+        <TeamContext.Provider value={mysticCode}>
+          <MysticCodeView />
+        </TeamContext.Provider>
       </section>
     </section>
   );
