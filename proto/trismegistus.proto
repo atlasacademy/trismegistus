@@ -19,6 +19,7 @@ message ProtoCraftEssence {
   MemberSlot slot = 1;
   uint32 craftEssenceId = 2;
   uint32 craftEssenceLevel = 3;
+  bool maxLimitBreak = 4;
 }
 
 message ProtoServant {

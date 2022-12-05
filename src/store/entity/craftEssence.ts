@@ -1,11 +1,14 @@
 import { CraftEssence } from "@atlasacademy/api-connector";
 import { createEntityAdapter } from "@reduxjs/toolkit";
+import { deferP0, pipe } from "ts-functional-pipe";
 
-import { apiEndpoints } from "@/api";
+import { selectCraftEssence } from "@/api/selectors";
 import { TrismegistusState } from "@/store";
 import { currySlotSelectors } from "@/store/currySlotSelectors";
 import { MemberSlot, UserCraftEssence, UserTeam } from "@/types";
 import { createUserCraftEssence } from "@/types/utils";
+import { fallback } from "@/util";
+import { coalesce } from "@/util/func";
 
 export function selectCraftEssences(team: UserTeam) {
   return team.craftEssences;
@@ -32,21 +35,30 @@ export const {
 );
 
 export const selectCraftEssenceAttack = (
-  { craftEssenceLevel }: UserCraftEssence,
-  { atkGrowth }: CraftEssence.CraftEssence
+  { atkGrowth }: CraftEssence.CraftEssence,
+  { craftEssenceLevel }: UserCraftEssence
 ) => atkGrowth[craftEssenceLevel - 1] ?? 0;
 
 export const selectTeamCraftEssenceAttackBySlot = (
-  teamId: number,
-  slot: MemberSlot
+  userCraftEssence: UserCraftEssence
 ) => {
-  const userCraftEssenceSelector = selectTeamCraftEssenceBySlot(teamId, slot);
-  return (state: TrismegistusState) => {
-    const userCraftEssence = userCraftEssenceSelector(state);
-    const { data: craftEssence } = apiEndpoints.craftEssence.select(
-      userCraftEssence.craftEssenceId
-    )(state);
-    if (craftEssence == null) return 0;
-    return selectCraftEssenceAttack(userCraftEssence, craftEssence);
-  };
+  return pipe(
+    selectCraftEssence(userCraftEssence),
+    coalesce(deferP0(selectCraftEssenceAttack)(userCraftEssence), 0)
+  );
+};
+
+export const selectTeamCraftEssenceWithDefaults = (
+  teamId: number,
+  memberSlot: MemberSlot
+): ((state: TrismegistusState) => UserCraftEssence) => {
+  return pipe(
+    selectTeamCraftEssenceBySlot(teamId, memberSlot),
+    ({ craftEssenceId, craftEssenceLevel, maxLimitBreak, slot }) => ({
+      slot: slot,
+      craftEssenceId,
+      craftEssenceLevel: fallback(craftEssenceLevel, 1),
+      maxLimitBreak,
+    })
+  );
 };

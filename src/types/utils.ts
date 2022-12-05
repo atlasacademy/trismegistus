@@ -55,5 +55,6 @@ export function createUserCraftEssence({
     slot,
     craftEssenceId: craftEssenceId ?? 0,
     craftEssenceLevel: craftEssenceLevel ?? 0,
+    maxLimitBreak: false,
   };
 }

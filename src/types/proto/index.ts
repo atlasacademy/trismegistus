@@ -117,13 +117,13 @@ export function protoToState({
     }, result);
 
     result = craftEssences.reduce((acc, next) => {
-      const { slot, craftEssenceId, craftEssenceLevel } = next;
+      const { slot, craftEssenceId, craftEssenceLevel, maxLimitBreak } = next;
       if (slot === MemberSlot.NONE) return acc;
       return teamsReducer(
         acc,
         setCraftEssence({
           teamId,
-          entry: { slot, craftEssenceId, craftEssenceLevel },
+          entry: { slot, craftEssenceId, craftEssenceLevel, maxLimitBreak },
         })
       );
     }, result);

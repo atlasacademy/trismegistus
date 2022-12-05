@@ -7,7 +7,7 @@ import { CraftEssenceSelection } from "@/component/selection/CraftEssenceSelecti
 import { Spinner } from "@/component/Spinner";
 import { useTeamContext } from "@/hook/useTeamContext";
 import { useSelector } from "@/store";
-import { selectTeamCraftEssenceBySlot } from "@/store/entity/craftEssence";
+import { selectTeamCraftEssenceWithDefaults } from "@/store/entity/craftEssence";
 import { TeamViewMode, UserCraftEssence } from "@/types";
 
 interface CraftEssenceViewProps {
@@ -41,7 +41,7 @@ function CraftEssenceView({
 export function CraftEssenceSlotView() {
   const { teamId, slot, mode } = useTeamContext();
   const userCraftEssence = useSelector(
-    selectTeamCraftEssenceBySlot(teamId, slot)
+    selectTeamCraftEssenceWithDefaults(teamId, slot)
   );
   const { craftEssenceId } = userCraftEssence;
   const { data: craftEssence, isLoading } =

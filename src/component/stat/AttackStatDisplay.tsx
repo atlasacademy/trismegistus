@@ -3,7 +3,10 @@ import { IconInfoCircle } from "@tabler/icons";
 
 import { useTeamContext } from "@/hook/useTeamContext";
 import { useSelector } from "@/store";
-import { selectTeamCraftEssenceAttackBySlot } from "@/store/entity/craftEssence";
+import {
+  selectTeamCraftEssenceAttackBySlot,
+  selectTeamCraftEssenceWithDefaults,
+} from "@/store/entity/craftEssence";
 import { selectTeamServantAttackBySlot } from "@/store/entity/servant";
 import { UserServant } from "@/types";
 
@@ -15,9 +18,12 @@ export function AttackStatDisplay({ userServant }: AttackStatDisplayProps) {
   const { teamId, slot } = useTeamContext();
 
   const servantAttack = useSelector(selectTeamServantAttackBySlot(userServant));
+  const userCraftEssence = useSelector(
+    selectTeamCraftEssenceWithDefaults(teamId, slot)
+  );
 
   const craftEssenceAttack = useSelector(
-    selectTeamCraftEssenceAttackBySlot(teamId, slot)
+    selectTeamCraftEssenceAttackBySlot(userCraftEssence)
   );
 
   return (

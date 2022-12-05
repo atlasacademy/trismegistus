@@ -132,6 +132,7 @@ export interface ProtoCraftEssence {
   slot: MemberSlot;
   craftEssenceId: number;
   craftEssenceLevel: number;
+  maxLimitBreak: boolean;
 }
 
 export interface ProtoServant {
@@ -177,10 +178,7 @@ function createBaseProtoMysticCode(): ProtoMysticCode {
 }
 
 export const ProtoMysticCode = {
-  encode(
-    message: ProtoMysticCode,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProtoMysticCode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.mysticCodeId !== 0) {
       writer.uint32(16).uint32(message.mysticCodeId);
     }
@@ -213,27 +211,19 @@ export const ProtoMysticCode = {
 
   fromJSON(object: any): ProtoMysticCode {
     return {
-      mysticCodeId: isSet(object.mysticCodeId)
-        ? Number(object.mysticCodeId)
-        : 0,
-      mysticCodeLevel: isSet(object.mysticCodeLevel)
-        ? Number(object.mysticCodeLevel)
-        : 0,
+      mysticCodeId: isSet(object.mysticCodeId) ? Number(object.mysticCodeId) : 0,
+      mysticCodeLevel: isSet(object.mysticCodeLevel) ? Number(object.mysticCodeLevel) : 0,
     };
   },
 
   toJSON(message: ProtoMysticCode): unknown {
     const obj: any = {};
-    message.mysticCodeId !== undefined &&
-      (obj.mysticCodeId = Math.round(message.mysticCodeId));
-    message.mysticCodeLevel !== undefined &&
-      (obj.mysticCodeLevel = Math.round(message.mysticCodeLevel));
+    message.mysticCodeId !== undefined && (obj.mysticCodeId = Math.round(message.mysticCodeId));
+    message.mysticCodeLevel !== undefined && (obj.mysticCodeLevel = Math.round(message.mysticCodeLevel));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProtoMysticCode>, I>>(
-    object: I
-  ): ProtoMysticCode {
+  fromPartial<I extends Exact<DeepPartial<ProtoMysticCode>, I>>(object: I): ProtoMysticCode {
     const message = createBaseProtoMysticCode();
     message.mysticCodeId = object.mysticCodeId ?? 0;
     message.mysticCodeLevel = object.mysticCodeLevel ?? 0;
@@ -242,14 +232,11 @@ export const ProtoMysticCode = {
 };
 
 function createBaseProtoCraftEssence(): ProtoCraftEssence {
-  return { slot: 0, craftEssenceId: 0, craftEssenceLevel: 0 };
+  return { slot: 0, craftEssenceId: 0, craftEssenceLevel: 0, maxLimitBreak: false };
 }
 
 export const ProtoCraftEssence = {
-  encode(
-    message: ProtoCraftEssence,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProtoCraftEssence, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.slot !== 0) {
       writer.uint32(8).int32(message.slot);
     }
@@ -258,6 +245,9 @@ export const ProtoCraftEssence = {
     }
     if (message.craftEssenceLevel !== 0) {
       writer.uint32(24).uint32(message.craftEssenceLevel);
+    }
+    if (message.maxLimitBreak === true) {
+      writer.uint32(32).bool(message.maxLimitBreak);
     }
     return writer;
   },
@@ -278,6 +268,9 @@ export const ProtoCraftEssence = {
         case 3:
           message.craftEssenceLevel = reader.uint32();
           break;
+        case 4:
+          message.maxLimitBreak = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -289,32 +282,27 @@ export const ProtoCraftEssence = {
   fromJSON(object: any): ProtoCraftEssence {
     return {
       slot: isSet(object.slot) ? memberSlotFromJSON(object.slot) : 0,
-      craftEssenceId: isSet(object.craftEssenceId)
-        ? Number(object.craftEssenceId)
-        : 0,
-      craftEssenceLevel: isSet(object.craftEssenceLevel)
-        ? Number(object.craftEssenceLevel)
-        : 0,
+      craftEssenceId: isSet(object.craftEssenceId) ? Number(object.craftEssenceId) : 0,
+      craftEssenceLevel: isSet(object.craftEssenceLevel) ? Number(object.craftEssenceLevel) : 0,
+      maxLimitBreak: isSet(object.maxLimitBreak) ? Boolean(object.maxLimitBreak) : false,
     };
   },
 
   toJSON(message: ProtoCraftEssence): unknown {
     const obj: any = {};
     message.slot !== undefined && (obj.slot = memberSlotToJSON(message.slot));
-    message.craftEssenceId !== undefined &&
-      (obj.craftEssenceId = Math.round(message.craftEssenceId));
-    message.craftEssenceLevel !== undefined &&
-      (obj.craftEssenceLevel = Math.round(message.craftEssenceLevel));
+    message.craftEssenceId !== undefined && (obj.craftEssenceId = Math.round(message.craftEssenceId));
+    message.craftEssenceLevel !== undefined && (obj.craftEssenceLevel = Math.round(message.craftEssenceLevel));
+    message.maxLimitBreak !== undefined && (obj.maxLimitBreak = message.maxLimitBreak);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProtoCraftEssence>, I>>(
-    object: I
-  ): ProtoCraftEssence {
+  fromPartial<I extends Exact<DeepPartial<ProtoCraftEssence>, I>>(object: I): ProtoCraftEssence {
     const message = createBaseProtoCraftEssence();
     message.slot = object.slot ?? 0;
     message.craftEssenceId = object.craftEssenceId ?? 0;
     message.craftEssenceLevel = object.craftEssenceLevel ?? 0;
+    message.maxLimitBreak = object.maxLimitBreak ?? false;
     return message;
   },
 };
@@ -336,10 +324,7 @@ function createBaseProtoServant(): ProtoServant {
 }
 
 export const ProtoServant = {
-  encode(
-    message: ProtoServant,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProtoServant, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.slot !== 0) {
       writer.uint32(8).int32(message.slot);
     }
@@ -430,9 +415,7 @@ export const ProtoServant = {
       servantId: isSet(object.servantId) ? Number(object.servantId) : 0,
       level: isSet(object.level) ? Number(object.level) : 0,
       fou: isSet(object.fou) ? Number(object.fou) : 0,
-      noblePhantasmLevel: isSet(object.noblePhantasmLevel)
-        ? Number(object.noblePhantasmLevel)
-        : 0,
+      noblePhantasmLevel: isSet(object.noblePhantasmLevel) ? Number(object.noblePhantasmLevel) : 0,
       skill1: isSet(object.skill1) ? Number(object.skill1) : 0,
       skill2: isSet(object.skill2) ? Number(object.skill2) : 0,
       skill3: isSet(object.skill3) ? Number(object.skill3) : 0,
@@ -445,27 +428,20 @@ export const ProtoServant = {
   toJSON(message: ProtoServant): unknown {
     const obj: any = {};
     message.slot !== undefined && (obj.slot = memberSlotToJSON(message.slot));
-    message.servantId !== undefined &&
-      (obj.servantId = Math.round(message.servantId));
+    message.servantId !== undefined && (obj.servantId = Math.round(message.servantId));
     message.level !== undefined && (obj.level = Math.round(message.level));
     message.fou !== undefined && (obj.fou = Math.round(message.fou));
-    message.noblePhantasmLevel !== undefined &&
-      (obj.noblePhantasmLevel = Math.round(message.noblePhantasmLevel));
+    message.noblePhantasmLevel !== undefined && (obj.noblePhantasmLevel = Math.round(message.noblePhantasmLevel));
     message.skill1 !== undefined && (obj.skill1 = Math.round(message.skill1));
     message.skill2 !== undefined && (obj.skill2 = Math.round(message.skill2));
     message.skill3 !== undefined && (obj.skill3 = Math.round(message.skill3));
-    message.append1 !== undefined &&
-      (obj.append1 = Math.round(message.append1));
-    message.append2 !== undefined &&
-      (obj.append2 = Math.round(message.append2));
-    message.append3 !== undefined &&
-      (obj.append3 = Math.round(message.append3));
+    message.append1 !== undefined && (obj.append1 = Math.round(message.append1));
+    message.append2 !== undefined && (obj.append2 = Math.round(message.append2));
+    message.append3 !== undefined && (obj.append3 = Math.round(message.append3));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProtoServant>, I>>(
-    object: I
-  ): ProtoServant {
+  fromPartial<I extends Exact<DeepPartial<ProtoServant>, I>>(object: I): ProtoServant {
     const message = createBaseProtoServant();
     message.slot = object.slot ?? 0;
     message.servantId = object.servantId ?? 0;
@@ -487,10 +463,7 @@ function createBaseProtoCommand(): ProtoCommand {
 }
 
 export const ProtoCommand = {
-  encode(
-    message: ProtoCommand,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProtoCommand, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.order !== 0) {
       writer.uint32(8).uint32(message.order);
     }
@@ -554,16 +527,12 @@ export const ProtoCommand = {
     message.order !== undefined && (obj.order = Math.round(message.order));
     message.wave !== undefined && (obj.wave = Math.round(message.wave));
     message.type !== undefined && (obj.type = commandTypeToJSON(message.type));
-    message.source !== undefined &&
-      (obj.source = memberSlotToJSON(message.source));
-    message.target !== undefined &&
-      (obj.target = memberSlotToJSON(message.target));
+    message.source !== undefined && (obj.source = memberSlotToJSON(message.source));
+    message.target !== undefined && (obj.target = memberSlotToJSON(message.target));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProtoCommand>, I>>(
-    object: I
-  ): ProtoCommand {
+  fromPartial<I extends Exact<DeepPartial<ProtoCommand>, I>>(object: I): ProtoCommand {
     const message = createBaseProtoCommand();
     message.order = object.order ?? 0;
     message.wave = object.wave ?? 0;
@@ -575,24 +544,13 @@ export const ProtoCommand = {
 };
 
 function createBaseProtoTeam(): ProtoTeam {
-  return {
-    mysticCode: undefined,
-    servants: [],
-    craftEssences: [],
-    commandScripts: [],
-  };
+  return { mysticCode: undefined, servants: [], craftEssences: [], commandScripts: [] };
 }
 
 export const ProtoTeam = {
-  encode(
-    message: ProtoTeam,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProtoTeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.mysticCode !== undefined) {
-      ProtoMysticCode.encode(
-        message.mysticCode,
-        writer.uint32(10).fork()
-      ).ldelim();
+      ProtoMysticCode.encode(message.mysticCode, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.servants) {
       ProtoServant.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -620,14 +578,10 @@ export const ProtoTeam = {
           message.servants.push(ProtoServant.decode(reader, reader.uint32()));
           break;
         case 3:
-          message.craftEssences.push(
-            ProtoCraftEssence.decode(reader, reader.uint32())
-          );
+          message.craftEssences.push(ProtoCraftEssence.decode(reader, reader.uint32()));
           break;
         case 4:
-          message.commandScripts.push(
-            ProtoCommand.decode(reader, reader.uint32())
-          );
+          message.commandScripts.push(ProtoCommand.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -639,12 +593,8 @@ export const ProtoTeam = {
 
   fromJSON(object: any): ProtoTeam {
     return {
-      mysticCode: isSet(object.mysticCode)
-        ? ProtoMysticCode.fromJSON(object.mysticCode)
-        : undefined,
-      servants: Array.isArray(object?.servants)
-        ? object.servants.map((e: any) => ProtoServant.fromJSON(e))
-        : [],
+      mysticCode: isSet(object.mysticCode) ? ProtoMysticCode.fromJSON(object.mysticCode) : undefined,
+      servants: Array.isArray(object?.servants) ? object.servants.map((e: any) => ProtoServant.fromJSON(e)) : [],
       craftEssences: Array.isArray(object?.craftEssences)
         ? object.craftEssences.map((e: any) => ProtoCraftEssence.fromJSON(e))
         : [],
@@ -657,47 +607,33 @@ export const ProtoTeam = {
   toJSON(message: ProtoTeam): unknown {
     const obj: any = {};
     message.mysticCode !== undefined &&
-      (obj.mysticCode = message.mysticCode
-        ? ProtoMysticCode.toJSON(message.mysticCode)
-        : undefined);
+      (obj.mysticCode = message.mysticCode ? ProtoMysticCode.toJSON(message.mysticCode) : undefined);
     if (message.servants) {
-      obj.servants = message.servants.map((e) =>
-        e ? ProtoServant.toJSON(e) : undefined
-      );
+      obj.servants = message.servants.map((e) => e ? ProtoServant.toJSON(e) : undefined);
     } else {
       obj.servants = [];
     }
     if (message.craftEssences) {
-      obj.craftEssences = message.craftEssences.map((e) =>
-        e ? ProtoCraftEssence.toJSON(e) : undefined
-      );
+      obj.craftEssences = message.craftEssences.map((e) => e ? ProtoCraftEssence.toJSON(e) : undefined);
     } else {
       obj.craftEssences = [];
     }
     if (message.commandScripts) {
-      obj.commandScripts = message.commandScripts.map((e) =>
-        e ? ProtoCommand.toJSON(e) : undefined
-      );
+      obj.commandScripts = message.commandScripts.map((e) => e ? ProtoCommand.toJSON(e) : undefined);
     } else {
       obj.commandScripts = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProtoTeam>, I>>(
-    object: I
-  ): ProtoTeam {
+  fromPartial<I extends Exact<DeepPartial<ProtoTeam>, I>>(object: I): ProtoTeam {
     const message = createBaseProtoTeam();
-    message.mysticCode =
-      object.mysticCode !== undefined && object.mysticCode !== null
-        ? ProtoMysticCode.fromPartial(object.mysticCode)
-        : undefined;
-    message.servants =
-      object.servants?.map((e) => ProtoServant.fromPartial(e)) || [];
-    message.craftEssences =
-      object.craftEssences?.map((e) => ProtoCraftEssence.fromPartial(e)) || [];
-    message.commandScripts =
-      object.commandScripts?.map((e) => ProtoCommand.fromPartial(e)) || [];
+    message.mysticCode = (object.mysticCode !== undefined && object.mysticCode !== null)
+      ? ProtoMysticCode.fromPartial(object.mysticCode)
+      : undefined;
+    message.servants = object.servants?.map((e) => ProtoServant.fromPartial(e)) || [];
+    message.craftEssences = object.craftEssences?.map((e) => ProtoCraftEssence.fromPartial(e)) || [];
+    message.commandScripts = object.commandScripts?.map((e) => ProtoCommand.fromPartial(e)) || [];
     return message;
   },
 };
@@ -707,23 +643,14 @@ function createBaseProtoTrismegistusState(): ProtoTrismegistusState {
 }
 
 export const ProtoTrismegistusState = {
-  encode(
-    message: ProtoTrismegistusState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProtoTrismegistusState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     Object.entries(message.teams).forEach(([key, value]) => {
-      ProtoTrismegistusState_TeamsEntry.encode(
-        { key: key as any, value },
-        writer.uint32(10).fork()
-      ).ldelim();
+      ProtoTrismegistusState_TeamsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
     });
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ProtoTrismegistusState {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProtoTrismegistusState {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProtoTrismegistusState();
@@ -731,10 +658,7 @@ export const ProtoTrismegistusState = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          const entry1 = ProtoTrismegistusState_TeamsEntry.decode(
-            reader,
-            reader.uint32()
-          );
+          const entry1 = ProtoTrismegistusState_TeamsEntry.decode(reader, reader.uint32());
           if (entry1.value !== undefined) {
             message.teams[entry1.key] = entry1.value;
           }
@@ -750,13 +674,10 @@ export const ProtoTrismegistusState = {
   fromJSON(object: any): ProtoTrismegistusState {
     return {
       teams: isObject(object.teams)
-        ? Object.entries(object.teams).reduce<{ [key: number]: ProtoTeam }>(
-            (acc, [key, value]) => {
-              acc[Number(key)] = ProtoTeam.fromJSON(value);
-              return acc;
-            },
-            {}
-          )
+        ? Object.entries(object.teams).reduce<{ [key: number]: ProtoTeam }>((acc, [key, value]) => {
+          acc[Number(key)] = ProtoTeam.fromJSON(value);
+          return acc;
+        }, {})
         : {},
     };
   },
@@ -772,13 +693,9 @@ export const ProtoTrismegistusState = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProtoTrismegistusState>, I>>(
-    object: I
-  ): ProtoTrismegistusState {
+  fromPartial<I extends Exact<DeepPartial<ProtoTrismegistusState>, I>>(object: I): ProtoTrismegistusState {
     const message = createBaseProtoTrismegistusState();
-    message.teams = Object.entries(object.teams ?? {}).reduce<{
-      [key: number]: ProtoTeam;
-    }>((acc, [key, value]) => {
+    message.teams = Object.entries(object.teams ?? {}).reduce<{ [key: number]: ProtoTeam }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[Number(key)] = ProtoTeam.fromPartial(value);
       }
@@ -793,10 +710,7 @@ function createBaseProtoTrismegistusState_TeamsEntry(): ProtoTrismegistusState_T
 }
 
 export const ProtoTrismegistusState_TeamsEntry = {
-  encode(
-    message: ProtoTrismegistusState_TeamsEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProtoTrismegistusState_TeamsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== 0) {
       writer.uint32(8).uint32(message.key);
     }
@@ -806,10 +720,7 @@ export const ProtoTrismegistusState_TeamsEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ProtoTrismegistusState_TeamsEntry {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProtoTrismegistusState_TeamsEntry {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProtoTrismegistusState_TeamsEntry();
@@ -840,49 +751,32 @@ export const ProtoTrismegistusState_TeamsEntry = {
   toJSON(message: ProtoTrismegistusState_TeamsEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = Math.round(message.key));
-    message.value !== undefined &&
-      (obj.value = message.value ? ProtoTeam.toJSON(message.value) : undefined);
+    message.value !== undefined && (obj.value = message.value ? ProtoTeam.toJSON(message.value) : undefined);
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<ProtoTrismegistusState_TeamsEntry>, I>
-  >(object: I): ProtoTrismegistusState_TeamsEntry {
+  fromPartial<I extends Exact<DeepPartial<ProtoTrismegistusState_TeamsEntry>, I>>(
+    object: I,
+  ): ProtoTrismegistusState_TeamsEntry {
     const message = createBaseProtoTrismegistusState_TeamsEntry();
     message.key = object.key ?? 0;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? ProtoTeam.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? ProtoTeam.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isObject(value: any): boolean {
   return typeof value === "object" && value !== null;
