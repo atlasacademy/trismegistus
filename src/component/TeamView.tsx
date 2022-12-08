@@ -1,3 +1,4 @@
+import { Root as AccordionRoot } from "@radix-ui/react-accordion";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { IconAdjustmentsHorizontal, IconPlayerPlay } from "@tabler/icons";
 import { useCallback, useMemo, useState } from "react";
@@ -64,7 +65,7 @@ export function TeamView({ teamId }: TeamCompViewProps) {
           <IconPlayerPlay /> Battle Script
         </ToggleGroup.Item>
       </ToggleGroup.Root>
-      <section className="flex flex-col">
+      <AccordionRoot type="single" className="flex flex-col" collapsible>
         {member.map((contextData) => (
           <TeamContext.Provider key={contextData.slot} value={contextData}>
             <MemberSlotView />
@@ -73,7 +74,7 @@ export function TeamView({ teamId }: TeamCompViewProps) {
         <TeamContext.Provider value={mysticCode}>
           <MysticCodeView />
         </TeamContext.Provider>
-      </section>
+      </AccordionRoot>
     </section>
   );
 }
