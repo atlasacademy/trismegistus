@@ -36,8 +36,8 @@ export interface SkillInfo {
 export interface UserServant
   extends Omit<ProtoServant, ProtoSkills | ProtoAppends | "slot"> {
   slot: MemberSlot;
-  skills: number[];
-  appends: number[];
+  skills: [number, number, number];
+  appends: [number, number, number];
 }
 
 export interface UserCraftEssence extends Omit<ProtoCraftEssence, "slot"> {
