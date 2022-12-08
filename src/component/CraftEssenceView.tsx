@@ -6,7 +6,7 @@ import { useCraftEssenceQuery } from "@/api";
 import { CraftEssenceSelection } from "@/component/selection/CraftEssenceSelection";
 import { Spinner } from "@/component/Spinner";
 import { useTeamContext } from "@/hook/useTeamContext";
-import { useSelector } from "@/store";
+import { useMemoSelector } from "@/store";
 import { selectTeamCraftEssenceWithDefaults } from "@/store/entity/craftEssence";
 import { TeamViewMode, UserCraftEssence } from "@/types";
 
@@ -40,9 +40,10 @@ function CraftEssenceView({
 
 export function CraftEssenceSlotView() {
   const { teamId, slot, mode } = useTeamContext();
-  const userCraftEssence = useSelector(
-    selectTeamCraftEssenceWithDefaults(teamId, slot)
-  );
+  const userCraftEssence = useMemoSelector(selectTeamCraftEssenceWithDefaults, [
+    teamId,
+    slot,
+  ]);
   const { craftEssenceId } = userCraftEssence;
   const { data: craftEssence, isLoading } =
     useCraftEssenceQuery(craftEssenceId);

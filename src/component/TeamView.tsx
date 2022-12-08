@@ -6,13 +6,13 @@ import { useCallback, useMemo, useState } from "react";
 import { MemberSlotView } from "@/component/MemberSlotView";
 import { MysticCodeView } from "@/component/MysticCodeView";
 import { TeamContext } from "@/hook/useTeamContext";
-import { useSelector } from "@/store";
+import { useMemoSelector } from "@/store";
 import { selectTeamServantSlots } from "@/store/entity/servant";
 import { MemberSlot, TeamContextData, TeamViewMode } from "@/types";
 import { nextMemberSlot } from "@/types/utils";
 
 function useSlotData(teamId: number, mode: TeamViewMode): TeamContextData[] {
-  const slots = useSelector(selectTeamServantSlots(teamId));
+  const slots = useMemoSelector(selectTeamServantSlots, [teamId]);
 
   return useMemo(() => {
     const next =

@@ -3,11 +3,13 @@ import {
   createListenerMiddleware,
   ListenerMiddlewareInstance,
 } from "@reduxjs/toolkit";
+import { useMemo } from "react";
 import {
   TypedUseSelectorHook,
   useDispatch as useReduxDispatch,
   useSelector as useReduxSelector,
 } from "react-redux";
+import { EqualityFn, NoInfer } from "react-redux/src/types";
 import { persistStore } from "redux-persist";
 import {
   FLUSH,
@@ -64,4 +66,23 @@ export const listeners = listenersMiddleware as TrismegistusListeners;
 export const useDispatch: () => TrismegistusDispatch = useReduxDispatch;
 export const useSelector: TypedUseSelectorHook<TrismegistusState> =
   useReduxSelector;
+
+/**
+ * An augmented version of {@link useReduxSelector} that accepts selector
+ * creators and memoizes the given selector based on extra params.
+ */
+export function useMemoSelector<TSelected, TParams extends any[]>(
+  selectorFactory: (
+    ...params: [...TParams]
+  ) => (state: TrismegistusState) => TSelected,
+  params: TParams,
+  equalityFn?: EqualityFn<NoInfer<TSelected>>
+): TSelected {
+  const memoizedSelector = useMemo(
+    () => selectorFactory(...params),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectorFactory, ...params]
+  );
+  return useSelector(memoizedSelector, equalityFn);
+}
 export { selectTeamServantWithDefaults } from "@/store/entity/servant";

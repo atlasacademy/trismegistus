@@ -2,7 +2,7 @@ import * as Popover from "@radix-ui/react-popover";
 import { IconInfoCircle } from "@tabler/icons";
 
 import { useTeamContext } from "@/hook/useTeamContext";
-import { useSelector } from "@/store";
+import { useMemoSelector } from "@/store";
 import {
   selectTeamCraftEssenceAttackBySlot,
   selectTeamCraftEssenceWithDefaults,
@@ -17,13 +17,17 @@ export interface AttackStatDisplayProps {
 export function AttackStatDisplay({ userServant }: AttackStatDisplayProps) {
   const { teamId, slot } = useTeamContext();
 
-  const servantAttack = useSelector(selectTeamServantAttackBySlot(userServant));
-  const userCraftEssence = useSelector(
-    selectTeamCraftEssenceWithDefaults(teamId, slot)
-  );
+  const servantAttack = useMemoSelector(selectTeamServantAttackBySlot, [
+    userServant,
+  ]);
+  const userCraftEssence = useMemoSelector(selectTeamCraftEssenceWithDefaults, [
+    teamId,
+    slot,
+  ]);
 
-  const craftEssenceAttack = useSelector(
-    selectTeamCraftEssenceAttackBySlot(userCraftEssence)
+  const craftEssenceAttack = useMemoSelector(
+    selectTeamCraftEssenceAttackBySlot,
+    [userCraftEssence]
   );
 
   return (

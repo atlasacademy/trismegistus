@@ -2,13 +2,13 @@ import { useMysticCodeQuery } from "@/api";
 import { MysticCodeSelection } from "@/component/selection/MysticCodeSelection";
 import { Spinner } from "@/component/Spinner";
 import { useTeamContext } from "@/hook/useTeamContext";
-import { useSelector } from "@/store";
+import { useMemoSelector } from "@/store";
 import { selectTeamMysticCode } from "@/store/slice/teamSlice";
 import { TeamViewMode } from "@/types";
 
 export function MysticCodeView() {
   const { teamId, mode } = useTeamContext();
-  const userMysticCode = useSelector(selectTeamMysticCode(teamId));
+  const userMysticCode = useMemoSelector(selectTeamMysticCode, [teamId]);
   const { mysticCodeId } = userMysticCode;
   const { data: mysticCode, isLoading } = useMysticCodeQuery(mysticCodeId);
 

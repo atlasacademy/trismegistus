@@ -15,7 +15,8 @@ import { ServantSelection } from "@/component/selection/ServantSelection";
 import { Spinner } from "@/component/Spinner";
 import { AttackStatDisplay } from "@/component/stat/AttackStatDisplay";
 import { useTeamContext } from "@/hook/useTeamContext";
-import { selectTeamServantWithDefaults, useSelector } from "@/store";
+import { useMemoSelector } from "@/store";
+import { selectTeamServantWithDefaults } from "@/store/entity/servant";
 import { TeamViewMode, UserServant } from "@/types";
 
 interface MemberViewProps {
@@ -105,7 +106,10 @@ function MemberView({ userServant, servant }: MemberViewProps) {
 
 export function MemberSlotView() {
   const { teamId, slot, mode } = useTeamContext();
-  const userServant = useSelector(selectTeamServantWithDefaults(teamId, slot));
+  const userServant = useMemoSelector(selectTeamServantWithDefaults, [
+    teamId,
+    slot,
+  ]);
   const { servantId } = userServant;
   const { data: servant, isLoading } = useServantQuery(servantId);
   return (
