@@ -16,7 +16,7 @@ export function Trismegistus() {
       <IconBook />
       {/* eslint-disable-next-line no-undef */}
       Trismegistus v{TRISMEGISTUS_VERSION}
-      <section className="grow-0 overflow-x-scroll rounded-xl border bg-white p-2 shadow-md">
+      <section className="grow-0 overflow-x-hidden rounded-xl border bg-white p-2 shadow-md">
         {teamIds.map((teamId) => (
           <TeamView key={teamId} teamId={teamId} />
         ))}

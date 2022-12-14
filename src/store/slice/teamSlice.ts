@@ -84,6 +84,20 @@ const teamSlice = createSlice({
 
       team.servants = servantsAdapter.setOne(team.servants, servant);
     },
+    updateServant(
+      stateDraft,
+      {
+        payload: { teamId, entry: servantUpdate },
+      }: PayloadAction<TeamEntry<Partial<UserServant>>>
+    ) {
+      const team = stateDraft.entities[teamId];
+      if (team == null) return;
+
+      team.servants = servantsAdapter.updateOne(team.servants, {
+        id: teamId,
+        changes: servantUpdate,
+      });
+    },
     setMysticCode(
       stateDraft,
       {
@@ -100,7 +114,13 @@ const teamSlice = createSlice({
 
 export const {
   reducer: teamsReducer,
-  actions: { newTeam, setCraftEssence, setServant, setMysticCode },
+  actions: {
+    newTeam,
+    setCraftEssence,
+    setServant,
+    updateServant,
+    setMysticCode,
+  },
 } = teamSlice;
 
 export { getTeamsInitialState, getTeamsSelectors };

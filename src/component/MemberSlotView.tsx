@@ -10,10 +10,10 @@ import { IconChevronDown, IconPlus } from "@tabler/icons";
 
 import { useServantQuery } from "@/api";
 import { CraftEssenceSlotView } from "@/component/CraftEssenceView";
-import { SliderInput } from "@/component/primitives/SliderInput";
 import { ServantSelection } from "@/component/selection/ServantSelection";
 import { Spinner } from "@/component/Spinner";
 import { AttackStatDisplay } from "@/component/stat/AttackStatDisplay";
+import { StatsForm } from "@/component/StatsForm";
 import { useTeamContext } from "@/hook/useTeamContext";
 import { useMemoSelector } from "@/store";
 import { selectTeamServantWithDefaults } from "@/store/entity/servant";
@@ -24,25 +24,18 @@ interface MemberViewProps {
   servant: Servant.Servant;
 }
 
-function StatsForm() {
-  return (
-    <form>
-      <SliderInput label={"Level"} />
-      <SliderInput label={"Fou "} />
-      <SliderInput label={"NP "} />
-      <SliderInput label={"Skill 1"} />
-      <SliderInput label={"Skill 2"} />
-      <SliderInput label={"Skill 3"} />
-      <SliderInput label={"Append 1"} />
-      <SliderInput label={"Append 2"} />
-      <SliderInput label={"Append 3"} />
-      <SliderInput label={"Craft Essence Level"} />
-    </form>
-  );
-}
-
 function MemberView({ userServant, servant }: MemberViewProps) {
-  const { slot, level, noblePhantasmLevel, skills, appends } = userServant;
+  const {
+    slot,
+    level,
+    noblePhantasmLevel,
+    skill1,
+    skill2,
+    skill3,
+    append1,
+    append2,
+    append3,
+  } = userServant;
   return (
     <AccordionItem value={`${slot}`} className="w-full">
       <section className="flex h-36 w-full">
@@ -74,21 +67,17 @@ function MemberView({ userServant, servant }: MemberViewProps) {
             <div className="flex justify-between">
               <div className="w-full">Skills</div>
               <div className="flex w-full">
-                {skills.map((skill, index) => (
-                  <div key={index} className="w-1/3">
-                    {skill || "-"}
-                  </div>
-                ))}
+                <div className="w-1/3">{skill1 || "-"}</div>
+                <div className="w-1/3">{skill2 || "-"}</div>
+                <div className="w-1/3">{skill3 || "-"}</div>
               </div>
             </div>
             <div className="flex justify-between">
               <div className="w-full">Appends</div>
               <div className="flex w-full">
-                {appends.map((append, index) => (
-                  <div key={index} className="w-1/3">
-                    {append || "-"}
-                  </div>
-                ))}
+                <div className="w-1/3">{append1 || "-"}</div>{" "}
+                <div className="w-1/3">{append2 || "-"}</div>{" "}
+                <div className="w-1/3">{append3 || "-"}</div>{" "}
               </div>
             </div>
             <AccordionTrigger>

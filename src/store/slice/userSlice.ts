@@ -14,8 +14,12 @@ export const getInitialState = (): UserState => ({
   servantDefaults: {
     fou: 1000,
     noblePhantasmLevel: 1,
-    skills: [10, 10, 10],
-    appends: [0, 0, 0],
+    skill1: 10,
+    skill2: 10,
+    skill3: 10,
+    append1: 0,
+    append2: 0,
+    append3: 0,
   },
 });
 

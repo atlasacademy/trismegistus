@@ -59,12 +59,28 @@ export function selectTeamServantWithDefaults(
       },
     ],
     (
-      { slot, servantId, level, fou, noblePhantasmLevel, skills, appends },
+      {
+        slot,
+        servantId,
+        level,
+        fou,
+        noblePhantasmLevel,
+        skill1,
+        skill2,
+        skill3,
+        append1,
+        append2,
+        append3,
+      },
       {
         noblePhantasmLevel: defaultNoblePhantasmLevel,
         fou: defaultFou,
-        skills: defaultSkills,
-        appends: defaultAppends,
+        skill1: defaultSkill1,
+        skill2: defaultSkill2,
+        skill3: defaultSkill3,
+        append1: defaultAppend1,
+        append2: defaultAppend2,
+        append3: defaultAppend3,
       },
       servant
     ) => {
@@ -77,16 +93,12 @@ export function selectTeamServantWithDefaults(
           noblePhantasmLevel,
           defaultNoblePhantasmLevel
         ),
-        skills: [
-          fallback(skills[0], defaultSkills[0]),
-          fallback(skills[1], defaultSkills[1]),
-          fallback(skills[2], defaultSkills[2]),
-        ],
-        appends: [
-          fallback(appends[0], defaultAppends[0]),
-          fallback(appends[1], defaultAppends[1]),
-          fallback(appends[2], defaultAppends[2]),
-        ],
+        skill1: fallback(skill1, defaultSkill1),
+        skill2: fallback(skill2, defaultSkill2),
+        skill3: fallback(skill3, defaultSkill3),
+        append1: fallback(append1, defaultAppend1),
+        append2: fallback(append2, defaultAppend2),
+        append3: fallback(append3, defaultAppend3),
       };
     }
   );

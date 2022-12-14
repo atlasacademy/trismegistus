@@ -1,26 +1,102 @@
 import * as Slider from "@radix-ui/react-slider";
+import classNames from "classnames";
+import { ChangeEvent, useCallback, useMemo, useRef } from "react";
 
 export interface SliderInputProps {
-  label: string;
+  title: string;
+  value: number;
+  min: number;
+  max: number;
+  onChange(newValue: number): void;
+  onBlur(): void;
 }
 
-export function SliderInput({ label }: SliderInputProps) {
+export function SliderInput({
+  title,
+  value,
+  min,
+  max,
+  onChange,
+  onBlur,
+}: SliderInputProps) {
+  const values = useMemo(() => [value], [value]);
+  const inputChangeHandler = useCallback(
+    ({ target: { value: rawValue } }: ChangeEvent<HTMLInputElement>) => {
+      if (rawValue === "") {
+        onChange(0);
+        return;
+      }
+      const inputValue = parseInt(rawValue);
+      if (
+        Number.isInteger(inputValue) &&
+        inputValue >= min &&
+        inputValue <= max
+      ) {
+        onChange(inputValue);
+      }
+    },
+    [onChange, min, max]
+  );
+
+  const sliderChangeHandler = useCallback(
+    ([sliderValue]: number[]) => {
+      if (
+        Number.isInteger(sliderValue) &&
+        sliderValue >= min &&
+        sliderValue <= max
+      ) {
+        onChange(sliderValue);
+      }
+    },
+    [onChange, min, max]
+  );
+
+  const sliderRef = useRef<HTMLSpanElement>(null);
+  const sliderCommitHandler = useCallback(() => {
+    sliderRef?.current?.blur();
+  }, [sliderRef]);
+
   return (
-    <label htmlFor={label}>
-      {label}
+    <section className="items-left mx-2 block rounded bg-gray-600 py-1 px-2">
+      <div className="flex w-48 items-center rounded bg-gray-700 px-2.5">
+        <label htmlFor={title} className="shrink-0">
+          {title}
+        </label>
+        <input
+          id={title}
+          className={classNames(
+            "block w-full appearance-none rounded-lg bg-transparent py-1 px-2.5 text-sm",
+            "focus:outline-none focus:ring-0"
+          )}
+          placeholder=" "
+          type="number"
+          pattern="[0-9]*"
+          inputMode="numeric"
+          value={String(value)}
+          onChange={inputChangeHandler}
+          onBlur={onBlur}
+        />
+      </div>
       <Slider.Root
-        className="relative flex h-5 items-center"
-        defaultValue={[50]}
-        max={100}
+        className="relative inline flex h-5 w-full items-center"
+        min={min}
+        max={max}
         step={1}
-        name={label}
-        aria-label={label}
+        name={title}
+        value={values}
+        onBlur={onBlur}
+        onValueChange={sliderChangeHandler}
+        onValueCommit={sliderCommitHandler}
+        aria-label={title}
       >
         <Slider.Track className="relative h-1 w-full grow rounded-full bg-white">
           <Slider.Range className="absolute h-full rounded-full dark:bg-white" />
         </Slider.Track>
-        <Slider.Thumb className="block h-3 w-3 rounded-full bg-white" />
+        <Slider.Thumb
+          ref={sliderRef}
+          className="block h-3 w-3 rounded-full bg-white"
+        />
       </Slider.Root>
-    </label>
+    </section>
   );
 }

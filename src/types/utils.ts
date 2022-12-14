@@ -32,8 +32,12 @@ export function createUserServant({
   level,
   fou,
   noblePhantasmLevel,
-  skills,
-  appends,
+  skill1,
+  skill2,
+  skill3,
+  append1,
+  append2,
+  append3,
 }: AtLeast<UserServant, "slot">): UserServant {
   return {
     slot,
@@ -41,8 +45,12 @@ export function createUserServant({
     level: level ?? 0,
     fou: fou ?? 0,
     noblePhantasmLevel: noblePhantasmLevel ?? 0,
-    skills: skills ?? [0, 0, 0],
-    appends: appends ?? [0, 0, 0],
+    skill1: skill1 ?? 0,
+    skill2: skill2 ?? 0,
+    skill3: skill3 ?? 0,
+    append1: append1 ?? 0,
+    append2: append2 ?? 0,
+    append3: append3 ?? 0,
   };
 }
 

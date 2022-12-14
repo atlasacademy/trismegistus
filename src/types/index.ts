@@ -10,9 +10,6 @@ import {
 
 export { MemberSlot };
 
-type ProtoSkills = keyof Pick<ProtoServant, "skill1" | "skill2" | "skill3">;
-type ProtoAppends = keyof Pick<ProtoServant, "append1" | "append2" | "append3">;
-
 export type SkillNum = Extract<
   CommandType,
   CommandType.SKILL_1 | CommandType.SKILL_2 | CommandType.SKILL_3
@@ -33,16 +30,9 @@ export interface SkillInfo {
   skillNum: SkillNum;
 }
 
-export interface UserServant
-  extends Omit<ProtoServant, ProtoSkills | ProtoAppends | "slot"> {
-  slot: MemberSlot;
-  skills: [number, number, number];
-  appends: [number, number, number];
-}
+export interface UserServant extends ProtoServant {}
 
-export interface UserCraftEssence extends Omit<ProtoCraftEssence, "slot"> {
-  slot: MemberSlot;
-}
+export interface UserCraftEssence extends ProtoCraftEssence {}
 
 export interface UserMysticCode extends ProtoMysticCode {}
 
