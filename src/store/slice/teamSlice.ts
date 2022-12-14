@@ -88,13 +88,13 @@ const teamSlice = createSlice({
       stateDraft,
       {
         payload: { teamId, entry: servantUpdate },
-      }: PayloadAction<TeamEntry<Partial<UserServant>>>
+      }: PayloadAction<TeamEntry<AtLeast<UserServant, "slot">>>
     ) {
       const team = stateDraft.entities[teamId];
       if (team == null) return;
 
       team.servants = servantsAdapter.updateOne(team.servants, {
-        id: teamId,
+        id: servantUpdate.slot,
         changes: servantUpdate,
       });
     },

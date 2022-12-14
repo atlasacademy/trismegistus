@@ -11,9 +11,11 @@ import { selectTeamServantSlots } from "@/store/entity/servant";
 import { MemberSlot, TeamContextData, TeamViewMode } from "@/types";
 import { nextMemberSlot } from "@/types/utils";
 
-function useSlotData(teamId: number, mode: TeamViewMode): TeamContextData[] {
-  const slots = useMemoSelector(selectTeamServantSlots, [teamId]);
-
+function useSlotData(
+  teamId: number,
+  slots: MemberSlot[],
+  mode: TeamViewMode
+): TeamContextData[] {
   return useMemo(() => {
     const next =
       slots.length > 0
@@ -35,8 +37,11 @@ export interface TeamCompViewProps {
 }
 
 export function TeamView({ teamId }: TeamCompViewProps) {
-  const [mode, setMode] = useState<TeamViewMode>(TeamViewMode.VIEW);
-  const [mysticCode, ...member] = useSlotData(teamId, mode);
+  const slots = useMemoSelector(selectTeamServantSlots, [teamId]);
+  const [mode, setMode] = useState<TeamViewMode>(
+    slots.length > 0 ? TeamViewMode.VIEW : TeamViewMode.EDIT
+  );
+  const [mysticCode, ...member] = useSlotData(teamId, slots, mode);
 
   const handleModeChange = useCallback(
     (value: string) => {
