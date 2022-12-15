@@ -1,5 +1,3 @@
-import { EntityState } from "@reduxjs/toolkit";
-
 import {
   CommandType,
   MemberSlot,
@@ -43,10 +41,14 @@ export interface TeamEntry<T> {
   entry: T;
 }
 
+export interface TeamMemberEntry<T> extends TeamEntry<T> {
+  slot: MemberSlot;
+}
+
 export interface UserTeam {
   teamId: number;
-  servants: EntityState<UserServant>;
-  craftEssences: EntityState<UserCraftEssence>;
+  servants: UserServant[];
+  craftEssences: UserCraftEssence[];
   mysticCode: UserMysticCode;
 }
 

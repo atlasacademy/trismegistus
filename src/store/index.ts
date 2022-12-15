@@ -5,11 +5,12 @@ import {
 } from "@reduxjs/toolkit";
 import { useMemo } from "react";
 import {
+  EqualityFn,
+  NoInfer,
   TypedUseSelectorHook,
   useDispatch as useReduxDispatch,
   useSelector as useReduxSelector,
 } from "react-redux";
-import { EqualityFn, NoInfer } from "react-redux/src/types";
 import { persistStore } from "redux-persist";
 import {
   FLUSH,

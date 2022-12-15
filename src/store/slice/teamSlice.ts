@@ -7,16 +7,13 @@ import {
 import { deferP0, pipe } from "ts-functional-pipe";
 
 import { TrismegistusState } from "@/store";
+import { getInitialCraftEssencesState } from "@/store/entity/craftEssence";
+import { getInitialServantsState } from "@/store/entity/servant";
+import { removeItem, setItem, updateItem } from "@/store/entity/slot";
 import {
-  craftEssencesAdapter,
-  getInitialCraftEssencesState,
-} from "@/store/entity/craftEssence";
-import {
-  getInitialServantsState,
-  servantsAdapter,
-} from "@/store/entity/servant";
-import {
+  MemberSlot,
   TeamEntry,
+  TeamMemberEntry,
   UserCraftEssence,
   UserMysticCode,
   UserServant,
@@ -62,41 +59,57 @@ const teamSlice = createSlice({
     setCraftEssence(
       stateDraft,
       {
-        payload: { teamId, entry: craftEssence },
-      }: PayloadAction<TeamEntry<UserCraftEssence>>
+        payload: { teamId, slot, entry: craftEssence },
+      }: PayloadAction<TeamMemberEntry<UserCraftEssence>>
     ) {
       const team = stateDraft.entities[teamId];
       if (team == null) return;
 
-      team.craftEssences = craftEssencesAdapter.setOne(
-        team.craftEssences,
-        craftEssence
-      );
+      setItem(team.craftEssences, slot, craftEssence);
     },
     setServant(
       stateDraft,
       {
-        payload: { teamId, entry: servant },
-      }: PayloadAction<TeamEntry<UserServant>>
+        payload: { teamId, slot, entry: servant },
+      }: PayloadAction<TeamMemberEntry<UserServant>>
     ) {
       const team = stateDraft.entities[teamId];
       if (team == null) return;
 
-      team.servants = servantsAdapter.setOne(team.servants, servant);
+      setItem(team.servants, slot, servant);
     },
     updateServant(
       stateDraft,
       {
-        payload: { teamId, entry: servantUpdate },
-      }: PayloadAction<TeamEntry<AtLeast<UserServant, "slot">>>
+        payload: { teamId, slot, entry: servantUpdate },
+      }: PayloadAction<TeamMemberEntry<[keyof UserServant, number]>>
     ) {
       const team = stateDraft.entities[teamId];
       if (team == null) return;
 
-      team.servants = servantsAdapter.updateOne(team.servants, {
-        id: servantUpdate.slot,
-        changes: servantUpdate,
-      });
+      updateItem(team.servants, slot, servantUpdate);
+    },
+    updateServantStats(
+      stateDraft,
+      {
+        payload: { teamId, slot, entry: servantUpdates },
+      }: PayloadAction<TeamMemberEntry<[keyof UserServant, number][]>>
+    ) {
+      const team = stateDraft.entities[teamId];
+      if (team == null) return;
+
+      for (let i = 0; i < servantUpdates.length; i++) {
+        updateItem(team.servants, slot, servantUpdates[i]);
+      }
+    },
+    removeMemberSlot(
+      stateDraft,
+      { payload: { teamId, entry: slot } }: PayloadAction<TeamEntry<MemberSlot>>
+    ) {
+      const team = stateDraft.entities[teamId];
+      if (team == null) return;
+      removeItem(team.servants, slot);
+      removeItem(team.craftEssences, slot);
     },
     setMysticCode(
       stateDraft,
@@ -119,7 +132,9 @@ export const {
     setCraftEssence,
     setServant,
     updateServant,
+    updateServantStats,
     setMysticCode,
+    removeMemberSlot,
   },
 } = teamSlice;
 

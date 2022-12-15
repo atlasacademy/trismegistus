@@ -1,12 +1,12 @@
-import { useCallback } from "react";
-import { Control, useController, useForm } from "react-hook-form";
+import { useCallback, useEffect } from "react";
+import { Control, FormState, useController, useForm } from "react-hook-form";
 
 import { SliderInput } from "@/component/primitives/SliderInput";
 import { useTeamContext } from "@/hook/useTeamContext";
 import { useDispatch, useMemoSelector } from "@/store";
 import { selectTeamServantBySlot } from "@/store/entity/servant";
-import { updateServant } from "@/store/slice/teamSlice";
-import { UserServant } from "@/types";
+import { updateServantStats } from "@/store/slice/teamSlice";
+import { MemberSlot, UserServant } from "@/types";
 
 interface ControlledSliderProps {
   label: string;
@@ -39,29 +39,53 @@ function ControlledSlider({
   );
 }
 
-function useServantUpdate(teamId: number) {
+function useServantUpdate(teamId: number, slot: MemberSlot) {
   const dispatch = useDispatch();
   return useCallback(
-    (entry: Partial<UserServant>) => {
-      dispatch(updateServant({ teamId, entry }));
+    <K extends keyof UserServant>(entry: [K, UserServant[K]][]) => {
+      dispatch(updateServantStats({ teamId, slot, entry }));
     },
-    [teamId, dispatch]
+    [teamId, slot, dispatch]
   );
+}
+
+function extractFieldsChanged(
+  { touchedFields }: FormState<UserServant>,
+  data: UserServant
+): [keyof UserServant, number][] {
+  return Object.entries(touchedFields).reduce((acc, field) => {
+    const key = field[0] as keyof UserServant;
+    const touched = field[1];
+    if (touched) {
+      acc.push([key, data[key]]);
+    }
+    return acc;
+  }, [] as [keyof UserServant, number][]);
 }
 
 export function StatsForm() {
   const { teamId, slot } = useTeamContext();
   const userServant = useMemoSelector(selectTeamServantBySlot, [teamId, slot]);
 
-  const { control, handleSubmit } = useForm<UserServant>({
-    mode: "onBlur",
+  const { control, handleSubmit, formState, reset } = useForm<UserServant>({
+    mode: "onSubmit",
     defaultValues: userServant,
   });
-  const updateServantStat = useServantUpdate(teamId);
+
+  const updateServant = useServantUpdate(teamId, slot);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSubmit = handleSubmit((data, formEvent) => {
     formEvent?.preventDefault();
-    updateServantStat(data);
+    console.log(formState.touchedFields);
+    const changes = extractFieldsChanged(formState, data);
+    updateServant(changes);
   });
+
+  useEffect(() => {
+    reset(userServant);
+  }, [reset, userServant]);
+
   return (
     <form className="space-y-2" onSubmit={onSubmit} onBlur={onSubmit}>
       <ControlledSlider

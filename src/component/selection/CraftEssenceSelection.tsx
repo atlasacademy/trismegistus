@@ -39,15 +39,16 @@ export function CraftEssenceSelection({
 
   const onSelectCraftEssence = useCallback(
     ({ id: craftEssenceId }: CraftEssence.CraftEssenceBasic) => {
-      const entry = createUserCraftEssence({ slot, craftEssenceId });
+      const entry = createUserCraftEssence({ craftEssenceId });
       dispatch(
         setCraftEssence({
           teamId,
+          slot,
           entry,
         })
       );
     },
-    [dispatch]
+    [dispatch, teamId, slot]
   );
 
   return (

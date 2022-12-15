@@ -1,6 +1,6 @@
 import { Servant } from "@atlasacademy/api-connector";
 import { IconChevronLeft } from "@tabler/icons";
-import { PropsWithChildren, useCallback } from "react";
+import { PropsWithChildren } from "react";
 
 import { useServantListQuery } from "@/api";
 import {
@@ -8,13 +8,11 @@ import {
   SelectionTrigger,
 } from "@/component/selection/SelectionTrigger";
 import { useTeamContext } from "@/hook/useTeamContext";
-import { useDispatch } from "@/store";
-import { setServant } from "@/store/slice/teamSlice";
 import { TeamViewMode } from "@/types";
-import { createUserServant } from "@/types/utils";
 
 export interface ServantSelectionProps extends PropsWithChildren {
   className?: string;
+  onSelectServant(servant: Servant.ServantBasic): void;
 }
 
 function ServantListItem({
@@ -30,20 +28,11 @@ function ServantListItem({
 
 export function ServantSelection({
   className,
+  onSelectServant,
   children,
 }: ServantSelectionProps) {
-  const dispatch = useDispatch();
-  const { teamId, slot, mode } = useTeamContext();
-
+  const { mode } = useTeamContext();
   const { data: servants = [] } = useServantListQuery();
-
-  const onSelectServant = useCallback(
-    ({ id: servantId }: Servant.ServantBasic) => {
-      const entry = createUserServant({ slot, servantId });
-      dispatch(setServant({ teamId, entry }));
-    },
-    [dispatch]
-  );
 
   return (
     <SelectionTrigger
@@ -52,7 +41,7 @@ export function ServantSelection({
       onSelect={onSelectServant}
       SelectionItemComponent={ServantListItem}
       className={className}
-      disabled={mode === TeamViewMode.VIEW}
+      disabled={mode !== TeamViewMode.EDIT}
     >
       {children}
     </SelectionTrigger>

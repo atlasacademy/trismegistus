@@ -16,6 +16,20 @@ export function nextMemberSlot(slot: MemberSlot) {
   return MemberSlot[slotName];
 }
 
+export function slotToIndex(slot: MemberSlot): number | undefined {
+  if (slot === MemberSlot.NONE || slot === MemberSlot.UNRECOGNIZED) {
+    return undefined;
+  }
+  return slot - 1;
+}
+
+export function indexToSlot(index: number): MemberSlot | undefined {
+  if (index >= 0 && index <= 5) {
+    return (index + 1) as MemberSlot;
+  }
+  return undefined;
+}
+
 export function createUserMysticCode({
   mysticCodeId,
   mysticCodeLevel,
@@ -27,7 +41,6 @@ export function createUserMysticCode({
 }
 
 export function createUserServant({
-  slot,
   servantId,
   level,
   fou,
@@ -38,9 +51,8 @@ export function createUserServant({
   append1,
   append2,
   append3,
-}: AtLeast<UserServant, "slot">): UserServant {
+}: Partial<UserServant> = {}): UserServant {
   return {
-    slot,
     servantId: servantId ?? 0,
     level: level ?? 0,
     fou: fou ?? 0,
@@ -55,14 +67,13 @@ export function createUserServant({
 }
 
 export function createUserCraftEssence({
-  slot,
   craftEssenceId,
   craftEssenceLevel,
-}: AtLeast<UserCraftEssence, "slot">): UserCraftEssence {
+  maxLimitBreak,
+}: Partial<UserCraftEssence> = {}): UserCraftEssence {
   return {
-    slot,
     craftEssenceId: craftEssenceId ?? 0,
     craftEssenceLevel: craftEssenceLevel ?? 0,
-    maxLimitBreak: false,
+    maxLimitBreak: maxLimitBreak ?? false,
   };
 }

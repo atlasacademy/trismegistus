@@ -10,12 +10,8 @@ import {
   teamsReducer,
 } from "@/store/slice/teamSlice";
 import { UserTeam } from "@/types";
-import {
-  MemberSlot,
-  ProtoCraftEssence,
-  ProtoServant,
-  ProtoTrismegistusState,
-} from "@/types/proto/trismegistus";
+import { ProtoTrismegistusState } from "@/types/proto/trismegistus";
+import { indexToSlot } from "@/types/utils";
 
 export function stateToProto(state: TrismegistusState): ProtoTrismegistusState {
   const {
@@ -29,12 +25,8 @@ export function stateToProto(state: TrismegistusState): ProtoTrismegistusState {
 
       acc.teams[teamId] = {
         mysticCode,
-        servants: servants.ids.map((slot): ProtoServant => {
-          return servants.entities[slot]!!;
-        }),
-        craftEssences: craftEssences.ids.map((slot): ProtoCraftEssence => {
-          return craftEssences.entities[slot]!!;
-        }),
+        servants,
+        craftEssences,
         commandScripts: [],
       };
 
@@ -61,19 +53,25 @@ export function protoToState({
       );
     }
 
-    result = servants.reduce((acc, userServant) => {
-      if (userServant.slot === MemberSlot.NONE) return acc;
-      return teamsReducer(acc, setServant({ teamId, entry: userServant }));
+    result = servants.reduce((acc, userServant, currentIndex) => {
+      const slot = indexToSlot(currentIndex);
+      if (slot == null) return acc;
+      return teamsReducer(
+        acc,
+        setServant({ teamId, slot, entry: userServant })
+      );
     }, result);
 
-    result = craftEssences.reduce((acc, next) => {
-      const { slot, craftEssenceId, craftEssenceLevel, maxLimitBreak } = next;
-      if (slot === MemberSlot.NONE) return acc;
+    result = craftEssences.reduce((acc, next, currentIndex) => {
+      const slot = indexToSlot(currentIndex);
+      if (slot == null) return acc;
+      const { craftEssenceId, craftEssenceLevel, maxLimitBreak } = next;
       return teamsReducer(
         acc,
         setCraftEssence({
           teamId,
-          entry: { slot, craftEssenceId, craftEssenceLevel, maxLimitBreak },
+          slot,
+          entry: { craftEssenceId, craftEssenceLevel, maxLimitBreak },
         })
       );
     }, result);

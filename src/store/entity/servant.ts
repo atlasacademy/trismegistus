@@ -1,10 +1,10 @@
 import { Servant } from "@atlasacademy/api-connector";
-import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
+import { createSelector } from "@reduxjs/toolkit";
 import { deferP0, pipe } from "ts-functional-pipe";
 
 import { selectServant } from "@/api/selectors";
 import { TrismegistusState } from "@/store";
-import { currySlotSelectors } from "@/store/currySlotSelectors";
+import { createSlotListSelectors } from "@/store/entity/slot";
 import { selectServantDefaults } from "@/store/slice/userSlice";
 import { MemberSlot, UserServant, UserTeam } from "@/types";
 import { createUserServant } from "@/types/utils";
@@ -15,13 +15,9 @@ export function selectServants(team: UserTeam) {
   return team.servants;
 }
 
-export const {
-  getInitialState: getInitialServantsState,
-  getSelectors: getServantsSelectors,
-  ...servantsAdapter
-} = createEntityAdapter<UserServant>({
-  selectId: ({ slot }) => slot,
-});
+export function getInitialServantsState(): UserServant[] {
+  return [];
+}
 
 export const selectServantAttack = (
   { atkGrowth }: Servant.Servant,
@@ -29,13 +25,9 @@ export const selectServantAttack = (
 ) => atkGrowth[level - 1] ?? 0;
 
 export const {
-  selectById: selectTeamServantBySlot,
-  selectIds: selectTeamServantSlots,
-  selectAll: selectTeamServants,
-  selectTotal: selectTotalTeamServants,
-} = currySlotSelectors(getServantsSelectors(selectServants), (slot) => {
-  return createUserServant({ slot });
-});
+  selectBySlot: selectTeamServantBySlot,
+  selectSlots: selectTeamServantSlots,
+} = createSlotListSelectors(selectServants, createUserServant);
 
 export const selectTeamServantAttackBySlot = (userServant: UserServant) => {
   return pipe(
@@ -51,7 +43,7 @@ export function selectTeamServantWithDefaults(
   const userServantSelector = selectTeamServantBySlot(teamId, memberSlot);
   return createSelector(
     [
-      userServantSelector,
+      coalesce(userServantSelector, createUserServant()),
       selectServantDefaults,
       (state) => {
         const userServant = userServantSelector(state);
@@ -60,7 +52,6 @@ export function selectTeamServantWithDefaults(
     ],
     (
       {
-        slot,
         servantId,
         level,
         fou,
@@ -85,7 +76,6 @@ export function selectTeamServantWithDefaults(
       servant
     ) => {
       return {
-        slot,
         servantId,
         level: fallback(level, servant?.lvMax ?? 0),
         fou: fallback(fou, defaultFou),

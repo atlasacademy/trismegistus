@@ -16,24 +16,22 @@ message ProtoMysticCode {
 }
 
 message ProtoCraftEssence {
-  MemberSlot slot = 1;
-  uint32 craftEssenceId = 2;
-  uint32 craftEssenceLevel = 3;
-  bool maxLimitBreak = 4;
+  uint32 craftEssenceId = 1;
+  uint32 craftEssenceLevel = 2;
+  bool maxLimitBreak = 3;
 }
 
 message ProtoServant {
-  MemberSlot slot = 1;
-  uint32 servantId = 2;
-  uint32 level = 3;
-  uint32 fou = 4;
-  uint32 noblePhantasmLevel = 5;
-  uint32 skill1 = 6;
-  uint32 skill2 = 7;
-  uint32 skill3 = 8;
-  uint32 append1 = 9;
-  uint32 append2 = 10;
-  uint32 append3 = 11;
+  uint32 servantId = 1;
+  uint32 level = 2;
+  uint32 fou = 3;
+  uint32 noblePhantasmLevel = 4;
+  uint32 skill1 = 5;
+  uint32 skill2 = 6;
+  uint32 skill3 = 7;
+  uint32 append1 = 8;
+  uint32 append2 = 9;
+  uint32 append3 = 10;
 }
 
 enum CommandType {

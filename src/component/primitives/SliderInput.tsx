@@ -1,6 +1,7 @@
 import * as Slider from "@radix-ui/react-slider";
 import classNames from "classnames";
-import { ChangeEvent, useCallback, useMemo, useRef } from "react";
+import type { ChangeEvent } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 export interface SliderInputProps {
   title: string;
@@ -20,26 +21,8 @@ export function SliderInput({
   onBlur,
 }: SliderInputProps) {
   const values = useMemo(() => [value], [value]);
-  const inputChangeHandler = useCallback(
-    ({ target: { value: rawValue } }: ChangeEvent<HTMLInputElement>) => {
-      if (rawValue === "") {
-        onChange(0);
-        return;
-      }
-      const inputValue = parseInt(rawValue);
-      if (
-        Number.isInteger(inputValue) &&
-        inputValue >= min &&
-        inputValue <= max
-      ) {
-        onChange(inputValue);
-      }
-    },
-    [onChange, min, max]
-  );
-
-  const sliderChangeHandler = useCallback(
-    ([sliderValue]: number[]) => {
+  const onChangeChecked = useCallback(
+    (sliderValue: number) => {
       if (
         Number.isInteger(sliderValue) &&
         sliderValue >= min &&
@@ -51,10 +34,32 @@ export function SliderInput({
     [onChange, min, max]
   );
 
+  const inputChangeHandler = useCallback(
+    ({ target: { value: rawValue } }: ChangeEvent<HTMLInputElement>) => {
+      if (rawValue === "") {
+        onChange(0);
+        return;
+      }
+      onChangeChecked(parseInt(rawValue));
+    },
+    [onChange, onChangeChecked]
+  );
+
+  const sliderChangeHandler = useCallback(
+    ([sliderValue]: number[]) => {
+      onChangeChecked(sliderValue);
+    },
+    [onChangeChecked]
+  );
+
   const sliderRef = useRef<HTMLSpanElement>(null);
-  const sliderCommitHandler = useCallback(() => {
-    sliderRef?.current?.blur();
-  }, [sliderRef]);
+  const sliderCommitHandler = useCallback(
+    ([sliderCommittedValue]: number[]) => {
+      onChangeChecked(sliderCommittedValue);
+      sliderRef?.current?.blur();
+    },
+    [onChangeChecked, sliderRef]
+  );
 
   return (
     <section className="items-left mx-2 block rounded bg-gray-600 py-1 px-2">

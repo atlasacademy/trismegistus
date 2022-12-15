@@ -129,14 +129,12 @@ export interface ProtoMysticCode {
 }
 
 export interface ProtoCraftEssence {
-  slot: MemberSlot;
   craftEssenceId: number;
   craftEssenceLevel: number;
   maxLimitBreak: boolean;
 }
 
 export interface ProtoServant {
-  slot: MemberSlot;
   servantId: number;
   level: number;
   fou: number;
@@ -232,22 +230,19 @@ export const ProtoMysticCode = {
 };
 
 function createBaseProtoCraftEssence(): ProtoCraftEssence {
-  return { slot: 0, craftEssenceId: 0, craftEssenceLevel: 0, maxLimitBreak: false };
+  return { craftEssenceId: 0, craftEssenceLevel: 0, maxLimitBreak: false };
 }
 
 export const ProtoCraftEssence = {
   encode(message: ProtoCraftEssence, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.slot !== 0) {
-      writer.uint32(8).int32(message.slot);
-    }
     if (message.craftEssenceId !== 0) {
-      writer.uint32(16).uint32(message.craftEssenceId);
+      writer.uint32(8).uint32(message.craftEssenceId);
     }
     if (message.craftEssenceLevel !== 0) {
-      writer.uint32(24).uint32(message.craftEssenceLevel);
+      writer.uint32(16).uint32(message.craftEssenceLevel);
     }
     if (message.maxLimitBreak === true) {
-      writer.uint32(32).bool(message.maxLimitBreak);
+      writer.uint32(24).bool(message.maxLimitBreak);
     }
     return writer;
   },
@@ -260,15 +255,12 @@ export const ProtoCraftEssence = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.slot = reader.int32() as any;
-          break;
-        case 2:
           message.craftEssenceId = reader.uint32();
           break;
-        case 3:
+        case 2:
           message.craftEssenceLevel = reader.uint32();
           break;
-        case 4:
+        case 3:
           message.maxLimitBreak = reader.bool();
           break;
         default:
@@ -281,7 +273,6 @@ export const ProtoCraftEssence = {
 
   fromJSON(object: any): ProtoCraftEssence {
     return {
-      slot: isSet(object.slot) ? memberSlotFromJSON(object.slot) : 0,
       craftEssenceId: isSet(object.craftEssenceId) ? Number(object.craftEssenceId) : 0,
       craftEssenceLevel: isSet(object.craftEssenceLevel) ? Number(object.craftEssenceLevel) : 0,
       maxLimitBreak: isSet(object.maxLimitBreak) ? Boolean(object.maxLimitBreak) : false,
@@ -290,7 +281,6 @@ export const ProtoCraftEssence = {
 
   toJSON(message: ProtoCraftEssence): unknown {
     const obj: any = {};
-    message.slot !== undefined && (obj.slot = memberSlotToJSON(message.slot));
     message.craftEssenceId !== undefined && (obj.craftEssenceId = Math.round(message.craftEssenceId));
     message.craftEssenceLevel !== undefined && (obj.craftEssenceLevel = Math.round(message.craftEssenceLevel));
     message.maxLimitBreak !== undefined && (obj.maxLimitBreak = message.maxLimitBreak);
@@ -299,7 +289,6 @@ export const ProtoCraftEssence = {
 
   fromPartial<I extends Exact<DeepPartial<ProtoCraftEssence>, I>>(object: I): ProtoCraftEssence {
     const message = createBaseProtoCraftEssence();
-    message.slot = object.slot ?? 0;
     message.craftEssenceId = object.craftEssenceId ?? 0;
     message.craftEssenceLevel = object.craftEssenceLevel ?? 0;
     message.maxLimitBreak = object.maxLimitBreak ?? false;
@@ -309,7 +298,6 @@ export const ProtoCraftEssence = {
 
 function createBaseProtoServant(): ProtoServant {
   return {
-    slot: 0,
     servantId: 0,
     level: 0,
     fou: 0,
@@ -325,38 +313,35 @@ function createBaseProtoServant(): ProtoServant {
 
 export const ProtoServant = {
   encode(message: ProtoServant, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.slot !== 0) {
-      writer.uint32(8).int32(message.slot);
-    }
     if (message.servantId !== 0) {
-      writer.uint32(16).uint32(message.servantId);
+      writer.uint32(8).uint32(message.servantId);
     }
     if (message.level !== 0) {
-      writer.uint32(24).uint32(message.level);
+      writer.uint32(16).uint32(message.level);
     }
     if (message.fou !== 0) {
-      writer.uint32(32).uint32(message.fou);
+      writer.uint32(24).uint32(message.fou);
     }
     if (message.noblePhantasmLevel !== 0) {
-      writer.uint32(40).uint32(message.noblePhantasmLevel);
+      writer.uint32(32).uint32(message.noblePhantasmLevel);
     }
     if (message.skill1 !== 0) {
-      writer.uint32(48).uint32(message.skill1);
+      writer.uint32(40).uint32(message.skill1);
     }
     if (message.skill2 !== 0) {
-      writer.uint32(56).uint32(message.skill2);
+      writer.uint32(48).uint32(message.skill2);
     }
     if (message.skill3 !== 0) {
-      writer.uint32(64).uint32(message.skill3);
+      writer.uint32(56).uint32(message.skill3);
     }
     if (message.append1 !== 0) {
-      writer.uint32(72).uint32(message.append1);
+      writer.uint32(64).uint32(message.append1);
     }
     if (message.append2 !== 0) {
-      writer.uint32(80).uint32(message.append2);
+      writer.uint32(72).uint32(message.append2);
     }
     if (message.append3 !== 0) {
-      writer.uint32(88).uint32(message.append3);
+      writer.uint32(80).uint32(message.append3);
     }
     return writer;
   },
@@ -369,36 +354,33 @@ export const ProtoServant = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.slot = reader.int32() as any;
-          break;
-        case 2:
           message.servantId = reader.uint32();
           break;
-        case 3:
+        case 2:
           message.level = reader.uint32();
           break;
-        case 4:
+        case 3:
           message.fou = reader.uint32();
           break;
-        case 5:
+        case 4:
           message.noblePhantasmLevel = reader.uint32();
           break;
-        case 6:
+        case 5:
           message.skill1 = reader.uint32();
           break;
-        case 7:
+        case 6:
           message.skill2 = reader.uint32();
           break;
-        case 8:
+        case 7:
           message.skill3 = reader.uint32();
           break;
-        case 9:
+        case 8:
           message.append1 = reader.uint32();
           break;
-        case 10:
+        case 9:
           message.append2 = reader.uint32();
           break;
-        case 11:
+        case 10:
           message.append3 = reader.uint32();
           break;
         default:
@@ -411,7 +393,6 @@ export const ProtoServant = {
 
   fromJSON(object: any): ProtoServant {
     return {
-      slot: isSet(object.slot) ? memberSlotFromJSON(object.slot) : 0,
       servantId: isSet(object.servantId) ? Number(object.servantId) : 0,
       level: isSet(object.level) ? Number(object.level) : 0,
       fou: isSet(object.fou) ? Number(object.fou) : 0,
@@ -427,7 +408,6 @@ export const ProtoServant = {
 
   toJSON(message: ProtoServant): unknown {
     const obj: any = {};
-    message.slot !== undefined && (obj.slot = memberSlotToJSON(message.slot));
     message.servantId !== undefined && (obj.servantId = Math.round(message.servantId));
     message.level !== undefined && (obj.level = Math.round(message.level));
     message.fou !== undefined && (obj.fou = Math.round(message.fou));
@@ -443,7 +423,6 @@ export const ProtoServant = {
 
   fromPartial<I extends Exact<DeepPartial<ProtoServant>, I>>(object: I): ProtoServant {
     const message = createBaseProtoServant();
-    message.slot = object.slot ?? 0;
     message.servantId = object.servantId ?? 0;
     message.level = object.level ?? 0;
     message.fou = object.fou ?? 0;

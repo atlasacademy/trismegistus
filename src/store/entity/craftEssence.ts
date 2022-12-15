@@ -1,10 +1,9 @@
 import { CraftEssence } from "@atlasacademy/api-connector";
-import { createEntityAdapter } from "@reduxjs/toolkit";
 import { deferP0, pipe } from "ts-functional-pipe";
 
 import { selectCraftEssence } from "@/api/selectors";
 import { TrismegistusState } from "@/store";
-import { currySlotSelectors } from "@/store/currySlotSelectors";
+import { createSlotListSelectors } from "@/store/entity/slot";
 import { MemberSlot, UserCraftEssence, UserTeam } from "@/types";
 import { createUserCraftEssence } from "@/types/utils";
 import { fallback } from "@/util";
@@ -14,25 +13,14 @@ export function selectCraftEssences(team: UserTeam) {
   return team.craftEssences;
 }
 
-export const {
-  getInitialState: getInitialCraftEssencesState,
-  getSelectors: getCraftEssenceSelectors,
-  ...craftEssencesAdapter
-} = createEntityAdapter<UserCraftEssence>({
-  selectId: ({ slot }) => slot,
-});
+export function getInitialCraftEssencesState(): UserCraftEssence[] {
+  return [];
+}
 
 export const {
-  selectById: selectTeamCraftEssenceBySlot,
-  selectIds: selectTeamCraftEssenceSlots,
-  selectAll: selectTeamCraftEssences,
-  selectTotal: selectTotalTeamCraftEssences,
-} = currySlotSelectors(
-  getCraftEssenceSelectors(selectCraftEssences),
-  (slot) => {
-    return createUserCraftEssence({ slot });
-  }
-);
+  selectBySlot: selectTeamCraftEssenceBySlot,
+  selectSlots: selectTeamCraftEssenceSlots,
+} = createSlotListSelectors(selectCraftEssences, createUserCraftEssence);
 
 export const selectCraftEssenceAttack = (
   { atkGrowth }: CraftEssence.CraftEssence,
@@ -54,8 +42,7 @@ export const selectTeamCraftEssenceWithDefaults = (
 ): ((state: TrismegistusState) => UserCraftEssence) => {
   return pipe(
     selectTeamCraftEssenceBySlot(teamId, memberSlot),
-    ({ craftEssenceId, craftEssenceLevel, maxLimitBreak, slot }) => ({
-      slot: slot,
+    ({ craftEssenceId, craftEssenceLevel, maxLimitBreak }) => ({
       craftEssenceId,
       craftEssenceLevel: fallback(craftEssenceLevel, 1),
       maxLimitBreak,
