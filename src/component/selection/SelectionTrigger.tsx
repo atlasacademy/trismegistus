@@ -18,6 +18,7 @@ export interface SelectionTriggerProps<T> extends PropsWithChildren {
 
 export interface SelectionItemProps<T> {
   item: T;
+  onSelect(): void;
 }
 
 export function SelectionTrigger<T>({
@@ -32,7 +33,7 @@ export function SelectionTrigger<T>({
   const [isSelecting, setSelecting] = useState(false);
   const closeSelection = useCallback(() => setSelecting(false), [setSelecting]);
   const select = useCallback(
-    (item: T) => () => {
+    (item: T) => {
       onSelect?.(item);
       closeSelection();
     },
@@ -45,19 +46,19 @@ export function SelectionTrigger<T>({
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/10" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 h-64 w-96 -translate-x-1/2 -translate-y-1/2 overflow-scroll rounded bg-white">
-          <Dialog.Close className="absolute top-1 right-1" aria-label="Close">
+        <Dialog.Content className="fixed left-1/2 top-1/2 h-64 w-96 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded bg-white p-2">
+          <Dialog.Close className="flex w-full justify-end" aria-label="Close">
             <IconX />
           </Dialog.Close>
-          {items?.map((item) => (
-            <button
-              key={idSelector(item)}
-              className="block"
-              onClick={select(item)}
-            >
-              <SelectionItemComponent item={item} />
-            </button>
-          ))}
+          <section className="h-full overflow-scroll">
+            {items?.map((item) => (
+              <SelectionItemComponent
+                key={idSelector(item)}
+                item={item}
+                onSelect={() => select(item)}
+              />
+            ))}
+          </section>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

@@ -41,9 +41,12 @@ export interface TeamEntry<T> {
   entry: T;
 }
 
-export interface TeamMemberEntry<T> extends TeamEntry<T> {
+export interface TeamMember {
+  teamId: number;
   slot: MemberSlot;
 }
+
+export interface TeamMemberEntry<T> extends TeamEntry<T>, TeamMember {}
 
 export interface UserTeam {
   teamId: number;

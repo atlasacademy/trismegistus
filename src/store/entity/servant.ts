@@ -6,7 +6,8 @@ import { selectServant } from "@/api/selectors";
 import { TrismegistusState } from "@/store";
 import { createSlotListSelectors } from "@/store/entity/slot";
 import { selectServantDefaults } from "@/store/slice/userSlice";
-import { MemberSlot, UserServant, UserTeam } from "@/types";
+import { MemberSlot, SkillNum, UserServant, UserTeam } from "@/types";
+import { CommandType } from "@/types/proto/trismegistus";
 import { createUserServant } from "@/types/utils";
 import { fallback } from "@/util";
 import { coalesce } from "@/util/func";
@@ -92,4 +93,18 @@ export function selectTeamServantWithDefaults(
       };
     }
   );
+}
+
+export function selectUserServantSkill(
+  userServant: UserServant,
+  skillNum: SkillNum
+): number {
+  switch (skillNum) {
+    case CommandType.SKILL_1:
+      return userServant.skill1;
+    case CommandType.SKILL_2:
+      return userServant.skill2;
+    case CommandType.SKILL_3:
+      return userServant.skill3;
+  }
 }

@@ -1,5 +1,4 @@
 import background from "@assets/background.png";
-import unknownFigure from "@assets/unknown-narrowfigure.png";
 import { Servant } from "@atlasacademy/api-connector";
 import {
   AccordionContent,
@@ -17,6 +16,8 @@ import { useCallback } from "react";
 import { useServantQuery } from "@/api";
 import { CraftEssenceSlotView } from "@/component/CraftEssenceView";
 import { ServantSelection } from "@/component/selection/ServantSelection";
+import { ServantPortrait } from "@/component/ServantPortrait";
+import { SkillBar } from "@/component/SkillBar";
 import { Spinner } from "@/component/Spinner";
 import { AttackStatDisplay } from "@/component/stat/AttackStatDisplay";
 import { StatsForm } from "@/component/StatsForm";
@@ -36,51 +37,11 @@ interface MemberViewProps {
   servant: Servant.Servant;
 }
 
-function ServantPortrait({ userServant, servant }: MemberViewProps) {
-  return (
-    <div className="relative h-36 shrink-0">
-      <img
-        src={servant.extraAssets.faces.ascension?.[1] ?? unknownFigure}
-        alt={servant.name}
-        className="object-cover"
-      />
-
-      <div className="bg-overlay absolute right-0 top-0 px-1">
-        Lv: {userServant.level}
-      </div>
-
-      <div className="absolute bottom-0 w-full">
-        <div className="bg-overlay px-1">
-          <AttackStatDisplay userServant={userServant} />
-        </div>
-        <CraftEssenceSlotView />
-      </div>
-    </div>
-  );
-}
-
 function NPStat({ noblePhantasmLevel }: { noblePhantasmLevel: number }) {
   return (
     <div className="flex justify-between">
       <div className="w-full">NP</div>
       <div className="w-full">{noblePhantasmLevel}</div>
-    </div>
-  );
-}
-
-function SkillBar({
-  userServant: { skill1, skill2, skill3 },
-}: {
-  userServant: UserServant;
-}) {
-  return (
-    <div className="flex justify-between">
-      <div className="w-full">Skills</div>
-      <div className="flex w-full">
-        <div className="w-1/3">{skill1 || "-"}</div>
-        <div className="w-1/3">{skill2 || "-"}</div>
-        <div className="w-1/3">{skill3 || "-"}</div>
-      </div>
     </div>
   );
 }
@@ -120,7 +81,17 @@ function MemberView({ userServant, servant }: MemberViewProps) {
   return (
     <AccordionItem value={`${slot}`} className="w-full">
       <section className="flex h-36 w-full">
-        <ServantPortrait servant={servant} userServant={userServant} />
+        <ServantPortrait servant={servant} className="h-36 shrink-0">
+          <section className="flex h-full flex-col items-end justify-between">
+            <div className="bg-overlay w-14">Lv: {userServant.level}</div>
+            <section className="w-full">
+              <div className="bg-overlay px-1">
+                <AttackStatDisplay userServant={userServant} />
+              </div>
+              <CraftEssenceSlotView />
+            </section>
+          </section>
+        </ServantPortrait>
         <div className="flex h-full w-full flex-col items-end justify-between align-bottom">
           <div className="bg-overlay w-full font-bold">{servant.name}</div>
           {mode === TeamViewMode.EDIT ? (
@@ -135,7 +106,7 @@ function MemberView({ userServant, servant }: MemberViewProps) {
           ) : undefined}
           <div className="bg-overlay w-full px-2 pb-1 text-center">
             <NPStat noblePhantasmLevel={noblePhantasmLevel} />
-            <SkillBar userServant={userServant} />
+            <SkillBar />
             <AppendBar userServant={userServant} />
             {mode === TeamViewMode.EDIT ? (
               <AccordionTrigger>

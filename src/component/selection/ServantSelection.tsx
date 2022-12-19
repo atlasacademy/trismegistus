@@ -7,8 +7,6 @@ import {
   SelectionItemProps,
   SelectionTrigger,
 } from "@/component/selection/SelectionTrigger";
-import { useTeamContext } from "@/hook/useTeamContext";
-import { TeamViewMode } from "@/types";
 
 export interface ServantSelectionProps extends PropsWithChildren {
   className?: string;
@@ -16,13 +14,15 @@ export interface ServantSelectionProps extends PropsWithChildren {
 }
 
 function ServantListItem({
-  item: { name: servantName },
+  item,
+  onSelect,
 }: SelectionItemProps<Servant.ServantBasic>) {
+  const { name: servantName } = item;
   return (
-    <>
+    <button className="block" onClick={onSelect}>
       <IconChevronLeft />
       {servantName}
-    </>
+    </button>
   );
 }
 
@@ -31,9 +31,7 @@ export function ServantSelection({
   onSelectServant,
   children,
 }: ServantSelectionProps) {
-  const { mode } = useTeamContext();
   const { data: servants = [] } = useServantListQuery();
-
   return (
     <SelectionTrigger
       items={servants}
@@ -41,7 +39,6 @@ export function ServantSelection({
       onSelect={onSelectServant}
       SelectionItemComponent={ServantListItem}
       className={className}
-      disabled={mode !== TeamViewMode.EDIT}
     >
       {children}
     </SelectionTrigger>

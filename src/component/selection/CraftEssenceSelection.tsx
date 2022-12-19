@@ -14,13 +14,15 @@ import { TeamViewMode } from "@/types";
 import { createUserCraftEssence } from "@/types/utils";
 
 function CraftEssenceListItem({
-  item: { name: craftEssenceName },
+  item,
+  onSelect,
 }: SelectionItemProps<CraftEssence.CraftEssenceBasic>) {
+  const { name: craftEssenceName } = item;
   return (
-    <div className="text-gray-700">
+    <button className="block text-gray-700" onClick={onSelect}>
       <IconChevronLeft />
       {craftEssenceName}
-    </div>
+    </button>
   );
 }
 
@@ -58,7 +60,7 @@ export function CraftEssenceSelection({
       onSelect={onSelectCraftEssence}
       SelectionItemComponent={CraftEssenceListItem}
       className={className}
-      disabled={mode === TeamViewMode.VIEW}
+      disabled={mode !== TeamViewMode.EDIT}
     >
       {children}
     </SelectionTrigger>
