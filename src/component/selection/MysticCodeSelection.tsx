@@ -15,12 +15,13 @@ import { createUserMysticCode } from "@/types/utils";
 
 function BasicMysticIcon({
   item: { name: mysticCodeName },
+  onSelect,
 }: SelectionItemProps<MysticCode.MysticCodeBasic>) {
   return (
-    <>
+    <button className="block" onClick={onSelect}>
       <IconChevronLeft />
       {mysticCodeName}
-    </>
+    </button>
   );
 }
 
@@ -42,7 +43,7 @@ export function MysticCodeSelection({
       const entry = createUserMysticCode({ mysticCodeId });
       dispatch(setMysticCode({ teamId, entry }));
     },
-    [dispatch]
+    [teamId, dispatch]
   );
 
   return (

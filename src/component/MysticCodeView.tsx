@@ -1,3 +1,5 @@
+import background from "@assets/background.png";
+
 import { useMysticCodeQuery } from "@/api";
 import { MysticCodeSelection } from "@/component/selection/MysticCodeSelection";
 import { Spinner } from "@/component/Spinner";
@@ -13,31 +15,38 @@ export function MysticCodeView() {
   const { data: mysticCode, isLoading } = useMysticCodeQuery(mysticCodeId);
 
   return (
-    <section className="h-96 w-36 grow-0 overflow-hidden rounded-3xl text-white">
-      {isLoading ? (
-        <span className="flex h-full w-full items-center justify-center align-middle">
-          <Spinner />
-        </span>
-      ) : mysticCode != null ? (
-        <>
-          <img
-            src={mysticCode.extraAssets.masterFigure.male}
-            alt={mysticCode.name}
-            className="h-full"
-          />
-          <div className="flex h-full w-full items-end justify-end">
-            <div className="bg-overlay mr-5 text-white">
-              {"Lv: " + userMysticCode.mysticCodeLevel}
+    <section className="flex h-16 w-96 flex-nowrap overflow-hidden rounded-2xl border bg-gray-700 text-sm text-white">
+      <img
+        src={background}
+        alt="Background"
+        className="box-border h-36 w-full flex-none object-cover"
+      />
+      <section className="-ml-full flex w-full">
+        {isLoading ? (
+          <span className="flex h-full w-full items-center justify-center align-middle">
+            <Spinner />
+          </span>
+        ) : mysticCode != null ? (
+          <>
+            <img
+              src={mysticCode.extraAssets.item.male}
+              alt={mysticCode.name}
+              className="h-full"
+            />
+            <div className="flex h-full w-full items-end justify-end">
+              <div className="bg-overlay mr-5 text-white">
+                {"Lv: " + userMysticCode.mysticCodeLevel}
+              </div>
             </div>
-          </div>
-        </>
-      ) : (
-        <MysticCodeSelection className="h-full w-full">
-          {mode === TeamViewMode.EDIT ? (
-            <span className="mx-auto">Add Mystic Code</span>
-          ) : undefined}
-        </MysticCodeSelection>
-      )}
+          </>
+        ) : (
+          <MysticCodeSelection className="h-full w-full">
+            {mode === TeamViewMode.EDIT ? (
+              <span className="mx-auto">Add Mystic Code</span>
+            ) : undefined}
+          </MysticCodeSelection>
+        )}
+      </section>
     </section>
   );
 }
