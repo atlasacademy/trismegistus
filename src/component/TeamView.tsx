@@ -3,6 +3,7 @@ import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { IconAdjustmentsHorizontal, IconPlayerPlay } from "@tabler/icons";
 import { useCallback, useMemo, useState } from "react";
 
+import { CommandDisplay } from "@/component/CommandDisplay";
 import { MemberSlotView } from "@/component/MemberSlotView";
 import { MysticCodeView } from "@/component/MysticCodeView";
 import { TeamContext } from "@/hook/useTeamContext";
@@ -80,6 +81,9 @@ export function TeamView({ teamId }: TeamCompViewProps) {
           <MysticCodeView />
         </TeamContext.Provider>
       </AccordionRoot>
+      {mode === TeamViewMode.SCRIPT ? (
+        <CommandDisplay teamId={teamId} />
+      ) : undefined}
     </section>
   );
 }

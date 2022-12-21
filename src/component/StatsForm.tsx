@@ -68,7 +68,7 @@ export function StatsForm() {
   const userServant = useMemoSelector(selectTeamServantBySlot, [teamId, slot]);
 
   const { control, handleSubmit, formState, reset } = useForm<UserServant>({
-    mode: "onSubmit",
+    mode: "onBlur",
     defaultValues: userServant,
   });
 
@@ -77,7 +77,6 @@ export function StatsForm() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSubmit = handleSubmit((data, formEvent) => {
     formEvent?.preventDefault();
-    console.log(formState.touchedFields);
     const changes = extractFieldsChanged(formState, data);
     updateServant(changes);
   });

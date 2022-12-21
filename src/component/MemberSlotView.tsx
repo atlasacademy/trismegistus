@@ -14,13 +14,14 @@ import {
 import { useCallback } from "react";
 
 import { useServantQuery } from "@/api";
+import { CommandEditor } from "@/component/CommandEditor";
 import { CraftEssenceSlotView } from "@/component/CraftEssenceView";
 import { ServantSelection } from "@/component/selection/ServantSelection";
 import { ServantPortrait } from "@/component/ServantPortrait";
-import { SkillBar } from "@/component/SkillBar";
 import { Spinner } from "@/component/Spinner";
 import { AttackStatDisplay } from "@/component/stat/AttackStatDisplay";
 import { StatsForm } from "@/component/StatsForm";
+import { StatTable } from "@/component/StatTable";
 import { useTeamContext } from "@/hook/useTeamContext";
 import { useDispatch, useMemoSelector } from "@/store";
 import { selectTeamServantWithDefaults } from "@/store/entity/servant";
@@ -37,35 +38,16 @@ interface MemberViewProps {
   servant: Servant.Servant;
 }
 
-function NPStat({ noblePhantasmLevel }: { noblePhantasmLevel: number }) {
-  return (
-    <div className="flex justify-between">
-      <div className="w-full">NP</div>
-      <div className="w-full">{noblePhantasmLevel}</div>
-    </div>
-  );
-}
-
-function AppendBar({
-  userServant: { append1, append2, append3 },
-}: {
-  userServant: UserServant;
-}) {
-  return (
-    <div className="flex justify-between">
-      <div className="w-full">Appends</div>
-      <div className="flex w-full">
-        <div className="w-1/3">{append1 || "-"}</div>
-        <div className="w-1/3">{append2 || "-"}</div>
-        <div className="w-1/3">{append3 || "-"}</div>
-      </div>
-    </div>
-  );
+function normalizeStats(userServant: UserServant): Record<string, number[]> {
+  return {
+    NP: [userServant.noblePhantasmLevel],
+    Skills: [userServant.skill1, userServant.skill2, userServant.skill3],
+    Appends: [userServant.append1, userServant.append2, userServant.append3],
+  };
 }
 
 function MemberView({ userServant, servant }: MemberViewProps) {
   const { teamId, slot, mode } = useTeamContext();
-  const { noblePhantasmLevel } = userServant;
   const dispatch = useDispatch();
   const handleClick = useCallback(() => {
     dispatch(removeMemberSlot({ teamId, entry: slot }));
@@ -104,16 +86,20 @@ function MemberView({ userServant, servant }: MemberViewProps) {
               </ServantSelection>
             </div>
           ) : undefined}
-          <div className="bg-overlay w-full px-2 pb-1 text-center">
-            <NPStat noblePhantasmLevel={noblePhantasmLevel} />
-            <SkillBar />
-            <AppendBar userServant={userServant} />
-            {mode === TeamViewMode.EDIT ? (
-              <AccordionTrigger>
-                Edit Stats <IconChevronDown />
-              </AccordionTrigger>
-            ) : undefined}
-          </div>
+          {mode === TeamViewMode.SCRIPT ? (
+            <CommandEditor className="w-full" servant={servant} />
+          ) : undefined}
+          {mode !== TeamViewMode.SCRIPT ? (
+            <div className="bg-overlay w-full px-2 pb-1 text-center">
+              <StatTable stats={normalizeStats(userServant)} />
+
+              {mode === TeamViewMode.EDIT ? (
+                <AccordionTrigger>
+                  Edit Stats <IconChevronDown />
+                </AccordionTrigger>
+              ) : undefined}
+            </div>
+          ) : undefined}
         </div>
       </section>
       <AccordionContent>
@@ -139,6 +125,7 @@ export function MemberSlotView() {
     },
     [dispatch, teamId, slot]
   );
+
   return (
     <section className="flex w-96 flex-nowrap overflow-hidden rounded-3xl border bg-gray-700 text-sm text-white">
       <img

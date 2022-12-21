@@ -7,6 +7,7 @@ import {
 import { deferP0, pipe } from "ts-functional-pipe";
 
 import { TrismegistusState } from "@/store";
+import { getInitialCommandScriptState } from "@/store/entity/commandScript";
 import { getInitialCraftEssencesState } from "@/store/entity/craftEssence";
 import { getInitialServantsState } from "@/store/entity/servant";
 import { removeItem, setItem, updateItem } from "@/store/entity/slot";
@@ -14,6 +15,7 @@ import {
   MemberSlot,
   TeamEntry,
   TeamMemberEntry,
+  UserCommand,
   UserCraftEssence,
   UserMysticCode,
   UserServant,
@@ -27,12 +29,14 @@ function getUserTeamInitialState({
   servants,
   craftEssences,
   mysticCode,
+  commandScript,
 }: AtLeast<UserTeam, "teamId">): UserTeam {
   return {
     teamId,
     servants: servants ?? getInitialServantsState(),
     craftEssences: craftEssences ?? getInitialCraftEssencesState(),
     mysticCode: mysticCode ?? createUserMysticCode({}),
+    commandScript: commandScript ?? getInitialCommandScriptState(),
   };
 }
 
@@ -122,6 +126,16 @@ const teamSlice = createSlice({
 
       team.mysticCode = mysticCode;
     },
+    addCommand(
+      stateDraft,
+      {
+        payload: { teamId, entry: userCommand },
+      }: PayloadAction<TeamEntry<UserCommand>>
+    ) {
+      const team = stateDraft.entities[teamId];
+      if (team == null) return;
+      team.commandScript.push(userCommand);
+    },
   },
 });
 
@@ -135,6 +149,7 @@ export const {
     updateServantStats,
     setMysticCode,
     removeMemberSlot,
+    addCommand,
   },
 } = teamSlice;
 

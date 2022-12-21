@@ -1,6 +1,7 @@
 import {
   CommandType,
   MemberSlot,
+  ProtoCommand,
   ProtoCraftEssence,
   ProtoMysticCode,
   ProtoServant,
@@ -34,6 +35,8 @@ export interface UserCraftEssence extends ProtoCraftEssence {}
 
 export interface UserMysticCode extends ProtoMysticCode {}
 
+export interface UserCommand extends ProtoCommand {}
+
 export type SlotMap<T> = Partial<Record<MemberSlot, T>>;
 
 export interface TeamEntry<T> {
@@ -53,6 +56,7 @@ export interface UserTeam {
   servants: UserServant[];
   craftEssences: UserCraftEssence[];
   mysticCode: UserMysticCode;
+  commandScript: UserCommand[];
 }
 
 export enum TeamViewMode {

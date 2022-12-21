@@ -148,7 +148,6 @@ export interface ProtoServant {
 }
 
 export interface ProtoCommand {
-  order: number;
   wave: number;
   type: CommandType;
   source: MemberSlot;
@@ -159,7 +158,7 @@ export interface ProtoTeam {
   mysticCode: ProtoMysticCode | undefined;
   servants: ProtoServant[];
   craftEssences: ProtoCraftEssence[];
-  commandScripts: ProtoCommand[];
+  commandScript: ProtoCommand[];
 }
 
 export interface ProtoTrismegistusState {
@@ -438,25 +437,22 @@ export const ProtoServant = {
 };
 
 function createBaseProtoCommand(): ProtoCommand {
-  return { order: 0, wave: 0, type: 0, source: 0, target: 0 };
+  return { wave: 0, type: 0, source: 0, target: 0 };
 }
 
 export const ProtoCommand = {
   encode(message: ProtoCommand, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.order !== 0) {
-      writer.uint32(8).uint32(message.order);
-    }
     if (message.wave !== 0) {
-      writer.uint32(16).uint32(message.wave);
+      writer.uint32(8).uint32(message.wave);
     }
     if (message.type !== 0) {
-      writer.uint32(24).int32(message.type);
+      writer.uint32(16).int32(message.type);
     }
     if (message.source !== 0) {
-      writer.uint32(32).int32(message.source);
+      writer.uint32(24).int32(message.source);
     }
     if (message.target !== 0) {
-      writer.uint32(40).int32(message.target);
+      writer.uint32(32).int32(message.target);
     }
     return writer;
   },
@@ -469,18 +465,15 @@ export const ProtoCommand = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.order = reader.uint32();
-          break;
-        case 2:
           message.wave = reader.uint32();
           break;
-        case 3:
+        case 2:
           message.type = reader.int32() as any;
           break;
-        case 4:
+        case 3:
           message.source = reader.int32() as any;
           break;
-        case 5:
+        case 4:
           message.target = reader.int32() as any;
           break;
         default:
@@ -493,7 +486,6 @@ export const ProtoCommand = {
 
   fromJSON(object: any): ProtoCommand {
     return {
-      order: isSet(object.order) ? Number(object.order) : 0,
       wave: isSet(object.wave) ? Number(object.wave) : 0,
       type: isSet(object.type) ? commandTypeFromJSON(object.type) : 0,
       source: isSet(object.source) ? memberSlotFromJSON(object.source) : 0,
@@ -503,7 +495,6 @@ export const ProtoCommand = {
 
   toJSON(message: ProtoCommand): unknown {
     const obj: any = {};
-    message.order !== undefined && (obj.order = Math.round(message.order));
     message.wave !== undefined && (obj.wave = Math.round(message.wave));
     message.type !== undefined && (obj.type = commandTypeToJSON(message.type));
     message.source !== undefined && (obj.source = memberSlotToJSON(message.source));
@@ -513,7 +504,6 @@ export const ProtoCommand = {
 
   fromPartial<I extends Exact<DeepPartial<ProtoCommand>, I>>(object: I): ProtoCommand {
     const message = createBaseProtoCommand();
-    message.order = object.order ?? 0;
     message.wave = object.wave ?? 0;
     message.type = object.type ?? 0;
     message.source = object.source ?? 0;
@@ -523,7 +513,7 @@ export const ProtoCommand = {
 };
 
 function createBaseProtoTeam(): ProtoTeam {
-  return { mysticCode: undefined, servants: [], craftEssences: [], commandScripts: [] };
+  return { mysticCode: undefined, servants: [], craftEssences: [], commandScript: [] };
 }
 
 export const ProtoTeam = {
@@ -537,7 +527,7 @@ export const ProtoTeam = {
     for (const v of message.craftEssences) {
       ProtoCraftEssence.encode(v!, writer.uint32(26).fork()).ldelim();
     }
-    for (const v of message.commandScripts) {
+    for (const v of message.commandScript) {
       ProtoCommand.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
@@ -560,7 +550,7 @@ export const ProtoTeam = {
           message.craftEssences.push(ProtoCraftEssence.decode(reader, reader.uint32()));
           break;
         case 4:
-          message.commandScripts.push(ProtoCommand.decode(reader, reader.uint32()));
+          message.commandScript.push(ProtoCommand.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -577,8 +567,8 @@ export const ProtoTeam = {
       craftEssences: Array.isArray(object?.craftEssences)
         ? object.craftEssences.map((e: any) => ProtoCraftEssence.fromJSON(e))
         : [],
-      commandScripts: Array.isArray(object?.commandScripts)
-        ? object.commandScripts.map((e: any) => ProtoCommand.fromJSON(e))
+      commandScript: Array.isArray(object?.commandScript)
+        ? object.commandScript.map((e: any) => ProtoCommand.fromJSON(e))
         : [],
     };
   },
@@ -597,10 +587,10 @@ export const ProtoTeam = {
     } else {
       obj.craftEssences = [];
     }
-    if (message.commandScripts) {
-      obj.commandScripts = message.commandScripts.map((e) => e ? ProtoCommand.toJSON(e) : undefined);
+    if (message.commandScript) {
+      obj.commandScript = message.commandScript.map((e) => e ? ProtoCommand.toJSON(e) : undefined);
     } else {
-      obj.commandScripts = [];
+      obj.commandScript = [];
     }
     return obj;
   },
@@ -612,7 +602,7 @@ export const ProtoTeam = {
       : undefined;
     message.servants = object.servants?.map((e) => ProtoServant.fromPartial(e)) || [];
     message.craftEssences = object.craftEssences?.map((e) => ProtoCraftEssence.fromPartial(e)) || [];
-    message.commandScripts = object.commandScripts?.map((e) => ProtoCommand.fromPartial(e)) || [];
+    message.commandScript = object.commandScript?.map((e) => ProtoCommand.fromPartial(e)) || [];
     return message;
   },
 };

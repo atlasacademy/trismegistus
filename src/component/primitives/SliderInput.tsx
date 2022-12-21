@@ -53,13 +53,9 @@ export function SliderInput({
   );
 
   const sliderRef = useRef<HTMLSpanElement>(null);
-  const sliderCommitHandler = useCallback(
-    ([sliderCommittedValue]: number[]) => {
-      onChangeChecked(sliderCommittedValue);
-      sliderRef?.current?.blur();
-    },
-    [onChangeChecked, sliderRef]
-  );
+  const sliderCommitHandler = useCallback(() => {
+    sliderRef?.current?.blur();
+  }, [sliderRef]);
 
   return (
     <section className="items-left mx-2 block rounded bg-gray-600 py-1 px-2">

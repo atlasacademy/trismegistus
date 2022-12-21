@@ -44,18 +44,17 @@ enum CommandType {
 }
 
 message ProtoCommand {
-  uint32 order = 1;
-  uint32 wave = 2;
-  CommandType type = 3;
-  MemberSlot source = 4;
-  MemberSlot target = 5;
+  uint32 wave = 1;
+  CommandType type = 2;
+  MemberSlot source = 3;
+  MemberSlot target = 4;
 }
 
 message ProtoTeam {
   ProtoMysticCode mysticCode = 1;
   repeated ProtoServant servants = 2;
   repeated ProtoCraftEssence craftEssences = 3;
-  repeated ProtoCommand commandScripts = 4;
+  repeated ProtoCommand commandScript = 4;
 }
 
 message ProtoTrismegistusState {

@@ -20,7 +20,7 @@ function CraftEssenceView({
   craftEssence,
 }: CraftEssenceViewProps) {
   return (
-    <section className="relative">
+    <section className="relative w-full">
       <img
         src={
           craftEssence.extraAssets.equipFace.equip?.[craftEssence.id] ??

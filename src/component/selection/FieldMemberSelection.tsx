@@ -1,4 +1,4 @@
-import { PropsWithChildren, useRef } from "react";
+import { PropsWithChildren, useMemo } from "react";
 
 import { useServantQuery } from "@/api";
 import {
@@ -8,7 +8,10 @@ import {
 import { ServantPortrait } from "@/component/ServantPortrait";
 import { useTeamContext } from "@/hook/useTeamContext";
 import { useMemoSelector } from "@/store";
-import { selectTeamServantBySlot } from "@/store/entity/servant";
+import {
+  selectTeamServantBySlot,
+  selectTeamServantSlots,
+} from "@/store/entity/servant";
 import { MemberSlot, TeamMember, TeamViewMode } from "@/types";
 
 function FieldMemberListItem({
@@ -29,33 +32,46 @@ function FieldMemberListItem({
         servant == null ? "block w-full text-center text-black" : "w-1/3"
       }
     >
-      {servant == null ? "None" : <ServantPortrait servant={servant} />}
+      {servant == null ? "No Target" : <ServantPortrait servant={servant} />}
     </button>
   );
 }
 
 export interface FieldMemberSelectionProps extends PropsWithChildren {
   onMemberSelect(slot: TeamMember): void;
+  className?: string;
+}
+
+const allowedSlots = new Set([
+  MemberSlot.FIELD_1,
+  MemberSlot.FIELD_2,
+  MemberSlot.FIELD_3,
+  MemberSlot.NONE,
+]);
+function useFieldSlots(teamId: number) {
+  const slots = useMemoSelector(selectTeamServantSlots, [teamId]);
+  return useMemo(() => {
+    return [...slots, MemberSlot.NONE]
+      .filter((slot) => allowedSlots.has(slot))
+      .map((slot) => ({ teamId, slot }));
+  }, [teamId, slots]);
 }
 
 export function FieldMemberSelection({
   onMemberSelect,
+  className,
   children,
 }: FieldMemberSelectionProps) {
   const { teamId, mode } = useTeamContext();
-  const fieldSlots = useRef([
-    { teamId, slot: MemberSlot.FIELD_1 },
-    { teamId, slot: MemberSlot.FIELD_2 },
-    { teamId, slot: MemberSlot.FIELD_3 },
-    { teamId, slot: MemberSlot.NONE },
-  ]);
+  const fieldSlots = useFieldSlots(teamId);
   return (
     <SelectionTrigger
-      items={fieldSlots.current}
+      items={fieldSlots}
       idSelector={({ slot }) => slot}
       onSelect={onMemberSelect}
       SelectionItemComponent={FieldMemberListItem}
       disabled={mode !== TeamViewMode.SCRIPT}
+      className={className}
     >
       {children}
     </SelectionTrigger>

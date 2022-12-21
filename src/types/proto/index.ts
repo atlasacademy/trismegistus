@@ -2,6 +2,7 @@ import { EntityState } from "@reduxjs/toolkit";
 
 import { TrismegistusState } from "@/store";
 import {
+  addCommand,
   getTeamsInitialState,
   newTeam,
   setCraftEssence,
@@ -21,15 +22,7 @@ export function stateToProto(state: TrismegistusState): ProtoTrismegistusState {
     (acc, rawId) => {
       if (!Number.isInteger(rawId)) return acc;
       const teamId = rawId as number;
-      const { mysticCode, servants, craftEssences } = entities[teamId]!!;
-
-      acc.teams[teamId] = {
-        mysticCode,
-        servants,
-        craftEssences,
-        commandScripts: [],
-      };
-
+      acc.teams[teamId] = entities[teamId]!!;
       return acc;
     },
     { teams: {} }
@@ -43,7 +36,7 @@ export function protoToState({
     const teamId = parseInt(rawId);
     if (!Number.isInteger(teamId)) return userTeams;
 
-    const { mysticCode, servants, craftEssences } = protoTeam;
+    const { mysticCode, servants, craftEssences, commandScript } = protoTeam;
     let result = teamsReducer(userTeams, newTeam(teamId));
 
     if (mysticCode != null) {
@@ -74,6 +67,10 @@ export function protoToState({
           entry: { craftEssenceId, craftEssenceLevel, maxLimitBreak },
         })
       );
+    }, result);
+
+    result = commandScript.reduce((acc, next) => {
+      return teamsReducer(acc, addCommand({ teamId, entry: next }));
     }, result);
     return result;
   }, getTeamsInitialState());
