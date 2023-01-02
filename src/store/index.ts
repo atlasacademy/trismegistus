@@ -10,6 +10,7 @@ import {
   TypedUseSelectorHook,
   useDispatch as useReduxDispatch,
   useSelector as useReduxSelector,
+  useStore as useReduxStore,
 } from "react-redux";
 import { persistStore } from "redux-persist";
 import {
@@ -67,7 +68,7 @@ export const listeners = listenersMiddleware as TrismegistusListeners;
 export const useDispatch: () => TrismegistusDispatch = useReduxDispatch;
 export const useSelector: TypedUseSelectorHook<TrismegistusState> =
   useReduxSelector;
-
+export const useStore = useReduxStore<TrismegistusState>;
 /**
  * An augmented version of {@link useReduxSelector} that accepts selector
  * creators and memoizes the given selector based on extra params.

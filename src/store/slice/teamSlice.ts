@@ -13,15 +13,21 @@ import { getInitialServantsState } from "@/store/entity/servant";
 import { removeItem, setItem, updateItem } from "@/store/entity/slot";
 import {
   MemberSlot,
+  TeamBattleStep,
   TeamEntry,
   TeamMemberEntry,
+  UserBattleCommand,
   UserCommand,
   UserCraftEssence,
   UserMysticCode,
   UserServant,
   UserTeam,
 } from "@/types";
-import { AtLeast, createUserMysticCode } from "@/types/utils";
+import {
+  AtLeast,
+  createUserBattleStep,
+  createUserMysticCode,
+} from "@/types/utils";
 import { coalesce } from "@/util/func";
 
 function getUserTeamInitialState({
@@ -56,7 +62,7 @@ const teamSlice = createSlice({
       addTeam(
         stateDraft,
         getUserTeamInitialState({
-          teamId: payload ? payload : stateDraft.ids.length + 1,
+          teamId: payload != null ? payload : stateDraft.ids.length + 1,
         })
       );
     },
@@ -126,15 +132,39 @@ const teamSlice = createSlice({
 
       team.mysticCode = mysticCode;
     },
+    startNewTurn(stateDraft, { payload: teamId }: PayloadAction<number>) {
+      const team = stateDraft.entities[teamId];
+      if (team == null) return;
+      const userBattleTurn = createUserBattleStep();
+      team.commandScript.push(userBattleTurn);
+    },
     addCommand(
       stateDraft,
       {
-        payload: { teamId, entry: userCommand },
-      }: PayloadAction<TeamEntry<UserCommand>>
+        payload: { teamId, step, entry: userCommand },
+      }: PayloadAction<TeamBattleStep<UserCommand>>
     ) {
       const team = stateDraft.entities[teamId];
       if (team == null) return;
-      team.commandScript.push(userCommand);
+      if (team.commandScript.length === 0) {
+        team.commandScript.push(createUserBattleStep());
+      }
+      const target = step ?? team.commandScript.length - 1;
+      team.commandScript[target]?.commands.push(userCommand);
+    },
+    addBattleCommand(
+      stateDraft,
+      {
+        payload: { teamId, step, entry: userBattleCommand },
+      }: PayloadAction<TeamBattleStep<UserBattleCommand>>
+    ) {
+      const team = stateDraft.entities[teamId];
+      if (team == null) return;
+      if (team.commandScript.length === 0) {
+        team.commandScript.push(createUserBattleStep());
+      }
+      const target = step ?? team.commandScript.length - 1;
+      team.commandScript[target]?.battleCommands.push(userBattleCommand);
     },
   },
 });
@@ -149,7 +179,9 @@ export const {
     updateServantStats,
     setMysticCode,
     removeMemberSlot,
+    startNewTurn,
     addCommand,
+    addBattleCommand,
   },
 } = teamSlice;
 

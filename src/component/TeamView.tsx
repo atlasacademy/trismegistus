@@ -6,6 +6,7 @@ import { useCallback, useMemo, useState } from "react";
 import { CommandDisplay } from "@/component/CommandDisplay";
 import { MemberSlotView } from "@/component/MemberSlotView";
 import { MysticCodeView } from "@/component/MysticCodeView";
+import { ResultView } from "@/component/ResultView";
 import { TeamContext } from "@/hook/useTeamContext";
 import { useMemoSelector } from "@/store";
 import { selectTeamServantSlots } from "@/store/entity/servant";
@@ -27,6 +28,8 @@ function useSlotData(
       { teamId, slot: MemberSlot.NONE, mode },
       ...(next != null && mode === TeamViewMode.EDIT
         ? [...slots, next]
+        : mode === TeamViewMode.SCRIPT
+        ? slots.slice(0, 3)
         : slots
       ).map((slot) => ({ teamId, mode, slot })),
     ];
@@ -72,18 +75,19 @@ export function TeamView({ teamId }: TeamCompViewProps) {
         </ToggleGroup.Item>
       </ToggleGroup.Root>
       <AccordionRoot type="single" className="flex flex-col" collapsible>
+        <TeamContext.Provider value={mysticCode}>
+          <MysticCodeView />
+        </TeamContext.Provider>
         {member.map((contextData) => (
           <TeamContext.Provider key={contextData.slot} value={contextData}>
             <MemberSlotView />
           </TeamContext.Provider>
         ))}
-        <TeamContext.Provider value={mysticCode}>
-          <MysticCodeView />
-        </TeamContext.Provider>
       </AccordionRoot>
       {mode === TeamViewMode.SCRIPT ? (
         <CommandDisplay teamId={teamId} />
       ) : undefined}
+      <ResultView teamId={teamId} />
     </section>
   );
 }

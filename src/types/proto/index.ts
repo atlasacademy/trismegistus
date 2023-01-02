@@ -2,31 +2,93 @@ import { EntityState } from "@reduxjs/toolkit";
 
 import { TrismegistusState } from "@/store";
 import {
+  addBattleCommand,
   addCommand,
   getTeamsInitialState,
   newTeam,
+  selectTeams,
   setCraftEssence,
   setMysticCode,
   setServant,
+  startNewTurn,
   teamsReducer,
 } from "@/store/slice/teamSlice";
-import { UserTeam } from "@/types";
-import { ProtoTrismegistusState } from "@/types/proto/trismegistus";
+import { UserCraftEssence, UserServant, UserTeam } from "@/types";
+import {
+  ProtoBattleStep,
+  ProtoMysticCode,
+  ProtoTrismegistusState,
+} from "@/types/proto/trismegistus";
 import { indexToSlot } from "@/types/utils";
 
 export function stateToProto(state: TrismegistusState): ProtoTrismegistusState {
-  const {
-    teams: { ids, entities },
-  } = state;
-  return ids.reduce<ProtoTrismegistusState>(
-    (acc, rawId) => {
-      if (!Number.isInteger(rawId)) return acc;
-      const teamId = rawId as number;
-      acc.teams[teamId] = entities[teamId]!!;
-      return acc;
-    },
-    { teams: {} }
-  );
+  const teams = selectTeams(state);
+  return { teams };
+}
+
+function addServants(
+  servants: UserServant[],
+  state: EntityState<UserTeam>,
+  teamId: number
+) {
+  return servants.reduce((mainState, servant, currentIndex) => {
+    const slot = indexToSlot(currentIndex);
+    if (slot == null) return mainState;
+    return teamsReducer(
+      mainState,
+      setServant({ teamId, slot, entry: servant })
+    );
+  }, state);
+}
+
+function addCraftEssences(
+  craftEssences: UserCraftEssence[],
+  state: EntityState<UserTeam>,
+  teamId: number
+) {
+  return craftEssences.reduce((mainState, craftEssence, currentIndex) => {
+    const slot = indexToSlot(currentIndex);
+    if (slot == null) return mainState;
+    return teamsReducer(
+      mainState,
+      setCraftEssence({ teamId, slot, entry: craftEssence })
+    );
+  }, state);
+}
+
+function addMysticCode(
+  mysticCode: ProtoMysticCode | undefined,
+  state: EntityState<UserTeam>,
+  teamId: number
+) {
+  if (mysticCode == null) {
+    return state;
+  }
+  return teamsReducer(state, setMysticCode({ teamId, entry: mysticCode }));
+}
+
+function addCommandScript(
+  commandScript: ProtoBattleStep[],
+  result: EntityState<UserTeam>,
+  teamId: number
+) {
+  return commandScript.reduce((mainState, next) => {
+    const { commands, battleCommands } = next;
+    let newTurn = teamsReducer(mainState, startNewTurn(teamId));
+
+    newTurn = commands.reduce((acc, command) => {
+      return teamsReducer(acc, addCommand({ teamId, entry: command }));
+    }, newTurn);
+
+    newTurn = battleCommands.reduce((acc, battleCommand) => {
+      return teamsReducer(
+        acc,
+        addBattleCommand({ teamId, entry: battleCommand })
+      );
+    }, newTurn);
+
+    return newTurn;
+  }, result);
 }
 
 export function protoToState({
@@ -39,39 +101,11 @@ export function protoToState({
     const { mysticCode, servants, craftEssences, commandScript } = protoTeam;
     let result = teamsReducer(userTeams, newTeam(teamId));
 
-    if (mysticCode != null) {
-      result = teamsReducer(
-        result,
-        setMysticCode({ teamId, entry: mysticCode })
-      );
-    }
+    result = addMysticCode(mysticCode, result, teamId);
+    result = addServants(servants, result, teamId);
+    result = addCraftEssences(craftEssences, result, teamId);
+    result = addCommandScript(commandScript, result, teamId);
 
-    result = servants.reduce((acc, userServant, currentIndex) => {
-      const slot = indexToSlot(currentIndex);
-      if (slot == null) return acc;
-      return teamsReducer(
-        acc,
-        setServant({ teamId, slot, entry: userServant })
-      );
-    }, result);
-
-    result = craftEssences.reduce((acc, next, currentIndex) => {
-      const slot = indexToSlot(currentIndex);
-      if (slot == null) return acc;
-      const { craftEssenceId, craftEssenceLevel, maxLimitBreak } = next;
-      return teamsReducer(
-        acc,
-        setCraftEssence({
-          teamId,
-          slot,
-          entry: { craftEssenceId, craftEssenceLevel, maxLimitBreak },
-        })
-      );
-    }, result);
-
-    result = commandScript.reduce((acc, next) => {
-      return teamsReducer(acc, addCommand({ teamId, entry: next }));
-    }, result);
     return result;
   }, getTeamsInitialState());
 }

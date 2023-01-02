@@ -1,9 +1,12 @@
 import {
   MemberSlot,
+  SkillNum,
+  UserBattleStep,
   UserCraftEssence,
   UserMysticCode,
   UserServant,
 } from "@/types";
+import { CommandType } from "@/types/proto/trismegistus";
 
 export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 
@@ -28,6 +31,14 @@ export function indexToSlot(index: number): MemberSlot | undefined {
     return (index + 1) as MemberSlot;
   }
   return undefined;
+}
+
+export function isSkillNum(commandType: CommandType): commandType is SkillNum {
+  return (
+    commandType === CommandType.SKILL_1 ||
+    commandType === CommandType.SKILL_2 ||
+    commandType === CommandType.SKILL_3
+  );
 }
 
 export function createUserMysticCode({
@@ -75,5 +86,15 @@ export function createUserCraftEssence({
     craftEssenceId: craftEssenceId ?? 0,
     craftEssenceLevel: craftEssenceLevel ?? 0,
     maxLimitBreak: maxLimitBreak ?? false,
+  };
+}
+
+export function createUserBattleStep({
+  battleCommands,
+  commands,
+}: Partial<UserBattleStep> = {}) {
+  return {
+    commands: commands ?? [],
+    battleCommands: battleCommands ?? [],
   };
 }

@@ -4,9 +4,13 @@ import quickMiniCard from "@assets/icon_commandcard_quick.png";
 import noblePhantasmIcon from "@assets/img_notice_np.png";
 import { Card, Servant } from "@atlasacademy/api-connector";
 import classNames from "classnames";
+import { useCallback } from "react";
 
 import { SkillButton } from "@/component/SkillButton";
-import { CommandType } from "@/types/proto/trismegistus";
+import { useTeamContext } from "@/hook/useTeamContext";
+import { useDispatch } from "@/store";
+import { addBattleCommand } from "@/store/slice/teamSlice";
+import { BattleCommandType, CommandType } from "@/types/proto/trismegistus";
 
 interface CardIconProps {
   card: Card;
@@ -43,7 +47,21 @@ function CardBar({ servant }: CommandPortraitProps) {
   );
 }
 
+function useNoblePhantasmActivation() {
+  const { teamId, slot: source } = useTeamContext();
+  const dispatch = useDispatch();
+  return useCallback(() => {
+    dispatch(
+      addBattleCommand({
+        teamId,
+        entry: { type: BattleCommandType.NOBLE_PHANTASM, source },
+      })
+    );
+  }, [dispatch, teamId, source]);
+}
+
 export function CommandEditor({ servant, className }: CommandPortraitProps) {
+  const handleNoblePhantasm = useNoblePhantasmActivation();
   return (
     <section
       className={classNames(
@@ -52,7 +70,7 @@ export function CommandEditor({ servant, className }: CommandPortraitProps) {
       )}
     >
       <div className="mt-4 flex">
-        <button>
+        <button onClick={handleNoblePhantasm}>
           <img className="h-8" src={noblePhantasmIcon} alt="NoblePhantasm" />
         </button>
       </div>

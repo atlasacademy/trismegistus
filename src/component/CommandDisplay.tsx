@@ -32,9 +32,14 @@ export function CommandDisplay({ teamId }: CommandDisplayProps) {
   const script = useMemoSelector(selectTeamCommandScript, [teamId]);
   return (
     <section>
-      {script.map((userCommand, index) => (
-        <CommandItemDisplay key={index} userCommand={userCommand} />
-      ))}
+      {script.flatMap((battleStep, step) => {
+        return battleStep.commands.map((userCommand, index) => (
+          <CommandItemDisplay
+            key={index + index * step}
+            userCommand={userCommand}
+          />
+        ));
+      })}
     </section>
   );
 }

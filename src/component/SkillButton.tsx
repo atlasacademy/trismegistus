@@ -23,7 +23,7 @@ function useSkillActivation(
       dispatch(
         addCommand({
           teamId,
-          entry: { type: skillNum, source, target, wave: 1 },
+          entry: { type: skillNum, source, target },
         })
       );
     },

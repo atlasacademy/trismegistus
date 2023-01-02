@@ -11,8 +11,8 @@ enum MemberSlot {
 }
 
 message ProtoMysticCode {
-  uint32 mysticCodeId = 2;
-  uint32 mysticCodeLevel = 3;
+  uint32 mysticCodeId = 1;
+  uint32 mysticCodeLevel = 2;
 }
 
 message ProtoCraftEssence {
@@ -39,24 +39,39 @@ enum CommandType {
   SKILL_1 = 1;
   SKILL_2 = 2;
   SKILL_3 = 3;
-  COMMAND_CARD = 4;
-  NOBLE_PHANTASM = 5;
 }
 
 message ProtoCommand {
-  uint32 wave = 1;
-  CommandType type = 2;
-  MemberSlot source = 3;
-  MemberSlot target = 4;
+  CommandType type = 1;
+  MemberSlot source = 2;
+  MemberSlot target = 3;
+}
+
+enum BattleCommandType {
+  SKIP = 0;
+  COMMAND_CARD = 1;
+  NOBLE_PHANTASM = 2;
+  INCAPACITATE = 3;
+}
+
+message ProtoBattleCommand {
+  BattleCommandType type = 1;
+  MemberSlot source = 2;
+}
+
+message ProtoBattleStep {
+  repeated ProtoCommand commands = 1;
+  repeated ProtoBattleCommand battleCommands = 2;
 }
 
 message ProtoTeam {
-  ProtoMysticCode mysticCode = 1;
-  repeated ProtoServant servants = 2;
-  repeated ProtoCraftEssence craftEssences = 3;
-  repeated ProtoCommand commandScript = 4;
+  uint32 teamId = 1;
+  ProtoMysticCode mysticCode = 2;
+  repeated ProtoServant servants = 3;
+  repeated ProtoCraftEssence craftEssences = 4;
+  repeated ProtoBattleStep commandScript = 5;
 }
 
 message ProtoTrismegistusState {
-  map<uint32, ProtoTeam> teams = 1;
+  repeated ProtoTeam teams = 1;
 }

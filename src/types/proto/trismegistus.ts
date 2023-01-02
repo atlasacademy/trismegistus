@@ -71,8 +71,6 @@ export enum CommandType {
   SKILL_1 = 1,
   SKILL_2 = 2,
   SKILL_3 = 3,
-  COMMAND_CARD = 4,
-  NOBLE_PHANTASM = 5,
   UNRECOGNIZED = -1,
 }
 
@@ -90,12 +88,6 @@ export function commandTypeFromJSON(object: any): CommandType {
     case 3:
     case "SKILL_3":
       return CommandType.SKILL_3;
-    case 4:
-    case "COMMAND_CARD":
-      return CommandType.COMMAND_CARD;
-    case 5:
-    case "NOBLE_PHANTASM":
-      return CommandType.NOBLE_PHANTASM;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -113,11 +105,52 @@ export function commandTypeToJSON(object: CommandType): string {
       return "SKILL_2";
     case CommandType.SKILL_3:
       return "SKILL_3";
-    case CommandType.COMMAND_CARD:
-      return "COMMAND_CARD";
-    case CommandType.NOBLE_PHANTASM:
-      return "NOBLE_PHANTASM";
     case CommandType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum BattleCommandType {
+  SKIP = 0,
+  COMMAND_CARD = 1,
+  NOBLE_PHANTASM = 2,
+  INCAPACITATE = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function battleCommandTypeFromJSON(object: any): BattleCommandType {
+  switch (object) {
+    case 0:
+    case "SKIP":
+      return BattleCommandType.SKIP;
+    case 1:
+    case "COMMAND_CARD":
+      return BattleCommandType.COMMAND_CARD;
+    case 2:
+    case "NOBLE_PHANTASM":
+      return BattleCommandType.NOBLE_PHANTASM;
+    case 3:
+    case "INCAPACITATE":
+      return BattleCommandType.INCAPACITATE;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return BattleCommandType.UNRECOGNIZED;
+  }
+}
+
+export function battleCommandTypeToJSON(object: BattleCommandType): string {
+  switch (object) {
+    case BattleCommandType.SKIP:
+      return "SKIP";
+    case BattleCommandType.COMMAND_CARD:
+      return "COMMAND_CARD";
+    case BattleCommandType.NOBLE_PHANTASM:
+      return "NOBLE_PHANTASM";
+    case BattleCommandType.INCAPACITATE:
+      return "INCAPACITATE";
+    case BattleCommandType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
@@ -148,26 +181,31 @@ export interface ProtoServant {
 }
 
 export interface ProtoCommand {
-  wave: number;
   type: CommandType;
   source: MemberSlot;
   target: MemberSlot;
 }
 
+export interface ProtoBattleCommand {
+  type: BattleCommandType;
+  source: MemberSlot;
+}
+
+export interface ProtoBattleStep {
+  commands: ProtoCommand[];
+  battleCommands: ProtoBattleCommand[];
+}
+
 export interface ProtoTeam {
+  teamId: number;
   mysticCode: ProtoMysticCode | undefined;
   servants: ProtoServant[];
   craftEssences: ProtoCraftEssence[];
-  commandScript: ProtoCommand[];
+  commandScript: ProtoBattleStep[];
 }
 
 export interface ProtoTrismegistusState {
-  teams: { [key: number]: ProtoTeam };
-}
-
-export interface ProtoTrismegistusState_TeamsEntry {
-  key: number;
-  value: ProtoTeam | undefined;
+  teams: ProtoTeam[];
 }
 
 function createBaseProtoMysticCode(): ProtoMysticCode {
@@ -177,10 +215,10 @@ function createBaseProtoMysticCode(): ProtoMysticCode {
 export const ProtoMysticCode = {
   encode(message: ProtoMysticCode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.mysticCodeId !== 0) {
-      writer.uint32(16).uint32(message.mysticCodeId);
+      writer.uint32(8).uint32(message.mysticCodeId);
     }
     if (message.mysticCodeLevel !== 0) {
-      writer.uint32(24).uint32(message.mysticCodeLevel);
+      writer.uint32(16).uint32(message.mysticCodeLevel);
     }
     return writer;
   },
@@ -192,10 +230,10 @@ export const ProtoMysticCode = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 2:
+        case 1:
           message.mysticCodeId = reader.uint32();
           break;
-        case 3:
+        case 2:
           message.mysticCodeLevel = reader.uint32();
           break;
         default:
@@ -437,22 +475,19 @@ export const ProtoServant = {
 };
 
 function createBaseProtoCommand(): ProtoCommand {
-  return { wave: 0, type: 0, source: 0, target: 0 };
+  return { type: 0, source: 0, target: 0 };
 }
 
 export const ProtoCommand = {
   encode(message: ProtoCommand, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wave !== 0) {
-      writer.uint32(8).uint32(message.wave);
-    }
     if (message.type !== 0) {
-      writer.uint32(16).int32(message.type);
+      writer.uint32(8).int32(message.type);
     }
     if (message.source !== 0) {
-      writer.uint32(24).int32(message.source);
+      writer.uint32(16).int32(message.source);
     }
     if (message.target !== 0) {
-      writer.uint32(32).int32(message.target);
+      writer.uint32(24).int32(message.target);
     }
     return writer;
   },
@@ -465,15 +500,12 @@ export const ProtoCommand = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.wave = reader.uint32();
-          break;
-        case 2:
           message.type = reader.int32() as any;
           break;
-        case 3:
+        case 2:
           message.source = reader.int32() as any;
           break;
-        case 4:
+        case 3:
           message.target = reader.int32() as any;
           break;
         default:
@@ -486,7 +518,6 @@ export const ProtoCommand = {
 
   fromJSON(object: any): ProtoCommand {
     return {
-      wave: isSet(object.wave) ? Number(object.wave) : 0,
       type: isSet(object.type) ? commandTypeFromJSON(object.type) : 0,
       source: isSet(object.source) ? memberSlotFromJSON(object.source) : 0,
       target: isSet(object.target) ? memberSlotFromJSON(object.target) : 0,
@@ -495,7 +526,6 @@ export const ProtoCommand = {
 
   toJSON(message: ProtoCommand): unknown {
     const obj: any = {};
-    message.wave !== undefined && (obj.wave = Math.round(message.wave));
     message.type !== undefined && (obj.type = commandTypeToJSON(message.type));
     message.source !== undefined && (obj.source = memberSlotToJSON(message.source));
     message.target !== undefined && (obj.target = memberSlotToJSON(message.target));
@@ -504,7 +534,6 @@ export const ProtoCommand = {
 
   fromPartial<I extends Exact<DeepPartial<ProtoCommand>, I>>(object: I): ProtoCommand {
     const message = createBaseProtoCommand();
-    message.wave = object.wave ?? 0;
     message.type = object.type ?? 0;
     message.source = object.source ?? 0;
     message.target = object.target ?? 0;
@@ -512,23 +541,152 @@ export const ProtoCommand = {
   },
 };
 
+function createBaseProtoBattleCommand(): ProtoBattleCommand {
+  return { type: 0, source: 0 };
+}
+
+export const ProtoBattleCommand = {
+  encode(message: ProtoBattleCommand, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    if (message.source !== 0) {
+      writer.uint32(16).int32(message.source);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProtoBattleCommand {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProtoBattleCommand();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.type = reader.int32() as any;
+          break;
+        case 2:
+          message.source = reader.int32() as any;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ProtoBattleCommand {
+    return {
+      type: isSet(object.type) ? battleCommandTypeFromJSON(object.type) : 0,
+      source: isSet(object.source) ? memberSlotFromJSON(object.source) : 0,
+    };
+  },
+
+  toJSON(message: ProtoBattleCommand): unknown {
+    const obj: any = {};
+    message.type !== undefined && (obj.type = battleCommandTypeToJSON(message.type));
+    message.source !== undefined && (obj.source = memberSlotToJSON(message.source));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ProtoBattleCommand>, I>>(object: I): ProtoBattleCommand {
+    const message = createBaseProtoBattleCommand();
+    message.type = object.type ?? 0;
+    message.source = object.source ?? 0;
+    return message;
+  },
+};
+
+function createBaseProtoBattleStep(): ProtoBattleStep {
+  return { commands: [], battleCommands: [] };
+}
+
+export const ProtoBattleStep = {
+  encode(message: ProtoBattleStep, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.commands) {
+      ProtoCommand.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.battleCommands) {
+      ProtoBattleCommand.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProtoBattleStep {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProtoBattleStep();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.commands.push(ProtoCommand.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.battleCommands.push(ProtoBattleCommand.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ProtoBattleStep {
+    return {
+      commands: Array.isArray(object?.commands) ? object.commands.map((e: any) => ProtoCommand.fromJSON(e)) : [],
+      battleCommands: Array.isArray(object?.battleCommands)
+        ? object.battleCommands.map((e: any) => ProtoBattleCommand.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ProtoBattleStep): unknown {
+    const obj: any = {};
+    if (message.commands) {
+      obj.commands = message.commands.map((e) => e ? ProtoCommand.toJSON(e) : undefined);
+    } else {
+      obj.commands = [];
+    }
+    if (message.battleCommands) {
+      obj.battleCommands = message.battleCommands.map((e) => e ? ProtoBattleCommand.toJSON(e) : undefined);
+    } else {
+      obj.battleCommands = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ProtoBattleStep>, I>>(object: I): ProtoBattleStep {
+    const message = createBaseProtoBattleStep();
+    message.commands = object.commands?.map((e) => ProtoCommand.fromPartial(e)) || [];
+    message.battleCommands = object.battleCommands?.map((e) => ProtoBattleCommand.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseProtoTeam(): ProtoTeam {
-  return { mysticCode: undefined, servants: [], craftEssences: [], commandScript: [] };
+  return { teamId: 0, mysticCode: undefined, servants: [], craftEssences: [], commandScript: [] };
 }
 
 export const ProtoTeam = {
   encode(message: ProtoTeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.teamId !== 0) {
+      writer.uint32(8).uint32(message.teamId);
+    }
     if (message.mysticCode !== undefined) {
-      ProtoMysticCode.encode(message.mysticCode, writer.uint32(10).fork()).ldelim();
+      ProtoMysticCode.encode(message.mysticCode, writer.uint32(18).fork()).ldelim();
     }
     for (const v of message.servants) {
-      ProtoServant.encode(v!, writer.uint32(18).fork()).ldelim();
+      ProtoServant.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     for (const v of message.craftEssences) {
-      ProtoCraftEssence.encode(v!, writer.uint32(26).fork()).ldelim();
+      ProtoCraftEssence.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     for (const v of message.commandScript) {
-      ProtoCommand.encode(v!, writer.uint32(34).fork()).ldelim();
+      ProtoBattleStep.encode(v!, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -541,16 +699,19 @@ export const ProtoTeam = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.mysticCode = ProtoMysticCode.decode(reader, reader.uint32());
+          message.teamId = reader.uint32();
           break;
         case 2:
-          message.servants.push(ProtoServant.decode(reader, reader.uint32()));
+          message.mysticCode = ProtoMysticCode.decode(reader, reader.uint32());
           break;
         case 3:
-          message.craftEssences.push(ProtoCraftEssence.decode(reader, reader.uint32()));
+          message.servants.push(ProtoServant.decode(reader, reader.uint32()));
           break;
         case 4:
-          message.commandScript.push(ProtoCommand.decode(reader, reader.uint32()));
+          message.craftEssences.push(ProtoCraftEssence.decode(reader, reader.uint32()));
+          break;
+        case 5:
+          message.commandScript.push(ProtoBattleStep.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -562,19 +723,21 @@ export const ProtoTeam = {
 
   fromJSON(object: any): ProtoTeam {
     return {
+      teamId: isSet(object.teamId) ? Number(object.teamId) : 0,
       mysticCode: isSet(object.mysticCode) ? ProtoMysticCode.fromJSON(object.mysticCode) : undefined,
       servants: Array.isArray(object?.servants) ? object.servants.map((e: any) => ProtoServant.fromJSON(e)) : [],
       craftEssences: Array.isArray(object?.craftEssences)
         ? object.craftEssences.map((e: any) => ProtoCraftEssence.fromJSON(e))
         : [],
       commandScript: Array.isArray(object?.commandScript)
-        ? object.commandScript.map((e: any) => ProtoCommand.fromJSON(e))
+        ? object.commandScript.map((e: any) => ProtoBattleStep.fromJSON(e))
         : [],
     };
   },
 
   toJSON(message: ProtoTeam): unknown {
     const obj: any = {};
+    message.teamId !== undefined && (obj.teamId = Math.round(message.teamId));
     message.mysticCode !== undefined &&
       (obj.mysticCode = message.mysticCode ? ProtoMysticCode.toJSON(message.mysticCode) : undefined);
     if (message.servants) {
@@ -588,7 +751,7 @@ export const ProtoTeam = {
       obj.craftEssences = [];
     }
     if (message.commandScript) {
-      obj.commandScript = message.commandScript.map((e) => e ? ProtoCommand.toJSON(e) : undefined);
+      obj.commandScript = message.commandScript.map((e) => e ? ProtoBattleStep.toJSON(e) : undefined);
     } else {
       obj.commandScript = [];
     }
@@ -597,25 +760,26 @@ export const ProtoTeam = {
 
   fromPartial<I extends Exact<DeepPartial<ProtoTeam>, I>>(object: I): ProtoTeam {
     const message = createBaseProtoTeam();
+    message.teamId = object.teamId ?? 0;
     message.mysticCode = (object.mysticCode !== undefined && object.mysticCode !== null)
       ? ProtoMysticCode.fromPartial(object.mysticCode)
       : undefined;
     message.servants = object.servants?.map((e) => ProtoServant.fromPartial(e)) || [];
     message.craftEssences = object.craftEssences?.map((e) => ProtoCraftEssence.fromPartial(e)) || [];
-    message.commandScript = object.commandScript?.map((e) => ProtoCommand.fromPartial(e)) || [];
+    message.commandScript = object.commandScript?.map((e) => ProtoBattleStep.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseProtoTrismegistusState(): ProtoTrismegistusState {
-  return { teams: {} };
+  return { teams: [] };
 }
 
 export const ProtoTrismegistusState = {
   encode(message: ProtoTrismegistusState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    Object.entries(message.teams).forEach(([key, value]) => {
-      ProtoTrismegistusState_TeamsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
-    });
+    for (const v of message.teams) {
+      ProtoTeam.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -627,10 +791,7 @@ export const ProtoTrismegistusState = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          const entry1 = ProtoTrismegistusState_TeamsEntry.decode(reader, reader.uint32());
-          if (entry1.value !== undefined) {
-            message.teams[entry1.key] = entry1.value;
-          }
+          message.teams.push(ProtoTeam.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -641,97 +802,22 @@ export const ProtoTrismegistusState = {
   },
 
   fromJSON(object: any): ProtoTrismegistusState {
-    return {
-      teams: isObject(object.teams)
-        ? Object.entries(object.teams).reduce<{ [key: number]: ProtoTeam }>((acc, [key, value]) => {
-          acc[Number(key)] = ProtoTeam.fromJSON(value);
-          return acc;
-        }, {})
-        : {},
-    };
+    return { teams: Array.isArray(object?.teams) ? object.teams.map((e: any) => ProtoTeam.fromJSON(e)) : [] };
   },
 
   toJSON(message: ProtoTrismegistusState): unknown {
     const obj: any = {};
-    obj.teams = {};
     if (message.teams) {
-      Object.entries(message.teams).forEach(([k, v]) => {
-        obj.teams[k] = ProtoTeam.toJSON(v);
-      });
+      obj.teams = message.teams.map((e) => e ? ProtoTeam.toJSON(e) : undefined);
+    } else {
+      obj.teams = [];
     }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<ProtoTrismegistusState>, I>>(object: I): ProtoTrismegistusState {
     const message = createBaseProtoTrismegistusState();
-    message.teams = Object.entries(object.teams ?? {}).reduce<{ [key: number]: ProtoTeam }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[Number(key)] = ProtoTeam.fromPartial(value);
-      }
-      return acc;
-    }, {});
-    return message;
-  },
-};
-
-function createBaseProtoTrismegistusState_TeamsEntry(): ProtoTrismegistusState_TeamsEntry {
-  return { key: 0, value: undefined };
-}
-
-export const ProtoTrismegistusState_TeamsEntry = {
-  encode(message: ProtoTrismegistusState_TeamsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.key !== 0) {
-      writer.uint32(8).uint32(message.key);
-    }
-    if (message.value !== undefined) {
-      ProtoTeam.encode(message.value, writer.uint32(18).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ProtoTrismegistusState_TeamsEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseProtoTrismegistusState_TeamsEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.key = reader.uint32();
-          break;
-        case 2:
-          message.value = ProtoTeam.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ProtoTrismegistusState_TeamsEntry {
-    return {
-      key: isSet(object.key) ? Number(object.key) : 0,
-      value: isSet(object.value) ? ProtoTeam.fromJSON(object.value) : undefined,
-    };
-  },
-
-  toJSON(message: ProtoTrismegistusState_TeamsEntry): unknown {
-    const obj: any = {};
-    message.key !== undefined && (obj.key = Math.round(message.key));
-    message.value !== undefined && (obj.value = message.value ? ProtoTeam.toJSON(message.value) : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ProtoTrismegistusState_TeamsEntry>, I>>(
-    object: I,
-  ): ProtoTrismegistusState_TeamsEntry {
-    const message = createBaseProtoTrismegistusState_TeamsEntry();
-    message.key = object.key ?? 0;
-    message.value = (object.value !== undefined && object.value !== null)
-      ? ProtoTeam.fromPartial(object.value)
-      : undefined;
+    message.teams = object.teams?.map((e) => ProtoTeam.fromPartial(e)) || [];
     return message;
   },
 };
@@ -746,10 +832,6 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
-
-function isObject(value: any): boolean {
-  return typeof value === "object" && value !== null;
-}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

@@ -1,10 +1,15 @@
+import { Servant } from "@atlasacademy/api-connector";
+
 import {
   CommandType,
   MemberSlot,
+  ProtoBattleCommand,
+  ProtoBattleStep,
   ProtoCommand,
   ProtoCraftEssence,
   ProtoMysticCode,
   ProtoServant,
+  ProtoTeam,
 } from "@/types/proto/trismegistus";
 
 export { MemberSlot };
@@ -37,6 +42,23 @@ export interface UserMysticCode extends ProtoMysticCode {}
 
 export interface UserCommand extends ProtoCommand {}
 
+export interface UserBattleCommand extends ProtoBattleCommand {}
+
+export interface UserBattleStep extends ProtoBattleStep {
+  commands: UserCommand[];
+  battleCommands: UserBattleCommand[];
+}
+
+export type UserCommandScript = UserBattleStep[];
+
+export interface UserTeam extends ProtoTeam {
+  teamId: number;
+  servants: UserServant[];
+  craftEssences: UserCraftEssence[];
+  mysticCode: UserMysticCode;
+  commandScript: UserCommandScript;
+}
+
 export type SlotMap<T> = Partial<Record<MemberSlot, T>>;
 
 export interface TeamEntry<T> {
@@ -51,12 +73,8 @@ export interface TeamMember {
 
 export interface TeamMemberEntry<T> extends TeamEntry<T>, TeamMember {}
 
-export interface UserTeam {
-  teamId: number;
-  servants: UserServant[];
-  craftEssences: UserCraftEssence[];
-  mysticCode: UserMysticCode;
-  commandScript: UserCommand[];
+export interface TeamBattleStep<T> extends TeamEntry<T> {
+  step?: number;
 }
 
 export enum TeamViewMode {
@@ -72,4 +90,14 @@ export interface TeamContextData {
 }
 
 export interface UserServantDefaults
-  extends Omit<UserServant, "servantId" | "slot" | "level"> {}
+  extends Omit<UserServant, "servantId" | "level"> {}
+
+export interface SkillActivation {
+  skillNum: SkillNum;
+  source: Servant.Servant;
+  target?: Servant.Servant;
+}
+
+export interface NoblePhantasmActivation {
+  servant: Servant.Servant;
+}
