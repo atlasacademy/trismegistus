@@ -29,14 +29,16 @@ export function selectTeamCommandScript(
   );
 }
 
+export function selectResolvedCommand() {}
+
 export function selectCommandSkill(
   teamId: number,
-  slot: MemberSlot,
+  source: MemberSlot,
   skillNum: SkillNum
 ): (
   state: TrismegistusState
 ) => [skill: Skill.Skill | undefined, level: number] {
-  const userServantSelector = selectTeamServantBySlot(teamId, slot);
+  const userServantSelector = selectTeamServantBySlot(teamId, source);
   return createSelector(
     [
       userServantSelector,

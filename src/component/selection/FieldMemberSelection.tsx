@@ -40,6 +40,7 @@ function FieldMemberListItem({
 export interface FieldMemberSelectionProps extends PropsWithChildren {
   onMemberSelect(slot: TeamMember): void;
   className?: string;
+  disabled?: boolean;
 }
 
 const allowedSlots = new Set([
@@ -60,6 +61,7 @@ function useFieldSlots(teamId: number) {
 export function FieldMemberSelection({
   onMemberSelect,
   className,
+  disabled,
   children,
 }: FieldMemberSelectionProps) {
   const { teamId, mode } = useTeamContext();
@@ -70,7 +72,7 @@ export function FieldMemberSelection({
       idSelector={({ slot }) => slot}
       onSelect={onMemberSelect}
       SelectionItemComponent={FieldMemberListItem}
-      disabled={mode !== TeamViewMode.SCRIPT}
+      disabled={disabled || mode !== TeamViewMode.SCRIPT}
       className={className}
     >
       {children}

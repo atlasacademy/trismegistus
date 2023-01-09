@@ -1,16 +1,21 @@
 import background from "@assets/background.png";
 
 import { useMysticCodeQuery } from "@/api";
+import { MysticCodeStatsForm } from "@/component/form/MysticCodeStatsForm";
 import { MysticCodeSelection } from "@/component/selection/MysticCodeSelection";
+import { SkillButton } from "@/component/SkillButton";
 import { Spinner } from "@/component/Spinner";
 import { useTeamContext } from "@/hook/useTeamContext";
 import { useMemoSelector } from "@/store";
-import { selectTeamMysticCode } from "@/store/slice/teamSlice";
+import { selectTeamMysticCodeWithDefaults } from "@/store/slice/teamSlice";
 import { TeamViewMode } from "@/types";
+import { CommandType } from "@/types/proto/trismegistus";
 
 export function MysticCodeView() {
   const { teamId, mode } = useTeamContext();
-  const userMysticCode = useMemoSelector(selectTeamMysticCode, [teamId]);
+  const userMysticCode = useMemoSelector(selectTeamMysticCodeWithDefaults, [
+    teamId,
+  ]);
   const { mysticCodeId } = userMysticCode;
   const { data: mysticCode, isLoading } = useMysticCodeQuery(mysticCodeId);
 
@@ -34,9 +39,31 @@ export function MysticCodeView() {
               className="h-full"
             />
             <div className="flex h-full w-full items-end justify-end">
-              <div className="bg-overlay mr-5 text-white">
-                {"Lv: " + userMysticCode.mysticCodeLevel}
-              </div>
+              {mode === TeamViewMode.EDIT ? (
+                <MysticCodeStatsForm />
+              ) : (
+                <>
+                  {mode === TeamViewMode.SCRIPT ? (
+                    <div className="bg-overlay w-full pt-1">
+                      <SkillButton
+                        skillNum={CommandType.SKILL_1}
+                        entity={mysticCode}
+                      />
+                      <SkillButton
+                        skillNum={CommandType.SKILL_2}
+                        entity={mysticCode}
+                      />
+                      <SkillButton
+                        skillNum={CommandType.SKILL_3}
+                        entity={mysticCode}
+                      />
+                    </div>
+                  ) : undefined}
+                  <div className="bg-overlay mr-5 w-12 text-white">
+                    {"Lv: " + userMysticCode.mysticCodeLevel}
+                  </div>
+                </>
+              )}
             </div>
           </>
         ) : (

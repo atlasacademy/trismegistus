@@ -42,10 +42,14 @@ export function selectMysticCode({
 }
 
 export function selectEntitySkill(
-  entity: Entity.Entity,
+  entity: Entity.Entity | { skills: Skill.Skill[] },
   skillNum: SkillNum
 ): Skill.Skill | undefined {
-  return entity.skills.reduce<Skill.Skill | undefined>((result, next) => {
+  const { skills } = entity;
+  if (skills.length === 3) {
+    return skills[skillNum - 1];
+  }
+  return skills.reduce<Skill.Skill | undefined>((result, next) => {
     if (
       next.num === skillNum &&
       (next.priority ?? 0) > (result?.priority ?? 0)

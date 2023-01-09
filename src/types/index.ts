@@ -91,6 +91,8 @@ export interface TeamContextData {
 
 export interface UserServantDefaults
   extends Omit<UserServant, "servantId" | "level"> {}
+export interface UserMysticCodeDefaults
+  extends Omit<UserMysticCode, "mysticCodeId"> {}
 
 export interface SkillActivation {
   skillNum: SkillNum;

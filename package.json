@@ -19,6 +19,7 @@
     "@radix-ui/react-slider": "1.1.0",
     "@radix-ui/react-tabs": "1.0.1",
     "@radix-ui/react-toggle-group": "1.0.1",
+    "@react-hook/debounce": "^4.0.0",
     "@reduxjs/toolkit": "1.9.1",
     "@tabler/icons": "1.117.0",
     "classnames": "2.3.2",

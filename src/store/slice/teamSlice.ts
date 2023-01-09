@@ -28,6 +28,7 @@ import {
   createUserBattleStep,
   createUserMysticCode,
 } from "@/types/utils";
+import { fallback } from "@/util";
 import { coalesce } from "@/util/func";
 
 function getUserTeamInitialState({
@@ -132,6 +133,17 @@ const teamSlice = createSlice({
 
       team.mysticCode = mysticCode;
     },
+    updateMysticCode(
+      stateDraft,
+      {
+        payload: { teamId, entry: mysticCodeUpdate },
+      }: PayloadAction<TeamEntry<[keyof UserMysticCode, number]>>
+    ) {
+      const team = stateDraft.entities[teamId];
+      if (team == null) return;
+      const [key, value] = mysticCodeUpdate;
+      team.mysticCode[key] = value;
+    },
     startNewTurn(stateDraft, { payload: teamId }: PayloadAction<number>) {
       const team = stateDraft.entities[teamId];
       if (team == null) return;
@@ -178,6 +190,7 @@ export const {
     updateServant,
     updateServantStats,
     setMysticCode,
+    updateMysticCode,
     removeMemberSlot,
     startNewTurn,
     addCommand,
@@ -213,3 +226,15 @@ export function selectTeamMysticCode(teamId: number) {
     coalesce((state: UserTeam) => state.mysticCode, createUserMysticCode({}))
   );
 }
+
+export const selectTeamMysticCodeWithDefaults = (
+  teamId: number
+): ((state: TrismegistusState) => UserMysticCode) => {
+  return pipe(
+    selectTeamMysticCode(teamId),
+    ({ mysticCodeId, mysticCodeLevel }) => ({
+      mysticCodeId,
+      mysticCodeLevel: fallback(mysticCodeLevel, 10),
+    })
+  );
+};

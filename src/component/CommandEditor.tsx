@@ -75,9 +75,9 @@ export function CommandEditor({ servant, className }: CommandPortraitProps) {
         </button>
       </div>
       <div className="bg-overlay w-full pt-1">
-        <SkillButton skillNum={CommandType.SKILL_1} servant={servant} />
-        <SkillButton skillNum={CommandType.SKILL_2} servant={servant} />
-        <SkillButton skillNum={CommandType.SKILL_3} servant={servant} />
+        <SkillButton skillNum={CommandType.SKILL_1} entity={servant} />
+        <SkillButton skillNum={CommandType.SKILL_2} entity={servant} />
+        <SkillButton skillNum={CommandType.SKILL_3} entity={servant} />
       </div>
     </section>
   );

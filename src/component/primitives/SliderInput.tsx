@@ -58,8 +58,8 @@ export function SliderInput({
   }, [sliderRef]);
 
   return (
-    <section className="items-left mx-2 block rounded bg-gray-600 py-1 px-2">
-      <div className="flex w-48 items-center rounded bg-gray-700 px-2.5">
+    <section className="items-left mx-2 block rounded py-1 px-2">
+      <div className="flex w-48 items-center rounded bg-black/30 px-2.5">
         <label htmlFor={title} className="shrink-0">
           {title}
         </label>

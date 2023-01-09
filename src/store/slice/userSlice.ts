@@ -2,11 +2,12 @@ import { Region } from "@atlasacademy/api-connector";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { TrismegistusState } from "@/store";
-import { UserServantDefaults } from "@/types";
+import { UserMysticCodeDefaults, UserServantDefaults } from "@/types";
 
 export interface UserState {
   region: Region;
   servantDefaults: UserServantDefaults;
+  mysticCodeDefaults: UserMysticCodeDefaults;
 }
 
 export const getInitialState = (): UserState => ({
@@ -20,6 +21,9 @@ export const getInitialState = (): UserState => ({
     append1: 0,
     append2: 0,
     append3: 0,
+  },
+  mysticCodeDefaults: {
+    mysticCodeLevel: 10,
   },
 });
 

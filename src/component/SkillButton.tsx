@@ -1,4 +1,4 @@
-import { Servant } from "@atlasacademy/api-connector";
+import { Entity, Skill } from "@atlasacademy/api-connector";
 import { useCallback } from "react";
 
 import { selectEntitySkill } from "@/api/selectors";
@@ -10,7 +10,8 @@ import { MemberSlot, SkillNum, TeamMember } from "@/types";
 
 export interface SkillButtonProps {
   skillNum: SkillNum;
-  servant: Servant.Servant;
+  entity: Entity.Entity | { skills: Skill.Skill[] };
+  disabled?: boolean;
 }
 
 function useSkillActivation(
@@ -31,13 +32,13 @@ function useSkillActivation(
   );
 }
 
-export function SkillButton({ skillNum, servant }: SkillButtonProps) {
+export function SkillButton({ skillNum, entity, disabled }: SkillButtonProps) {
   const { slot: source } = useTeamContext();
-  const skill = selectEntitySkill(servant, skillNum);
+  const skill = selectEntitySkill(entity, skillNum);
   const skillActivation = useSkillActivation(skillNum, source);
   if (skill == null) return <button disabled className="h-12 w-12" />;
   return (
-    <FieldMemberSelection onMemberSelect={skillActivation}>
+    <FieldMemberSelection onMemberSelect={skillActivation} disabled={disabled}>
       <img className="h-12 w-12" src={skill.icon} alt={skill.name} />
     </FieldMemberSelection>
   );

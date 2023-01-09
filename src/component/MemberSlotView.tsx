@@ -20,7 +20,7 @@ import { ServantSelection } from "@/component/selection/ServantSelection";
 import { ServantPortrait } from "@/component/ServantPortrait";
 import { Spinner } from "@/component/Spinner";
 import { AttackStatDisplay } from "@/component/stat/AttackStatDisplay";
-import { StatsForm } from "@/component/StatsForm";
+import { StatsForm as ServantStatsForm } from "@/component/StatsForm";
 import { StatTable } from "@/component/StatTable";
 import { useTeamContext } from "@/hook/useTeamContext";
 import { useDispatch, useMemoSelector } from "@/store";
@@ -103,7 +103,7 @@ function MemberView({ userServant, servant }: MemberViewProps) {
         </div>
       </section>
       <AccordionContent>
-        <StatsForm />
+        <ServantStatsForm />
       </AccordionContent>
     </AccordionItem>
   );

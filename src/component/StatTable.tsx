@@ -25,7 +25,7 @@ export function StatTable({ stats }: LevelDisplayProps) {
           <tr key={label}>
             <td>{label}</td>
             {values.map((value, index) => (
-              <td key={index} colSpan={lmc / values.length}>
+              <td key={index} colSpan={lmc / values.length} className="w-12">
                 {value}
               </td>
             ))}
