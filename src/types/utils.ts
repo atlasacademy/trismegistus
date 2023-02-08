@@ -46,7 +46,7 @@ export function rangedInt(min: number, max: number) {
 }
 
 export function positiveInt() {
-  return z.number().int().positive().default(0);
+  return z.number().int().nonnegative().default(0);
 }
 
 export function extractFieldInfo(schema: z.ZodDefault<z.ZodNumber>):
