@@ -1,7 +1,7 @@
-import { useSerializedState } from "@/hook/useSerializedState";
-import { stateToProto } from "@/types/proto";
+import { bytesToBase64 } from "@/helpers/base64";
+import { useSerializedState } from "@/hooks/useSerializedState";
+import { serializeState } from "@/types/proto/serializeState";
 import { ProtoTrismegistusState } from "@/types/proto/trismegistus";
-import { bytesToBase64 } from "@/util/base64";
 
 function teamCompsSerializer(state: ProtoTrismegistusState): string {
   try {
@@ -18,7 +18,7 @@ export function useSerializedMainState() {
     predicate(_, currentState, previousState) {
       return currentState.teams !== previousState.teams;
     },
-    selector: stateToProto,
+    selector: serializeState,
     serializer: teamCompsSerializer,
   });
 }

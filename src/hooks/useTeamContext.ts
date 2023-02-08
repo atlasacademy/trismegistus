@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import { createContext, useContext } from "react";
 
 import { MemberSlot, TeamContextData, TeamViewMode } from "@/types";
 
-export const TeamContext = React.createContext<TeamContextData>({
-  teamId: -1,
+export const TeamContext = createContext<TeamContextData>({
+  teamId: "",
   slot: MemberSlot.NONE,
   mode: TeamViewMode.VIEW,
 });
