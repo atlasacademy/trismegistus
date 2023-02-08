@@ -13,6 +13,7 @@
       "version": "detect"
     },
     "import/resolver": {
+      "typescript": true,
       "node": {
         "paths": [
           "src"
@@ -33,12 +34,15 @@
   },
   "extends": [
     "eslint:recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "plugin:react/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:prettier/recommended",
     "plugin:react-hooks/recommended"
   ],
   "plugins": [
+    "import",
     "simple-import-sort",
     "prettier",
     "@typescript-eslint"
@@ -75,6 +79,8 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
+    "no-redeclare": "off",
+    "@typescript-eslint/no-redeclare": "error",
     "jsx-a11y/anchor-is-valid": [
       "error",
       {
