@@ -29,7 +29,7 @@ import { createTeamUserServantSelector } from "@/store/selectors/servant";
 import { setServant, updateServant } from "@/store/slice/teamReducer";
 import { removeMember } from "@/store/slice/teamSlice";
 import { TeamViewMode } from "@/types";
-import { createUserServant, UserServant } from "@/types/userServant";
+import { UserServant } from "@/types/userServant";
 
 interface MemberViewProps {
   userServant: UserServant;
@@ -122,8 +122,9 @@ export function MemberSlotView() {
   const { data: servant, isLoading } = useServantQuery(servantId);
   const addServant = useCallback(
     (selected: Servant.ServantBasic) => {
-      const item = createUserServant({ servantId: selected.id });
-      dispatch(setServant({ slot, item }, { teamId }));
+      dispatch(
+        setServant({ slot, item: { servantId: selected.id } }, { teamId })
+      );
     },
     [dispatch, teamId, slot]
   );
