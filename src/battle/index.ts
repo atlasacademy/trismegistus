@@ -1,18 +1,26 @@
-import { Servant } from "@atlasacademy/api-connector";
+import { CraftEssence, Servant } from "@atlasacademy/api-connector";
 
-import { UserCommand, UserServant } from "@/types";
+import { MemberSlot, SkillActivation } from "@/types";
+import { UserCraftEssence } from "@/types/userCraftEssence";
+import { UserServant } from "@/types/userServant";
 
 export interface BattleEngine {
   calculate(
-    teamId: number,
+    memberSlot: MemberSlot,
     userServant: UserServant,
     servant: Servant.Servant,
-    commands: UserCommand[]
+    userCraftEssence: UserCraftEssence | undefined,
+    craftEssence: CraftEssence.CraftEssence | undefined,
+    commands: SkillActivation[]
   ): BattleResult;
 }
 
-export type StatRange<T> = [min: T, base: T, max: T];
+export interface StatRange {
+  min: number;
+  base: number;
+  max: number;
+}
 
 export interface BattleResult {
-  damage: StatRange<number>;
+  damage: StatRange;
 }

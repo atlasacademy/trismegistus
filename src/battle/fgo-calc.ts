@@ -1,42 +1,38 @@
+import { Func } from "@atlasacademy/api-connector";
 import { calcSvt, CalcVals } from "fgo-calc";
 import { funcToCalcStr } from "fgo-calc/dist/utils";
-import { Store } from "redux";
 
 import { BattleEngine, BattleResult } from "@/battle/index";
-import { TrismegistusState } from "@/store";
-import { selectCommandSkill } from "@/store/entity/commandScript";
-import { UserCommand, UserServant } from "@/types";
-import { CommandType } from "@/types/proto/trismegistus";
+import { MemberSlot, SkillActivation } from "@/types";
+import { UserServant } from "@/types/userServant";
 
-export function createFgoCalcBattleEngine(
-  store: Store<TrismegistusState>
-): BattleEngine {
+export function createFgoCalcBattleEngine(): BattleEngine {
   function userServantToCalcStr({
-    level,
+    servantLevel,
     fou,
     noblePhantasmLevel,
   }: UserServant): string {
-    return `np${noblePhantasmLevel} lv${level} f${fou}`;
+    return `np${noblePhantasmLevel} lv${servantLevel} f${fou}`;
   }
 
-  function commandsToCalcStr(teamId: number, commands: UserCommand[]): string {
-    const state = store.getState();
-    return commands.reduce((calcString, { type, source }) => {
-      if (
-        type === CommandType.NO_COMMAND ||
-        type === CommandType.UNRECOGNIZED
-      ) {
-        return calcString;
-      }
-      const selector = selectCommandSkill(teamId, source, type);
-      const [skill, skillLevel] = selector(state);
-
+  function commandsToCalcStr(
+    currentSlot: MemberSlot,
+    commands: SkillActivation[]
+  ): string {
+    return commands.reduce((calcString, { skill, source, target }) => {
+      const [sourceSkill, skillLevel] = skill;
       return (
-        skill?.functions.reduce((acc, nextFunc) => {
-          return (
-            acc +
-            " " +
-            Object.values(funcToCalcStr(nextFunc, skillLevel)).join(" ")
+        sourceSkill?.functions.reduce((skillCalcStr, nextFunc) => {
+          const effects = funcToCalcStr(nextFunc, skillLevel);
+          return Object.entries(effects).reduce(
+            (funcToStr, [targetType, nextStr]) => {
+              const type = targetType as Func.FuncTargetType;
+              if (source in getTeamMembers(source, type, target)) {
+                return funcToStr + " " + nextStr;
+              }
+              return funcToStr;
+            },
+            skillCalcStr
           );
         }, calcString) ?? calcString
       );
@@ -44,13 +40,71 @@ export function createFgoCalcBattleEngine(
   }
 
   return {
-    calculate(teamId, userServant, servant, commands): BattleResult {
+    calculate(
+      slot,
+      userServant,
+      servant,
+      userCraftEssence,
+      craftEssence,
+      skills
+    ): BattleResult {
       const servantStat = userServantToCalcStr(userServant);
-      const modifiers = commandsToCalcStr(teamId, commands);
+      const modifiers = commandsToCalcStr(slot, skills);
       const {
         damageFields: { damage, minrollDamage, maxrollDamage },
       } = calcSvt(servant, modifiers + " " + servantStat).vals as CalcVals;
-      return { damage: [minrollDamage, damage, maxrollDamage] };
+      return {
+        damage: { min: minrollDamage, base: damage, max: maxrollDamage },
+      };
     },
   };
+}
+
+function getTeamMembers(
+  source: MemberSlot,
+  targetType: Func.FuncTargetType,
+  target: MemberSlot = MemberSlot.NONE
+): MemberSlot[] {
+  if (targetType === Func.FuncTargetType.PT_ALL) {
+    return [MemberSlot.FIELD_1, MemberSlot.FIELD_2, MemberSlot.FIELD_3];
+  }
+  if (targetType === Func.FuncTargetType.SELF) {
+    return [source];
+  }
+  if (targetType === Func.FuncTargetType.PT_OTHER) {
+    return [MemberSlot.FIELD_1, MemberSlot.FIELD_2, MemberSlot.FIELD_3].filter(
+      (fieldSlot) => fieldSlot !== source
+    );
+  }
+  if (targetType === Func.FuncTargetType.PT_ONE) {
+    return [target];
+  }
+  if (targetType === Func.FuncTargetType.PT_ONE_OTHER) {
+    return [MemberSlot.FIELD_1, MemberSlot.FIELD_2, MemberSlot.FIELD_3].filter(
+      (fieldSlot) => fieldSlot !== target
+    );
+  }
+  if (targetType === Func.FuncTargetType.PT_FULL) {
+    return [
+      MemberSlot.FIELD_1,
+      MemberSlot.FIELD_2,
+      MemberSlot.FIELD_3,
+      MemberSlot.SUB_1,
+      MemberSlot.SUB_2,
+      MemberSlot.SUB_3,
+    ];
+  }
+  if (targetType === Func.FuncTargetType.PT_OTHER_FULL) {
+    return [
+      MemberSlot.FIELD_1,
+      MemberSlot.FIELD_2,
+      MemberSlot.FIELD_3,
+      MemberSlot.SUB_1,
+      MemberSlot.SUB_2,
+      MemberSlot.SUB_3,
+    ].filter((slot) => slot !== target);
+  }
+
+  // TODO: handle other FuncTargetTypes
+  return [];
 }
