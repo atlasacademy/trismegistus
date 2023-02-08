@@ -1,19 +1,19 @@
 import { EntityState } from "@reduxjs/toolkit";
 
+import { base64ToBytes } from "@/helpers/base64";
 import { getTeamsInitialState } from "@/store/slice/teamSlice";
-import { UserTeam } from "@/types";
-import { protoToState } from "@/types/proto";
+import { deserializeProtoState } from "@/types/proto/deserializeProtoState";
 import { ProtoTrismegistusState } from "@/types/proto/trismegistus";
-import { base64ToBytes } from "@/util/base64";
+import { InputTeam } from "@/types/userTeam";
 
-export function deserializeProtoState(
+export function deserializeProto(
   rawState: string | null
-): EntityState<UserTeam> {
+): EntityState<InputTeam> {
   if (rawState == null) return getTeamsInitialState();
   try {
     const bytes = base64ToBytes(rawState);
     const proto = ProtoTrismegistusState.decode(bytes);
-    return protoToState(proto);
+    return deserializeProtoState(proto);
   } catch (e) {
     return getTeamsInitialState();
   }
