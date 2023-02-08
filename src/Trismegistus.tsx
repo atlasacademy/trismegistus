@@ -1,8 +1,8 @@
-import { IconBook, IconPlus } from "@tabler/icons";
+import { IconBook, IconPlus } from "@tabler/icons-react";
 import { useCallback } from "react";
 
 import { TeamView } from "@/component/TeamView";
-import { useSerializedMainState } from "@/hook/useSerializedMainState";
+import { useSerializedMainState } from "@/hooks/useSerializedMainState";
 import { useDispatch, useSelector } from "@/store";
 import { newTeam, selectTeamIds } from "@/store/slice/teamSlice";
 

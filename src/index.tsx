@@ -1,6 +1,6 @@
 import "./index.css";
 
-import React from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -11,11 +11,11 @@ import { persistor, store } from "./store";
 
 const appElement = document.getElementById("root")!;
 createRoot(appElement).render(
-  <React.StrictMode>
+  <StrictMode>
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <Trismegistus />
       </PersistGate>
     </Provider>
-  </React.StrictMode>
+  </StrictMode>
 );
