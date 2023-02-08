@@ -22,7 +22,9 @@ export function ControlledSlider<T extends FieldValues>({
   min,
   max,
 }: ControlledSliderProps<T>) {
-  const { field } = useController({
+  const {
+    field: { value, onChange, onBlur },
+  } = useController({
     control,
     name: property,
   });
@@ -31,9 +33,9 @@ export function ControlledSlider<T extends FieldValues>({
       title={label}
       min={min}
       max={max}
-      value={field.value}
-      onChange={field.onChange}
-      onBlur={field.onBlur}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
     />
   );
 }

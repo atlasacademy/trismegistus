@@ -2,7 +2,6 @@ import { useDebounceCallback } from "@react-hook/debounce";
 import { useCallback, useEffect, useRef } from "react";
 import {
   Control,
-  DefaultValues,
   FieldPath,
   FieldValues,
   FormState,
@@ -58,7 +57,6 @@ export function StatsForm<T extends FieldValues>({
 }: StatsFormProps<T>) {
   const { control, handleSubmit, reset } = useForm<T>({
     mode: "onChange",
-    defaultValues: state as DefaultValues<T>,
   });
 
   const extractChanged = useChangedFieldsExtractor(control);
