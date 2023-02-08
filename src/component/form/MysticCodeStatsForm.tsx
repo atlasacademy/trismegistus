@@ -1,64 +1,57 @@
-import { useDebounceCallback } from "@react-hook/debounce";
-import { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { createSelector } from "@reduxjs/toolkit";
+import { connect } from "react-redux";
 
-import { ControlledSlider } from "@/component/form/ControlledSlider";
-import { extractFieldsChanged } from "@/component/form/extractFieldsChanged";
-import { useTeamContext } from "@/hook/useTeamContext";
-import { useDispatch, useMemoSelector } from "@/store";
 import {
-  selectTeamMysticCode,
-  updateMysticCode,
-} from "@/store/slice/teamSlice";
-import { UserMysticCode } from "@/types";
+  StatFormFields,
+  StatsForm,
+  StatsFormActions,
+  StatsFormData,
+} from "@/component/form/StatsForm";
+import { useTeamContext } from "@/hooks/useTeamContext";
+import { TrismegistusState } from "@/store";
+import { createTeamMysticCodeSelector } from "@/store/slice/mysticCodeSlice";
+import { updateMysticCode } from "@/store/slice/teamReducer";
+import { TeamContextData } from "@/types";
+import { InputMysticCode, UserMysticCode } from "@/types/userMysticCode";
+import { extractFieldInfo } from "@/types/utils";
 
-function useMysticCodeUpdate(teamId: number) {
-  const dispatch = useDispatch();
-  return useCallback(
-    <K extends keyof UserMysticCode>(entry: [K, UserMysticCode[K]]) => {
-      dispatch(updateMysticCode({ teamId, entry }));
-    },
-    [teamId, dispatch]
+function createMysticCodeFormFieldsSelector(): (
+  state: TrismegistusState
+) => StatFormFields<InputMysticCode> {
+  return createSelector(
+    [(_: TrismegistusState) => UserMysticCode],
+    (schema) => {
+      const levelField = extractFieldInfo(schema.shape.mysticCodeLevel);
+      if (levelField == null) return {};
+      return {
+        [levelField.label]: ["mysticCodeLevel", levelField.min, levelField.max],
+      };
+    }
   );
 }
 
+const Connected = connect(
+  () => {
+    const selectMysticCode = createTeamMysticCodeSelector();
+    const selectFields = createMysticCodeFormFieldsSelector();
+    return (
+      state: TrismegistusState,
+      { teamId }: TeamContextData
+    ): StatsFormData<InputMysticCode> => {
+      return {
+        state: selectMysticCode(state, teamId),
+        fields: selectFields(state),
+      };
+    };
+  },
+  (dispatch, { teamId }): StatsFormActions<InputMysticCode> => ({
+    onSubmit(changes: Partial<InputMysticCode>) {
+      dispatch(updateMysticCode(changes, { teamId }));
+    },
+  })
+)(StatsForm);
+
 export function MysticCodeStatsForm() {
-  const { teamId } = useTeamContext();
-  const userMysticCode = useMemoSelector(selectTeamMysticCode, [teamId]);
-
-  const { control, handleSubmit, formState, reset } = useForm<UserMysticCode>({
-    mode: "onBlur",
-    defaultValues: userMysticCode,
-  });
-
-  const updateMysticCodeStats = useMysticCodeUpdate(teamId);
-
-  const onSubmit = useDebounceCallback(
-    handleSubmit((data, formEvent) => {
-      formEvent?.preventDefault();
-      const changes = extractFieldsChanged(formState, data);
-      if (changes.length === 1) {
-        const [change] = changes;
-        updateMysticCodeStats(change);
-      }
-    }),
-    250
-  );
-
-  useEffect(() => {
-    reset(userMysticCode);
-  }, [reset, userMysticCode]);
-
-  return (
-    <form className="space-y-2" onSubmit={onSubmit} onChange={onSubmit}>
-      <ControlledSlider
-        control={control}
-        label="Level"
-        property="mysticCodeLevel"
-        min={0}
-        max={10}
-      />
-      <input type="submit" hidden />
-    </form>
-  );
+  const { teamId, slot, mode } = useTeamContext();
+  return <Connected teamId={teamId} slot={slot} mode={mode} />;
 }

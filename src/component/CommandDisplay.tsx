@@ -1,16 +1,17 @@
-import { IconArrowRight } from "@tabler/icons";
+import { IconArrowRight } from "@tabler/icons-react";
 
-import { selectServant } from "@/api/selectors";
+import { createServantSelector } from "@/api/selectors";
 import { ServantPortrait } from "@/component/ServantPortrait";
 import { SkillButton } from "@/component/SkillButton";
-import { useMemoSelector } from "@/store";
-import { selectTeamCommandScript } from "@/store/entity/commandScript";
-import { selectTeamServantBySlot } from "@/store/entity/servant";
-import { MemberSlot, UserCommand } from "@/types";
+import { useFactorySelector } from "@/hooks/useFactorySelector";
+import { useSelector } from "@/store";
+import { selectTeamCommandScript } from "@/store/slice/commandScriptSlice";
+import { createTeamUserServantSelector } from "@/store/slice/servantSlice";
+import { MemberSlot, TeamEntry } from "@/types";
+import { UserCommand } from "@/types/userCommandScript";
 import { isSkillNum } from "@/types/utils";
 
-interface CommandItemDisplayProps {
-  teamId: number;
+interface CommandItemDisplayProps extends TeamEntry {
   userCommand: UserCommand;
 }
 
@@ -18,16 +19,28 @@ function CommandItemDisplay({
   teamId,
   userCommand: { source, target, type },
 }: CommandItemDisplayProps) {
-  const commandSource = useMemoSelector(selectTeamServantBySlot, [
+  const commandSource = useFactorySelector(
+    createTeamUserServantSelector,
+    [true],
     teamId,
-    source,
-  ]);
-  const sourceServant = useMemoSelector(selectServant, [commandSource]);
-  const commandTarget = useMemoSelector(selectTeamServantBySlot, [
+    source
+  );
+  const sourceServant = useFactorySelector(
+    createServantSelector,
+    [],
+    commandSource.servantId
+  );
+  const commandTarget = useFactorySelector(
+    createTeamUserServantSelector,
+    [true],
     teamId,
-    target,
-  ]);
-  const targetServant = useMemoSelector(selectServant, [commandTarget]);
+    target
+  );
+  const targetServant = useFactorySelector(
+    createServantSelector,
+    [],
+    commandTarget.servantId
+  );
   return (
     <div className="flex">
       {sourceServant != null ? (
@@ -51,21 +64,21 @@ function CommandItemDisplay({
   );
 }
 
-export interface CommandDisplayProps {
-  teamId: number;
-}
+export interface CommandDisplayProps extends TeamEntry {}
 export function CommandDisplay({ teamId }: CommandDisplayProps) {
-  const script = useMemoSelector(selectTeamCommandScript, [teamId]);
+  const script = useSelector((state) => selectTeamCommandScript(state, teamId));
   return (
     <section>
       {script.flatMap((battleStep, step) => {
-        return battleStep.commands.map((userCommand, index) => (
-          <CommandItemDisplay
-            key={index + index * step}
-            teamId={teamId}
-            userCommand={userCommand}
-          />
-        ));
+        return (
+          battleStep?.commands?.map((userCommand, index) => (
+            <CommandItemDisplay
+              key={index + index * step}
+              teamId={teamId}
+              userCommand={userCommand}
+            />
+          )) ?? []
+        );
       })}
     </section>
   );

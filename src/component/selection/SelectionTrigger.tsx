@@ -1,11 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { IconX } from "@tabler/icons";
-import React, {
-  ComponentType,
-  PropsWithChildren,
-  useCallback,
-  useState,
-} from "react";
+import { IconX } from "@tabler/icons-react";
+import { ComponentType, PropsWithChildren, useCallback, useState } from "react";
 
 export interface SelectionTriggerProps<T> extends PropsWithChildren {
   items: T[];

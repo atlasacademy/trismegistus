@@ -1,5 +1,5 @@
 import { Servant } from "@atlasacademy/api-connector";
-import { IconChevronLeft } from "@tabler/icons";
+import { IconChevronLeft } from "@tabler/icons-react";
 import { PropsWithChildren } from "react";
 
 import { useServantListQuery } from "@/api";

@@ -2,7 +2,8 @@ import { Region } from "@atlasacademy/api-connector";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { TrismegistusState } from "@/store";
-import { UserMysticCodeDefaults, UserServantDefaults } from "@/types";
+import { UserMysticCodeDefaults } from "@/types/userMysticCode";
+import { UserServantDefaults } from "@/types/userServant";
 
 export interface UserState {
   region: Region;
@@ -43,6 +44,10 @@ export function selectRegion(state: TrismegistusState) {
 
 export function selectServantDefaults(state: TrismegistusState) {
   return state.user.servantDefaults;
+}
+
+export function selectMysticCodeDefaults(state: TrismegistusState) {
+  return state.user.mysticCodeDefaults;
 }
 
 export const {

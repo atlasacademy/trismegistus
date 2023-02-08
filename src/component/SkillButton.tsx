@@ -3,9 +3,9 @@ import { useCallback } from "react";
 
 import { selectEntitySkill } from "@/api/selectors";
 import { FieldMemberSelection } from "@/component/selection/FieldMemberSelection";
-import { useTeamContext } from "@/hook/useTeamContext";
+import { useTeamContext } from "@/hooks/useTeamContext";
 import { useDispatch } from "@/store";
-import { addCommand } from "@/store/slice/teamSlice";
+import { addCommand } from "@/store/slice/teamReducer";
 import { MemberSlot, SkillNum, TeamMember } from "@/types";
 
 export interface SkillButtonProps {
@@ -22,10 +22,12 @@ function useSkillActivation(
   return useCallback(
     ({ teamId, slot: target }) => {
       dispatch(
-        addCommand({
-          teamId,
-          entry: { type: skillNum, source, target },
-        })
+        addCommand(
+          {
+            item: { type: skillNum, source, target },
+          },
+          { teamId }
+        )
       );
     },
     [skillNum, source, dispatch]

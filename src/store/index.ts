@@ -3,10 +3,7 @@ import {
   createListenerMiddleware,
   ListenerMiddlewareInstance,
 } from "@reduxjs/toolkit";
-import { useMemo } from "react";
 import {
-  EqualityFn,
-  NoInfer,
   TypedUseSelectorHook,
   useDispatch as useReduxDispatch,
   useSelector as useReduxSelector,
@@ -23,7 +20,7 @@ import {
 } from "redux-persist/es/constants";
 
 import { apiMiddleware, apiReducer, apiReducerPath } from "@/api";
-import { deserializeProtoState } from "@/store/deserializeProtoState";
+import { deserializeProto } from "@/helpers/deserializeProto";
 import { teamsReducer } from "@/store/slice/teamSlice";
 import { userReducer } from "@/store/slice/userSlice";
 
@@ -33,7 +30,7 @@ function createStore() {
   const serializedInitialState = new URLSearchParams(
     window.location.search
   ).get("o");
-  const teams = deserializeProtoState(serializedInitialState);
+  const teams = deserializeProto(serializedInitialState);
 
   return configureStore({
     reducer: {
@@ -69,22 +66,3 @@ export const useDispatch: () => TrismegistusDispatch = useReduxDispatch;
 export const useSelector: TypedUseSelectorHook<TrismegistusState> =
   useReduxSelector;
 export const useStore = useReduxStore<TrismegistusState>;
-/**
- * An augmented version of {@link useReduxSelector} that accepts selector
- * creators and memoizes the given selector based on extra params.
- */
-export function useMemoSelector<TSelected, TParams extends any[]>(
-  selectorFactory: (
-    ...params: [...TParams]
-  ) => (state: TrismegistusState) => TSelected,
-  params: TParams,
-  equalityFn?: EqualityFn<NoInfer<TSelected>>
-): TSelected {
-  const memoizedSelector = useMemo(
-    () => selectorFactory(...params),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectorFactory, ...params]
-  );
-  return useSelector(memoizedSelector, equalityFn);
-}
-export { selectTeamServantWithDefaults } from "@/store/entity/servant";

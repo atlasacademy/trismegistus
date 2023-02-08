@@ -1,5 +1,5 @@
 import { MysticCode } from "@atlasacademy/api-connector";
-import { IconChevronLeft } from "@tabler/icons";
+import { IconChevronLeft } from "@tabler/icons-react";
 import { PropsWithChildren, useCallback } from "react";
 
 import { useMysticCodeListQuery } from "@/api";
@@ -7,11 +7,11 @@ import {
   SelectionItemProps,
   SelectionTrigger,
 } from "@/component/selection/SelectionTrigger";
-import { useTeamContext } from "@/hook/useTeamContext";
+import { useTeamContext } from "@/hooks/useTeamContext";
 import { useDispatch } from "@/store";
-import { setMysticCode } from "@/store/slice/teamSlice";
+import { updateMysticCode } from "@/store/slice/teamReducer";
 import { TeamViewMode } from "@/types";
-import { createUserMysticCode } from "@/types/utils";
+import { createUserMysticCode } from "@/types/userMysticCode";
 
 function BasicMysticIcon({
   item: { name: mysticCodeName },
@@ -41,7 +41,7 @@ export function MysticCodeSelection({
   const onSelectMysticCode = useCallback(
     ({ id: mysticCodeId }: MysticCode.MysticCodeBasic) => {
       const entry = createUserMysticCode({ mysticCodeId });
-      dispatch(setMysticCode({ teamId, entry }));
+      dispatch(updateMysticCode(entry, { teamId }));
     },
     [teamId, dispatch]
   );

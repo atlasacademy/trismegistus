@@ -1,20 +1,20 @@
 import { Root as AccordionRoot } from "@radix-ui/react-accordion";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import { IconAdjustmentsHorizontal, IconPlayerPlay } from "@tabler/icons";
+import { IconAdjustmentsHorizontal, IconPlayerPlay } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
 
 import { CommandDisplay } from "@/component/CommandDisplay";
 import { MemberSlotView } from "@/component/MemberSlotView";
 import { MysticCodeView } from "@/component/MysticCodeView";
 import { ResultView } from "@/component/ResultView";
-import { TeamContext } from "@/hook/useTeamContext";
-import { useMemoSelector } from "@/store";
-import { selectTeamServantSlots } from "@/store/entity/servant";
-import { MemberSlot, TeamContextData, TeamViewMode } from "@/types";
+import { useFactorySelector } from "@/hooks/useFactorySelector";
+import { TeamContext } from "@/hooks/useTeamContext";
+import { createTeamUserServantSlotsSelector } from "@/store/slice/servantSlice";
+import { MemberSlot, TeamContextData, TeamEntry, TeamViewMode } from "@/types";
 import { nextMemberSlot } from "@/types/utils";
 
 function useSlotData(
-  teamId: number,
+  teamId: string,
   slots: MemberSlot[],
   mode: TeamViewMode
 ): TeamContextData[] {
@@ -36,12 +36,14 @@ function useSlotData(
   }, [teamId, slots, mode]);
 }
 
-export interface TeamCompViewProps {
-  teamId: number;
-}
+export interface TeamCompViewProps extends TeamEntry {}
 
 export function TeamView({ teamId }: TeamCompViewProps) {
-  const slots = useMemoSelector(selectTeamServantSlots, [teamId]);
+  const slots = useFactorySelector(
+    createTeamUserServantSlotsSelector,
+    [],
+    teamId
+  );
   const [mode, setMode] = useState<TeamViewMode>(
     slots.length > 0 ? TeamViewMode.VIEW : TeamViewMode.EDIT
   );

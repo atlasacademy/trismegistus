@@ -5,17 +5,19 @@ import { MysticCodeStatsForm } from "@/component/form/MysticCodeStatsForm";
 import { MysticCodeSelection } from "@/component/selection/MysticCodeSelection";
 import { SkillButton } from "@/component/SkillButton";
 import { Spinner } from "@/component/Spinner";
-import { useTeamContext } from "@/hook/useTeamContext";
-import { useMemoSelector } from "@/store";
-import { selectTeamMysticCodeWithDefaults } from "@/store/slice/teamSlice";
+import { useFactorySelector } from "@/hooks/useFactorySelector";
+import { useTeamContext } from "@/hooks/useTeamContext";
+import { createTeamMysticCodeSelector } from "@/store/slice/mysticCodeSlice";
 import { TeamViewMode } from "@/types";
 import { CommandType } from "@/types/proto/trismegistus";
 
 export function MysticCodeView() {
   const { teamId, mode } = useTeamContext();
-  const userMysticCode = useMemoSelector(selectTeamMysticCodeWithDefaults, [
-    teamId,
-  ]);
+  const userMysticCode = useFactorySelector(
+    createTeamMysticCodeSelector,
+    [true],
+    teamId
+  );
   const { mysticCodeId } = userMysticCode;
   const { data: mysticCode, isLoading } = useMysticCodeQuery(mysticCodeId);
 

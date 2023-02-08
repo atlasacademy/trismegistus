@@ -1,38 +1,30 @@
 import * as Popover from "@radix-ui/react-popover";
-import { IconInfoCircle } from "@tabler/icons";
+import { IconInfoCircle } from "@tabler/icons-react";
+import { connect } from "react-redux";
 
-import { useTeamContext } from "@/hook/useTeamContext";
-import { useMemoSelector } from "@/store";
+import { useTeamContext } from "@/hooks/useTeamContext";
+import { TrismegistusState } from "@/store";
+import { createCraftEssenceAttackSelector } from "@/store/slice/craftEssenceSlice";
 import {
-  selectTeamCraftEssenceAttackBySlot,
-  selectTeamCraftEssenceWithDefaults,
-} from "@/store/entity/craftEssence";
-import { selectTeamServantAttackBySlot } from "@/store/entity/servant";
-import { UserServant } from "@/types";
+  createServantAttackSelector,
+  createTeamUserServantSelector,
+} from "@/store/slice/servantSlice";
+import { TeamContextData } from "@/types";
 
-export interface AttackStatDisplayProps {
-  userServant: UserServant;
+interface Props {
+  servantAttack: number;
+  servantAttackFou: number;
+  craftEssenceAttack: number;
 }
 
-export function AttackStatDisplay({ userServant }: AttackStatDisplayProps) {
-  const { teamId, slot } = useTeamContext();
-
-  const servantAttack = useMemoSelector(selectTeamServantAttackBySlot, [
-    userServant,
-  ]);
-  const userCraftEssence = useMemoSelector(selectTeamCraftEssenceWithDefaults, [
-    teamId,
-    slot,
-  ]);
-
-  const craftEssenceAttack = useMemoSelector(
-    selectTeamCraftEssenceAttackBySlot,
-    [userCraftEssence]
-  );
-
+function Component({
+  servantAttack,
+  servantAttackFou,
+  craftEssenceAttack,
+}: Props) {
   return (
     <>
-      ATK: {servantAttack + userServant.fou + craftEssenceAttack}{" "}
+      ATK: {servantAttack + servantAttackFou + craftEssenceAttack}{" "}
       <Popover.Root>
         <Popover.Trigger>
           <IconInfoCircle size="1em" />
@@ -41,11 +33,29 @@ export function AttackStatDisplay({ userServant }: AttackStatDisplayProps) {
         <Popover.Portal>
           <Popover.Content className="rounded bg-white p-2 text-gray-800">
             <p>ATK: {servantAttack}</p>
-            <p>Fou: {userServant.fou}</p>
+            <p>Fou: {servantAttackFou}</p>
             <p>CE: {craftEssenceAttack}</p>
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>
     </>
   );
+}
+
+const Connected = connect(() => {
+  const selectUserServant = createTeamUserServantSelector(true);
+  const selectServantAttack = createServantAttackSelector();
+  const selectCraftEssenceAttack = createCraftEssenceAttackSelector();
+  return (state: TrismegistusState, { teamId, slot }: TeamContextData) => {
+    return {
+      servantAttack: selectServantAttack(state, teamId, slot),
+      servantAttackFou: selectUserServant(state, teamId, slot).fou,
+      craftEssenceAttack: selectCraftEssenceAttack(state, teamId, slot),
+    };
+  };
+})(Component);
+
+export function AttackStatDisplay() {
+  const { teamId, slot, mode } = useTeamContext();
+  return <Connected teamId={teamId} slot={slot} mode={mode} />;
 }

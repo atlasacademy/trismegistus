@@ -5,10 +5,11 @@ import { CraftEssence } from "@atlasacademy/api-connector";
 import { useCraftEssenceQuery } from "@/api";
 import { CraftEssenceSelection } from "@/component/selection/CraftEssenceSelection";
 import { Spinner } from "@/component/Spinner";
-import { useTeamContext } from "@/hook/useTeamContext";
-import { useMemoSelector } from "@/store";
-import { selectTeamCraftEssenceWithDefaults } from "@/store/entity/craftEssence";
-import { TeamViewMode, UserCraftEssence } from "@/types";
+import { useFactorySelector } from "@/hooks/useFactorySelector";
+import { useTeamContext } from "@/hooks/useTeamContext";
+import { createTeamUserCraftEssenceSelector } from "@/store/slice/craftEssenceSlice";
+import { TeamViewMode } from "@/types";
+import { UserCraftEssence } from "@/types/userCraftEssence";
 
 interface CraftEssenceViewProps {
   userCraftEssence: UserCraftEssence;
@@ -40,10 +41,13 @@ function CraftEssenceView({
 
 export function CraftEssenceSlotView() {
   const { teamId, slot, mode } = useTeamContext();
-  const userCraftEssence = useMemoSelector(selectTeamCraftEssenceWithDefaults, [
+  const userCraftEssence = useFactorySelector(
+    createTeamUserCraftEssenceSelector,
+    [true],
     teamId,
-    slot,
-  ]);
+    slot
+  );
+
   const { craftEssenceId } = userCraftEssence;
   const { data: craftEssence, isLoading } =
     useCraftEssenceQuery(craftEssenceId);

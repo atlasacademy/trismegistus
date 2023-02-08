@@ -1,5 +1,5 @@
 import { CraftEssence } from "@atlasacademy/api-connector";
-import { IconChevronLeft } from "@tabler/icons";
+import { IconChevronLeft } from "@tabler/icons-react";
 import { PropsWithChildren, useCallback } from "react";
 
 import { useCraftEssenceListQuery } from "@/api";
@@ -7,11 +7,10 @@ import {
   SelectionItemProps,
   SelectionTrigger,
 } from "@/component/selection/SelectionTrigger";
-import { useTeamContext } from "@/hook/useTeamContext";
+import { useTeamContext } from "@/hooks/useTeamContext";
 import { useDispatch } from "@/store";
-import { setCraftEssence } from "@/store/slice/teamSlice";
+import { setCraftEssence } from "@/store/slice/teamReducer";
 import { TeamViewMode } from "@/types";
-import { createUserCraftEssence } from "@/types/utils";
 
 function CraftEssenceListItem({
   item,
@@ -41,14 +40,7 @@ export function CraftEssenceSelection({
 
   const onSelectCraftEssence = useCallback(
     ({ id: craftEssenceId }: CraftEssence.CraftEssenceBasic) => {
-      const entry = createUserCraftEssence({ craftEssenceId });
-      dispatch(
-        setCraftEssence({
-          teamId,
-          slot,
-          entry,
-        })
-      );
+      dispatch(setCraftEssence({ slot, item: { craftEssenceId } }, { teamId }));
     },
     [dispatch, teamId, slot]
   );

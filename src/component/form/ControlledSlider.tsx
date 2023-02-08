@@ -1,10 +1,15 @@
-import { Control, FieldValues, Path, useController } from "react-hook-form";
+import {
+  Control,
+  FieldPath,
+  FieldValues,
+  useController,
+} from "react-hook-form";
 
 import { SliderInput } from "@/component/primitives/SliderInput";
 
 interface ControlledSliderProps<T extends FieldValues> {
   label: string;
-  property: Path<T>;
+  property: FieldPath<T>;
   control: Control<T>;
   min: number;
   max: number;
@@ -18,8 +23,8 @@ export function ControlledSlider<T extends FieldValues>({
   max,
 }: ControlledSliderProps<T>) {
   const { field } = useController({
-    name: property,
     control,
+    name: property,
   });
   return (
     <SliderInput

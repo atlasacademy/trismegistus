@@ -1,4 +1,4 @@
-import { IconHexagon } from "@tabler/icons";
+import { IconHexagon } from "@tabler/icons-react";
 import classNames from "classnames";
 
 export interface SpinnerProps {

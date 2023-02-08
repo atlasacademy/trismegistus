@@ -7,9 +7,9 @@ import classNames from "classnames";
 import { useCallback } from "react";
 
 import { SkillButton } from "@/component/SkillButton";
-import { useTeamContext } from "@/hook/useTeamContext";
+import { useTeamContext } from "@/hooks/useTeamContext";
 import { useDispatch } from "@/store";
-import { addBattleCommand } from "@/store/slice/teamSlice";
+import { addBattleCommand } from "@/store/slice/teamReducer";
 import { BattleCommandType, CommandType } from "@/types/proto/trismegistus";
 
 interface CardIconProps {
@@ -37,7 +37,7 @@ export interface CommandPortraitProps {
   className?: string;
 }
 
-function CardBar({ servant }: CommandPortraitProps) {
+export function CardBar({ servant }: CommandPortraitProps) {
   return (
     <>
       {servant.cards.map((card, index) => (
@@ -52,10 +52,12 @@ function useNoblePhantasmActivation() {
   const dispatch = useDispatch();
   return useCallback(() => {
     dispatch(
-      addBattleCommand({
-        teamId,
-        entry: { type: BattleCommandType.NOBLE_PHANTASM, source },
-      })
+      addBattleCommand(
+        {
+          item: { type: BattleCommandType.NOBLE_PHANTASM, source },
+        },
+        { teamId }
+      )
     );
   }, [dispatch, teamId, source]);
 }

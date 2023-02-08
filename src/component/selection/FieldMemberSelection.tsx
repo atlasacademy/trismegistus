@@ -6,23 +6,25 @@ import {
   SelectionTrigger,
 } from "@/component/selection/SelectionTrigger";
 import { ServantPortrait } from "@/component/ServantPortrait";
-import { useTeamContext } from "@/hook/useTeamContext";
-import { useMemoSelector } from "@/store";
+import { useFactorySelector } from "@/hooks/useFactorySelector";
+import { useTeamContext } from "@/hooks/useTeamContext";
 import {
-  selectTeamServantBySlot,
-  selectTeamServantSlots,
-} from "@/store/entity/servant";
-import { MemberSlot, TeamMember, TeamViewMode } from "@/types";
+  createTeamUserServantSelector,
+  createTeamUserServantSlotsSelector,
+} from "@/store/slice/servantSlice";
+import { MemberSlot, TeamEntry, TeamMember, TeamViewMode } from "@/types";
 
 function FieldMemberListItem({
   item,
   onSelect,
 }: SelectionItemProps<TeamMember>) {
   const { teamId, slot } = item;
-  const { servantId } = useMemoSelector(selectTeamServantBySlot, [
+  const { servantId } = useFactorySelector(
+    createTeamUserServantSelector,
+    [true],
     teamId,
-    slot,
-  ]);
+    slot
+  );
   const { data: servant } = useServantQuery(servantId);
 
   return (
@@ -49,8 +51,12 @@ const allowedSlots = new Set([
   MemberSlot.FIELD_3,
   MemberSlot.NONE,
 ]);
-function useFieldSlots(teamId: number) {
-  const slots = useMemoSelector(selectTeamServantSlots, [teamId]);
+function useFieldSlots(teamId: TeamEntry["teamId"]) {
+  const slots = useFactorySelector(
+    createTeamUserServantSlotsSelector,
+    [],
+    teamId
+  );
   return useMemo(() => {
     return [...slots, MemberSlot.NONE]
       .filter((slot) => allowedSlots.has(slot))
