@@ -1,14 +1,14 @@
-import {
-  MemberSlot,
-  SkillNum,
-  UserBattleStep,
-  UserCraftEssence,
-  UserMysticCode,
-  UserServant,
-} from "@/types";
+import { FieldValues } from "react-hook-form";
+import { z } from "zod";
+
+import { MemberSlot, SkillNum } from "@/types";
 import { CommandType } from "@/types/proto/trismegistus";
 
 export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
+
+export type FilterFields<T extends FieldValues, ToKeep> = {
+  [K in keyof T]: T[K] extends ToKeep ? K : never;
+}[keyof T];
 
 export function nextMemberSlot(slot: MemberSlot) {
   const nextSlotNumber = slot + 1;
@@ -41,60 +41,24 @@ export function isSkillNum(commandType: CommandType): commandType is SkillNum {
   );
 }
 
-export function createUserMysticCode({
-  mysticCodeId,
-  mysticCodeLevel,
-}: Partial<UserMysticCode>): UserMysticCode {
-  return {
-    mysticCodeId: mysticCodeId ?? 0,
-    mysticCodeLevel: mysticCodeLevel ?? 0,
-  };
+export function rangedInt(min: number, max: number) {
+  return z.number().int().min(min).max(max).default(min);
 }
 
-export function createUserServant({
-  servantId,
-  level,
-  fou,
-  noblePhantasmLevel,
-  skill1,
-  skill2,
-  skill3,
-  append1,
-  append2,
-  append3,
-}: Partial<UserServant> = {}): UserServant {
-  return {
-    servantId: servantId ?? 0,
-    level: level ?? 0,
-    fou: fou ?? 0,
-    noblePhantasmLevel: noblePhantasmLevel ?? 0,
-    skill1: skill1 ?? 0,
-    skill2: skill2 ?? 0,
-    skill3: skill3 ?? 0,
-    append1: append1 ?? 0,
-    append2: append2 ?? 0,
-    append3: append3 ?? 0,
-  };
+export function positiveInt() {
+  return z.number().int().positive().default(0);
 }
 
-export function createUserCraftEssence({
-  craftEssenceId,
-  craftEssenceLevel,
-  maxLimitBreak,
-}: Partial<UserCraftEssence> = {}): UserCraftEssence {
-  return {
-    craftEssenceId: craftEssenceId ?? 0,
-    craftEssenceLevel: craftEssenceLevel ?? 0,
-    maxLimitBreak: maxLimitBreak ?? false,
-  };
-}
-
-export function createUserBattleStep({
-  battleCommands,
-  commands,
-}: Partial<UserBattleStep> = {}) {
-  return {
-    commands: commands ?? [],
-    battleCommands: battleCommands ?? [],
-  };
+export function extractFieldInfo(schema: z.ZodDefault<z.ZodNumber>):
+  | {
+      label: string;
+      min: number;
+      max: number;
+    }
+  | undefined {
+  const label = schema.description;
+  if (label == null) return;
+  const { minValue, maxValue } = schema.removeDefault();
+  if (minValue == null || maxValue == null) return;
+  return { label, min: minValue, max: maxValue };
 }

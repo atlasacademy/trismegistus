@@ -1,16 +1,6 @@
-import { Servant } from "@atlasacademy/api-connector";
+import { Servant, Skill } from "@atlasacademy/api-connector";
 
-import {
-  CommandType,
-  MemberSlot,
-  ProtoBattleCommand,
-  ProtoBattleStep,
-  ProtoCommand,
-  ProtoCraftEssence,
-  ProtoMysticCode,
-  ProtoServant,
-  ProtoTeam,
-} from "@/types/proto/trismegistus";
+import { CommandType, MemberSlot } from "@/types/proto/trismegistus";
 
 export { MemberSlot };
 
@@ -34,48 +24,21 @@ export interface SkillInfo {
   skillNum: SkillNum;
 }
 
-export interface UserServant extends ProtoServant {}
-
-export interface UserCraftEssence extends ProtoCraftEssence {}
-
-export interface UserMysticCode extends ProtoMysticCode {}
-
-export interface UserCommand extends ProtoCommand {}
-
-export interface UserBattleCommand extends ProtoBattleCommand {}
-
-export interface UserBattleStep extends ProtoBattleStep {
-  commands: UserCommand[];
-  battleCommands: UserBattleCommand[];
+export interface TeamEntry {
+  teamId: string;
 }
 
-export type UserCommandScript = UserBattleStep[];
-
-export interface UserTeam extends ProtoTeam {
-  teamId: number;
-  servants: UserServant[];
-  craftEssences: UserCraftEssence[];
-  mysticCode: UserMysticCode;
-  commandScript: UserCommandScript;
-}
-
-export type SlotMap<T> = Partial<Record<MemberSlot, T>>;
-
-export interface TeamEntry<T> {
-  teamId: number;
-  entry: T;
-}
-
-export interface TeamMember {
-  teamId: number;
+export interface Member {
   slot: MemberSlot;
 }
 
-export interface TeamMemberEntry<T> extends TeamEntry<T>, TeamMember {}
-
-export interface TeamBattleStep<T> extends TeamEntry<T> {
+export interface BattleEntry {
   step?: number;
 }
+
+export interface TeamMember extends TeamEntry, Member {}
+
+export interface TeamBattleEntry extends TeamEntry, BattleEntry {}
 
 export enum TeamViewMode {
   VIEW = "view",
@@ -83,21 +46,15 @@ export enum TeamViewMode {
   SCRIPT = "script",
 }
 
-export interface TeamContextData {
-  teamId: number;
+export interface TeamContextData extends TeamEntry {
   slot: MemberSlot;
   mode: TeamViewMode;
 }
 
-export interface UserServantDefaults
-  extends Omit<UserServant, "servantId" | "level"> {}
-export interface UserMysticCodeDefaults
-  extends Omit<UserMysticCode, "mysticCodeId"> {}
-
 export interface SkillActivation {
-  skillNum: SkillNum;
-  source: Servant.Servant;
-  target?: Servant.Servant;
+  skill: [skill: Skill.Skill | undefined, level: number];
+  source: MemberSlot;
+  target?: MemberSlot;
 }
 
 export interface NoblePhantasmActivation {

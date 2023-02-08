@@ -161,15 +161,9 @@ export interface ProtoMysticCode {
   mysticCodeLevel: number;
 }
 
-export interface ProtoCraftEssence {
-  craftEssenceId: number;
-  craftEssenceLevel: number;
-  maxLimitBreak: boolean;
-}
-
-export interface ProtoServant {
+export interface ProtoTeamSlot {
   servantId: number;
-  level: number;
+  servantLevel: number;
   fou: number;
   noblePhantasmLevel: number;
   skill1: number;
@@ -178,6 +172,9 @@ export interface ProtoServant {
   append1: number;
   append2: number;
   append3: number;
+  craftEssenceId: number;
+  craftEssenceLevel: number;
+  craftEssenceMLB: boolean;
 }
 
 export interface ProtoCommand {
@@ -197,10 +194,8 @@ export interface ProtoBattleStep {
 }
 
 export interface ProtoTeam {
-  teamId: number;
   mysticCode: ProtoMysticCode | undefined;
-  servants: ProtoServant[];
-  craftEssences: ProtoCraftEssence[];
+  slots: ProtoTeamSlot[];
   commandScript: ProtoBattleStep[];
 }
 
@@ -258,6 +253,10 @@ export const ProtoMysticCode = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ProtoMysticCode>, I>>(base?: I): ProtoMysticCode {
+    return ProtoMysticCode.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ProtoMysticCode>, I>>(object: I): ProtoMysticCode {
     const message = createBaseProtoMysticCode();
     message.mysticCodeId = object.mysticCodeId ?? 0;
@@ -266,77 +265,10 @@ export const ProtoMysticCode = {
   },
 };
 
-function createBaseProtoCraftEssence(): ProtoCraftEssence {
-  return { craftEssenceId: 0, craftEssenceLevel: 0, maxLimitBreak: false };
-}
-
-export const ProtoCraftEssence = {
-  encode(message: ProtoCraftEssence, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.craftEssenceId !== 0) {
-      writer.uint32(8).uint32(message.craftEssenceId);
-    }
-    if (message.craftEssenceLevel !== 0) {
-      writer.uint32(16).uint32(message.craftEssenceLevel);
-    }
-    if (message.maxLimitBreak === true) {
-      writer.uint32(24).bool(message.maxLimitBreak);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ProtoCraftEssence {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseProtoCraftEssence();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.craftEssenceId = reader.uint32();
-          break;
-        case 2:
-          message.craftEssenceLevel = reader.uint32();
-          break;
-        case 3:
-          message.maxLimitBreak = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ProtoCraftEssence {
-    return {
-      craftEssenceId: isSet(object.craftEssenceId) ? Number(object.craftEssenceId) : 0,
-      craftEssenceLevel: isSet(object.craftEssenceLevel) ? Number(object.craftEssenceLevel) : 0,
-      maxLimitBreak: isSet(object.maxLimitBreak) ? Boolean(object.maxLimitBreak) : false,
-    };
-  },
-
-  toJSON(message: ProtoCraftEssence): unknown {
-    const obj: any = {};
-    message.craftEssenceId !== undefined && (obj.craftEssenceId = Math.round(message.craftEssenceId));
-    message.craftEssenceLevel !== undefined && (obj.craftEssenceLevel = Math.round(message.craftEssenceLevel));
-    message.maxLimitBreak !== undefined && (obj.maxLimitBreak = message.maxLimitBreak);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ProtoCraftEssence>, I>>(object: I): ProtoCraftEssence {
-    const message = createBaseProtoCraftEssence();
-    message.craftEssenceId = object.craftEssenceId ?? 0;
-    message.craftEssenceLevel = object.craftEssenceLevel ?? 0;
-    message.maxLimitBreak = object.maxLimitBreak ?? false;
-    return message;
-  },
-};
-
-function createBaseProtoServant(): ProtoServant {
+function createBaseProtoTeamSlot(): ProtoTeamSlot {
   return {
     servantId: 0,
-    level: 0,
+    servantLevel: 0,
     fou: 0,
     noblePhantasmLevel: 0,
     skill1: 0,
@@ -345,16 +277,19 @@ function createBaseProtoServant(): ProtoServant {
     append1: 0,
     append2: 0,
     append3: 0,
+    craftEssenceId: 0,
+    craftEssenceLevel: 0,
+    craftEssenceMLB: false,
   };
 }
 
-export const ProtoServant = {
-  encode(message: ProtoServant, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const ProtoTeamSlot = {
+  encode(message: ProtoTeamSlot, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.servantId !== 0) {
       writer.uint32(8).uint32(message.servantId);
     }
-    if (message.level !== 0) {
-      writer.uint32(16).uint32(message.level);
+    if (message.servantLevel !== 0) {
+      writer.uint32(16).uint32(message.servantLevel);
     }
     if (message.fou !== 0) {
       writer.uint32(24).uint32(message.fou);
@@ -380,13 +315,22 @@ export const ProtoServant = {
     if (message.append3 !== 0) {
       writer.uint32(80).uint32(message.append3);
     }
+    if (message.craftEssenceId !== 0) {
+      writer.uint32(88).uint32(message.craftEssenceId);
+    }
+    if (message.craftEssenceLevel !== 0) {
+      writer.uint32(96).uint32(message.craftEssenceLevel);
+    }
+    if (message.craftEssenceMLB === true) {
+      writer.uint32(104).bool(message.craftEssenceMLB);
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ProtoServant {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProtoTeamSlot {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseProtoServant();
+    const message = createBaseProtoTeamSlot();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -394,7 +338,7 @@ export const ProtoServant = {
           message.servantId = reader.uint32();
           break;
         case 2:
-          message.level = reader.uint32();
+          message.servantLevel = reader.uint32();
           break;
         case 3:
           message.fou = reader.uint32();
@@ -420,6 +364,15 @@ export const ProtoServant = {
         case 10:
           message.append3 = reader.uint32();
           break;
+        case 11:
+          message.craftEssenceId = reader.uint32();
+          break;
+        case 12:
+          message.craftEssenceLevel = reader.uint32();
+          break;
+        case 13:
+          message.craftEssenceMLB = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -428,10 +381,10 @@ export const ProtoServant = {
     return message;
   },
 
-  fromJSON(object: any): ProtoServant {
+  fromJSON(object: any): ProtoTeamSlot {
     return {
       servantId: isSet(object.servantId) ? Number(object.servantId) : 0,
-      level: isSet(object.level) ? Number(object.level) : 0,
+      servantLevel: isSet(object.servantLevel) ? Number(object.servantLevel) : 0,
       fou: isSet(object.fou) ? Number(object.fou) : 0,
       noblePhantasmLevel: isSet(object.noblePhantasmLevel) ? Number(object.noblePhantasmLevel) : 0,
       skill1: isSet(object.skill1) ? Number(object.skill1) : 0,
@@ -440,13 +393,16 @@ export const ProtoServant = {
       append1: isSet(object.append1) ? Number(object.append1) : 0,
       append2: isSet(object.append2) ? Number(object.append2) : 0,
       append3: isSet(object.append3) ? Number(object.append3) : 0,
+      craftEssenceId: isSet(object.craftEssenceId) ? Number(object.craftEssenceId) : 0,
+      craftEssenceLevel: isSet(object.craftEssenceLevel) ? Number(object.craftEssenceLevel) : 0,
+      craftEssenceMLB: isSet(object.craftEssenceMLB) ? Boolean(object.craftEssenceMLB) : false,
     };
   },
 
-  toJSON(message: ProtoServant): unknown {
+  toJSON(message: ProtoTeamSlot): unknown {
     const obj: any = {};
     message.servantId !== undefined && (obj.servantId = Math.round(message.servantId));
-    message.level !== undefined && (obj.level = Math.round(message.level));
+    message.servantLevel !== undefined && (obj.servantLevel = Math.round(message.servantLevel));
     message.fou !== undefined && (obj.fou = Math.round(message.fou));
     message.noblePhantasmLevel !== undefined && (obj.noblePhantasmLevel = Math.round(message.noblePhantasmLevel));
     message.skill1 !== undefined && (obj.skill1 = Math.round(message.skill1));
@@ -455,13 +411,20 @@ export const ProtoServant = {
     message.append1 !== undefined && (obj.append1 = Math.round(message.append1));
     message.append2 !== undefined && (obj.append2 = Math.round(message.append2));
     message.append3 !== undefined && (obj.append3 = Math.round(message.append3));
+    message.craftEssenceId !== undefined && (obj.craftEssenceId = Math.round(message.craftEssenceId));
+    message.craftEssenceLevel !== undefined && (obj.craftEssenceLevel = Math.round(message.craftEssenceLevel));
+    message.craftEssenceMLB !== undefined && (obj.craftEssenceMLB = message.craftEssenceMLB);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProtoServant>, I>>(object: I): ProtoServant {
-    const message = createBaseProtoServant();
+  create<I extends Exact<DeepPartial<ProtoTeamSlot>, I>>(base?: I): ProtoTeamSlot {
+    return ProtoTeamSlot.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ProtoTeamSlot>, I>>(object: I): ProtoTeamSlot {
+    const message = createBaseProtoTeamSlot();
     message.servantId = object.servantId ?? 0;
-    message.level = object.level ?? 0;
+    message.servantLevel = object.servantLevel ?? 0;
     message.fou = object.fou ?? 0;
     message.noblePhantasmLevel = object.noblePhantasmLevel ?? 0;
     message.skill1 = object.skill1 ?? 0;
@@ -470,6 +433,9 @@ export const ProtoServant = {
     message.append1 = object.append1 ?? 0;
     message.append2 = object.append2 ?? 0;
     message.append3 = object.append3 ?? 0;
+    message.craftEssenceId = object.craftEssenceId ?? 0;
+    message.craftEssenceLevel = object.craftEssenceLevel ?? 0;
+    message.craftEssenceMLB = object.craftEssenceMLB ?? false;
     return message;
   },
 };
@@ -532,6 +498,10 @@ export const ProtoCommand = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ProtoCommand>, I>>(base?: I): ProtoCommand {
+    return ProtoCommand.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ProtoCommand>, I>>(object: I): ProtoCommand {
     const message = createBaseProtoCommand();
     message.type = object.type ?? 0;
@@ -589,6 +559,10 @@ export const ProtoBattleCommand = {
     message.type !== undefined && (obj.type = battleCommandTypeToJSON(message.type));
     message.source !== undefined && (obj.source = memberSlotToJSON(message.source));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ProtoBattleCommand>, I>>(base?: I): ProtoBattleCommand {
+    return ProtoBattleCommand.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ProtoBattleCommand>, I>>(object: I): ProtoBattleCommand {
@@ -659,6 +633,10 @@ export const ProtoBattleStep = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ProtoBattleStep>, I>>(base?: I): ProtoBattleStep {
+    return ProtoBattleStep.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ProtoBattleStep>, I>>(object: I): ProtoBattleStep {
     const message = createBaseProtoBattleStep();
     message.commands = object.commands?.map((e) => ProtoCommand.fromPartial(e)) || [];
@@ -668,25 +646,19 @@ export const ProtoBattleStep = {
 };
 
 function createBaseProtoTeam(): ProtoTeam {
-  return { teamId: 0, mysticCode: undefined, servants: [], craftEssences: [], commandScript: [] };
+  return { mysticCode: undefined, slots: [], commandScript: [] };
 }
 
 export const ProtoTeam = {
   encode(message: ProtoTeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.teamId !== 0) {
-      writer.uint32(8).uint32(message.teamId);
-    }
     if (message.mysticCode !== undefined) {
-      ProtoMysticCode.encode(message.mysticCode, writer.uint32(18).fork()).ldelim();
+      ProtoMysticCode.encode(message.mysticCode, writer.uint32(10).fork()).ldelim();
     }
-    for (const v of message.servants) {
-      ProtoServant.encode(v!, writer.uint32(26).fork()).ldelim();
-    }
-    for (const v of message.craftEssences) {
-      ProtoCraftEssence.encode(v!, writer.uint32(34).fork()).ldelim();
+    for (const v of message.slots) {
+      ProtoTeamSlot.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     for (const v of message.commandScript) {
-      ProtoBattleStep.encode(v!, writer.uint32(42).fork()).ldelim();
+      ProtoBattleStep.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -699,18 +671,12 @@ export const ProtoTeam = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.teamId = reader.uint32();
-          break;
-        case 2:
           message.mysticCode = ProtoMysticCode.decode(reader, reader.uint32());
           break;
+        case 2:
+          message.slots.push(ProtoTeamSlot.decode(reader, reader.uint32()));
+          break;
         case 3:
-          message.servants.push(ProtoServant.decode(reader, reader.uint32()));
-          break;
-        case 4:
-          message.craftEssences.push(ProtoCraftEssence.decode(reader, reader.uint32()));
-          break;
-        case 5:
           message.commandScript.push(ProtoBattleStep.decode(reader, reader.uint32()));
           break;
         default:
@@ -723,12 +689,8 @@ export const ProtoTeam = {
 
   fromJSON(object: any): ProtoTeam {
     return {
-      teamId: isSet(object.teamId) ? Number(object.teamId) : 0,
       mysticCode: isSet(object.mysticCode) ? ProtoMysticCode.fromJSON(object.mysticCode) : undefined,
-      servants: Array.isArray(object?.servants) ? object.servants.map((e: any) => ProtoServant.fromJSON(e)) : [],
-      craftEssences: Array.isArray(object?.craftEssences)
-        ? object.craftEssences.map((e: any) => ProtoCraftEssence.fromJSON(e))
-        : [],
+      slots: Array.isArray(object?.slots) ? object.slots.map((e: any) => ProtoTeamSlot.fromJSON(e)) : [],
       commandScript: Array.isArray(object?.commandScript)
         ? object.commandScript.map((e: any) => ProtoBattleStep.fromJSON(e))
         : [],
@@ -737,18 +699,12 @@ export const ProtoTeam = {
 
   toJSON(message: ProtoTeam): unknown {
     const obj: any = {};
-    message.teamId !== undefined && (obj.teamId = Math.round(message.teamId));
     message.mysticCode !== undefined &&
       (obj.mysticCode = message.mysticCode ? ProtoMysticCode.toJSON(message.mysticCode) : undefined);
-    if (message.servants) {
-      obj.servants = message.servants.map((e) => e ? ProtoServant.toJSON(e) : undefined);
+    if (message.slots) {
+      obj.slots = message.slots.map((e) => e ? ProtoTeamSlot.toJSON(e) : undefined);
     } else {
-      obj.servants = [];
-    }
-    if (message.craftEssences) {
-      obj.craftEssences = message.craftEssences.map((e) => e ? ProtoCraftEssence.toJSON(e) : undefined);
-    } else {
-      obj.craftEssences = [];
+      obj.slots = [];
     }
     if (message.commandScript) {
       obj.commandScript = message.commandScript.map((e) => e ? ProtoBattleStep.toJSON(e) : undefined);
@@ -758,14 +714,16 @@ export const ProtoTeam = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ProtoTeam>, I>>(base?: I): ProtoTeam {
+    return ProtoTeam.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ProtoTeam>, I>>(object: I): ProtoTeam {
     const message = createBaseProtoTeam();
-    message.teamId = object.teamId ?? 0;
     message.mysticCode = (object.mysticCode !== undefined && object.mysticCode !== null)
       ? ProtoMysticCode.fromPartial(object.mysticCode)
       : undefined;
-    message.servants = object.servants?.map((e) => ProtoServant.fromPartial(e)) || [];
-    message.craftEssences = object.craftEssences?.map((e) => ProtoCraftEssence.fromPartial(e)) || [];
+    message.slots = object.slots?.map((e) => ProtoTeamSlot.fromPartial(e)) || [];
     message.commandScript = object.commandScript?.map((e) => ProtoBattleStep.fromPartial(e)) || [];
     return message;
   },
@@ -813,6 +771,10 @@ export const ProtoTrismegistusState = {
       obj.teams = [];
     }
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ProtoTrismegistusState>, I>>(base?: I): ProtoTrismegistusState {
+    return ProtoTrismegistusState.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ProtoTrismegistusState>, I>>(object: I): ProtoTrismegistusState {
