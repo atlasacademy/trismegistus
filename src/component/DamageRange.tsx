@@ -6,6 +6,7 @@ import {
 } from "@/api/selectors";
 import { BattleEngine, BattleResult } from "@/battle";
 import { TrismegistusState } from "@/store";
+import { createSkillActivationSelector } from "@/store/selectors/commandScript";
 import { createTeamUserCraftEssenceSelector } from "@/store/selectors/craftEssence";
 import { createTeamUserServantSelector } from "@/store/selectors/servant";
 import { MemberSlot, TeamEntry } from "@/types";
@@ -38,6 +39,7 @@ export const DamageRange = connect(() => {
   const selectUserCraftEssence = createTeamUserCraftEssenceSelector(true);
   const selectServant = createServantSelector();
   const selectCraftEssence = createCraftEssenceSelector();
+  const selectSkillActivation = createSkillActivationSelector();
 
   return (
     state: TrismegistusState,
@@ -50,6 +52,9 @@ export const DamageRange = connect(() => {
       state,
       userCraftEssence.craftEssenceId
     );
+    const skillActivations = commands.map((command) =>
+      selectSkillActivation(state, teamId, command)
+    );
 
     if (servant == null) return {};
     return battleEngine.calculate(
@@ -58,7 +63,7 @@ export const DamageRange = connect(() => {
       servant,
       userCraftEssence,
       craftEssence,
-      commands
+      skillActivations
     );
   };
 })(Component);
