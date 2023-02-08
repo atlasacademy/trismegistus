@@ -11,7 +11,7 @@ import { QueryArgFrom } from "@reduxjs/toolkit/dist/query/endpointDefinitions";
 import { QueryDefinition, SkipToken } from "@reduxjs/toolkit/query";
 
 import { apiEndpoints } from "@/api/index";
-import { TrismegistusState } from "@/store";
+import type { TrismegistusState } from "@/store";
 import { SkillNum } from "@/types";
 
 type DefinitionQuerySelectorFn<

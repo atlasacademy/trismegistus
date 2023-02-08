@@ -11,7 +11,7 @@ import { useTeamContext } from "@/hooks/useTeamContext";
 import {
   createTeamUserServantSelector,
   createTeamUserServantSlotsSelector,
-} from "@/store/slice/servantSlice";
+} from "@/store/selectors/servant";
 import { MemberSlot, TeamEntry, TeamMember, TeamViewMode } from "@/types";
 
 function FieldMemberListItem({

@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 
 import { useTeamContext } from "@/hooks/useTeamContext";
 import { TrismegistusState } from "@/store";
-import { createCraftEssenceAttackSelector } from "@/store/slice/craftEssenceSlice";
+import { createCraftEssenceAttackSelector } from "@/store/selectors/craftEssence";
 import {
   createServantAttackSelector,
   createTeamUserServantSelector,
-} from "@/store/slice/servantSlice";
+} from "@/store/selectors/servant";
 import { TeamContextData } from "@/types";
 
 interface Props {

@@ -6,8 +6,8 @@ import {
 } from "@/api/selectors";
 import { BattleEngine, BattleResult } from "@/battle";
 import { TrismegistusState } from "@/store";
-import { createTeamUserCraftEssenceSelector } from "@/store/slice/craftEssenceSlice";
-import { createTeamUserServantSelector } from "@/store/slice/servantSlice";
+import { createTeamUserCraftEssenceSelector } from "@/store/selectors/craftEssence";
+import { createTeamUserServantSelector } from "@/store/selectors/servant";
 import { MemberSlot, TeamEntry } from "@/types";
 import { UserCommand } from "@/types/userCommandScript";
 

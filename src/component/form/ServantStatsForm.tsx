@@ -9,7 +9,7 @@ import {
 } from "@/component/form/StatsForm";
 import { useTeamContext } from "@/hooks/useTeamContext";
 import { TrismegistusState } from "@/store";
-import { createTeamUserServantSelector } from "@/store/slice/servantSlice";
+import { createTeamUserServantSelector } from "@/store/selectors/servant";
 import { updateServant } from "@/store/slice/teamReducer";
 import { MemberSlot, TeamContextData, TeamEntry } from "@/types";
 import { InputServant, UserServant } from "@/types/userServant";

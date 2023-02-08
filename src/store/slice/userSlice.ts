@@ -1,7 +1,7 @@
 import { Region } from "@atlasacademy/api-connector";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { TrismegistusState } from "@/store";
+import type { TrismegistusState } from "@/store";
 import { UserMysticCodeDefaults } from "@/types/userMysticCode";
 import { UserServantDefaults } from "@/types/userServant";
 

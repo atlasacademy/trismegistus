@@ -4,7 +4,7 @@ import { BattleEngine } from "@/battle";
 import { createFgoCalcBattleEngine } from "@/battle/fgo-calc";
 import { DamageRange } from "@/component/DamageRange";
 import { useSelector } from "@/store";
-import { selectTeamCommandScript } from "@/store/slice/commandScriptSlice";
+import { selectTeamCommandScript } from "@/store/selectors/commandScript";
 import { TeamEntry } from "@/types";
 import { BattleCommandType } from "@/types/proto/trismegistus";
 import { UserBattleCommand, UserCommand } from "@/types/userCommandScript";

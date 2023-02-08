@@ -9,7 +9,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
 import { REHYDRATE } from "redux-persist/es/constants";
 
-import { TrismegistusState } from "@/store";
+import type { TrismegistusState } from "@/store";
 import { createPersistReducer } from "@/store/persist";
 import { selectRegion } from "@/store/slice/userSlice";
 

@@ -9,7 +9,7 @@ import {
 } from "@/component/form/StatsForm";
 import { useTeamContext } from "@/hooks/useTeamContext";
 import { TrismegistusState } from "@/store";
-import { createTeamMysticCodeSelector } from "@/store/slice/mysticCodeSlice";
+import { createTeamMysticCodeSelector } from "@/store/selectors/mysticCode";
 import { updateMysticCode } from "@/store/slice/teamReducer";
 import { TeamContextData } from "@/types";
 import { InputMysticCode, UserMysticCode } from "@/types/userMysticCode";

@@ -74,6 +74,7 @@
         "builtinGlobals": true
       }
     ],
+    "import/no-cycle": "error",
     "no-unused-vars": "off",
     "react/prop-types": "off",
     "@typescript-eslint/explicit-function-return-type": "off",

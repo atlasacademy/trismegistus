@@ -9,7 +9,7 @@ import { MysticCodeView } from "@/component/MysticCodeView";
 import { ResultView } from "@/component/ResultView";
 import { useFactorySelector } from "@/hooks/useFactorySelector";
 import { TeamContext } from "@/hooks/useTeamContext";
-import { createTeamUserServantSlotsSelector } from "@/store/slice/servantSlice";
+import { createTeamUserServantSlotsSelector } from "@/store/selectors/servant";
 import { MemberSlot, TeamContextData, TeamEntry, TeamViewMode } from "@/types";
 import { nextMemberSlot } from "@/types/utils";
 

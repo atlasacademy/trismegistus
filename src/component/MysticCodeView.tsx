@@ -7,7 +7,7 @@ import { SkillButton } from "@/component/SkillButton";
 import { Spinner } from "@/component/Spinner";
 import { useFactorySelector } from "@/hooks/useFactorySelector";
 import { useTeamContext } from "@/hooks/useTeamContext";
-import { createTeamMysticCodeSelector } from "@/store/slice/mysticCodeSlice";
+import { createTeamMysticCodeSelector } from "@/store/selectors/mysticCode";
 import { TeamViewMode } from "@/types";
 import { CommandType } from "@/types/proto/trismegistus";
 

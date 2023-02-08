@@ -25,7 +25,7 @@ import { StatTable } from "@/component/StatTable";
 import { useFactorySelector } from "@/hooks/useFactorySelector";
 import { useTeamContext } from "@/hooks/useTeamContext";
 import { useDispatch } from "@/store";
-import { createTeamUserServantSelector } from "@/store/slice/servantSlice";
+import { createTeamUserServantSelector } from "@/store/selectors/servant";
 import { setServant, updateServant } from "@/store/slice/teamReducer";
 import { removeMember } from "@/store/slice/teamSlice";
 import { TeamViewMode } from "@/types";

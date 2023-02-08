@@ -8,7 +8,7 @@ import {
 import produce from "immer";
 import { z } from "zod";
 
-import { TrismegistusState } from "@/store";
+import type { TrismegistusState } from "@/store";
 import {
   removeCraftEssence,
   removeServant,

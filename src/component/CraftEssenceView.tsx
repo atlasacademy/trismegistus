@@ -7,7 +7,7 @@ import { CraftEssenceSelection } from "@/component/selection/CraftEssenceSelecti
 import { Spinner } from "@/component/Spinner";
 import { useFactorySelector } from "@/hooks/useFactorySelector";
 import { useTeamContext } from "@/hooks/useTeamContext";
-import { createTeamUserCraftEssenceSelector } from "@/store/slice/craftEssenceSlice";
+import { createTeamUserCraftEssenceSelector } from "@/store/selectors/craftEssence";
 import { TeamViewMode } from "@/types";
 import { UserCraftEssence } from "@/types/userCraftEssence";
 
