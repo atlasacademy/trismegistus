@@ -15,15 +15,9 @@ message ProtoMysticCode {
   uint32 mysticCodeLevel = 2;
 }
 
-message ProtoCraftEssence {
-  uint32 craftEssenceId = 1;
-  uint32 craftEssenceLevel = 2;
-  bool maxLimitBreak = 3;
-}
-
-message ProtoServant {
+message ProtoTeamSlot {
   uint32 servantId = 1;
-  uint32 level = 2;
+  uint32 servantLevel = 2;
   uint32 fou = 3;
   uint32 noblePhantasmLevel = 4;
   uint32 skill1 = 5;
@@ -32,6 +26,9 @@ message ProtoServant {
   uint32 append1 = 8;
   uint32 append2 = 9;
   uint32 append3 = 10;
+  uint32 craftEssenceId = 11;
+  uint32 craftEssenceLevel = 12;
+  bool craftEssenceMLB = 13;
 }
 
 enum CommandType {
@@ -65,11 +62,9 @@ message ProtoBattleStep {
 }
 
 message ProtoTeam {
-  uint32 teamId = 1;
-  ProtoMysticCode mysticCode = 2;
-  repeated ProtoServant servants = 3;
-  repeated ProtoCraftEssence craftEssences = 4;
-  repeated ProtoBattleStep commandScript = 5;
+  ProtoMysticCode mysticCode = 1;
+  repeated ProtoTeamSlot slots = 2;
+  repeated ProtoBattleStep commandScript = 3;
 }
 
 message ProtoTrismegistusState {
