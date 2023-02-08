@@ -1,11 +1,13 @@
 import { useDebounceCallback } from "@react-hook/debounce";
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import {
+  Control,
   DefaultValues,
   FieldPath,
   FieldValues,
   FormState,
   useForm,
+  useFormState,
 } from "react-hook-form";
 
 import { ControlledSlider } from "@/component/form/ControlledSlider";
@@ -27,14 +29,26 @@ export interface StatsFormActions<T extends FieldValues> {
 export interface StatsFormProps<T extends FieldValues>
   extends StatsFormData<T>,
     StatsFormActions<T> {}
-export function extractFieldsChanged<T extends Record<string, any>>(
-  { touchedFields }: FormState<T>,
-  data: T
-): Partial<T> {
-  return Object.entries(touchedFields).reduce((acc, [key, touched]) => {
-    if (touched) acc[key as keyof T] = data[key];
-    return acc;
-  }, {} as Partial<T>);
+
+export function useChangedFieldsExtractor<T extends FieldValues>(
+  control: Control<T>
+): (data: T) => Partial<T> {
+  const dirtyFieldsRef = useRef<FormState<T>["dirtyFields"]>();
+  const { dirtyFields } = useFormState({ control });
+
+  useEffect(() => {
+    dirtyFieldsRef.current = dirtyFields;
+  }, [dirtyFields]);
+
+  return useCallback((data: T): Partial<T> => {
+    return Object.entries(dirtyFieldsRef.current ?? {}).reduce(
+      (acc, [key, dirty]) => {
+        if (dirty) acc[key as keyof T] = data[key];
+        return acc;
+      },
+      {} as Partial<T>
+    );
+  }, []);
 }
 
 export function StatsForm<T extends FieldValues>({
@@ -42,15 +56,17 @@ export function StatsForm<T extends FieldValues>({
   fields,
   onSubmit,
 }: StatsFormProps<T>) {
-  const { control, handleSubmit, formState, reset } = useForm<T>({
+  const { control, handleSubmit, reset } = useForm<T>({
     mode: "onChange",
     defaultValues: state as DefaultValues<T>,
   });
 
+  const extractChanged = useChangedFieldsExtractor(control);
+
   const onFormSubmit = useDebounceCallback(
     handleSubmit((data, formEvent) => {
       formEvent?.preventDefault();
-      onSubmit(extractFieldsChanged(formState, data));
+      onSubmit(extractChanged(data));
     }),
     250
   );
