@@ -1,0 +1,58 @@
+export function createBitBuffer(array: Uint8Array) {
+  let remainingBits = 8;
+  let lastByte = 0;
+
+  return {
+    array,
+    addUnsignedInt(value: number, bitLength: number) {
+      const maxBitLength = 32;
+      bitLength = Math.min(bitLength, maxBitLength);
+
+      const maxValue = (1 << bitLength) - 1;
+      value = Math.min(value, maxValue);
+
+      let bitsToWrite = bitLength;
+      while (bitsToWrite > 0) {
+        if (bitsToWrite >= remainingBits) {
+          const mask = (1 << remainingBits) - 1;
+          lastByte |= (value & mask) << (8 - remainingBits);
+          value >>= remainingBits;
+          array[array.length - 1] = lastByte;
+          lastByte = 0;
+          remainingBits = 8;
+          bitsToWrite -= remainingBits;
+        } else {
+          const mask = (1 << bitsToWrite) - 1;
+          lastByte |= (value & mask) << (8 - remainingBits);
+          remainingBits -= bitsToWrite;
+          bitsToWrite = 0;
+        }
+      }
+    },
+
+    getUnsignedInt(bitLength: number, offsetBits: number = 0): number {
+      const maxBitLength = 32;
+      bitLength = Math.min(bitLength, maxBitLength);
+
+      const byteIndex = Math.floor(offsetBits / 8);
+      let bitOffset = offsetBits % 8;
+
+      let value = 0;
+      let shift = 0;
+      for (let i = byteIndex; i < array.length && shift < bitLength; i++) {
+        const byteValue = array[i];
+        let bitsToRead = 8 - bitOffset;
+        if (i === byteIndex) {
+          bitsToRead -= bitOffset;
+        }
+        bitsToRead = Math.min(bitsToRead, bitLength - shift);
+        const maskedValue = (byteValue >> bitOffset) & ((1 << bitsToRead) - 1);
+        value |= maskedValue << shift;
+        shift += bitsToRead;
+        bitOffset = 0;
+      }
+
+      return value;
+    },
+  };
+}
