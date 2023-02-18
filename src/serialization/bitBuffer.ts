@@ -1,9 +1,11 @@
 export function createBitBuffer(array: Uint8Array) {
   let remainingBits = 8;
+  let lastByteIndex = 0;
   let lastByte = 0;
 
   return {
     array,
+
     addUnsignedInt(value: number, bitLength: number) {
       const maxBitLength = 32;
       bitLength = Math.min(bitLength, maxBitLength);
@@ -17,15 +19,17 @@ export function createBitBuffer(array: Uint8Array) {
           const mask = (1 << remainingBits) - 1;
           lastByte |= (value & mask) << (8 - remainingBits);
           value >>= remainingBits;
-          array[array.length - 1] = lastByte;
+          array[lastByteIndex] = lastByte;
           lastByte = 0;
           remainingBits = 8;
           bitsToWrite -= remainingBits;
+          lastByteIndex++;
         } else {
           const mask = (1 << bitsToWrite) - 1;
           lastByte |= (value & mask) << (8 - remainingBits);
           remainingBits -= bitsToWrite;
           bitsToWrite = 0;
+          array[lastByteIndex] = lastByte;
         }
       }
     },
@@ -41,11 +45,7 @@ export function createBitBuffer(array: Uint8Array) {
       let shift = 0;
       for (let i = byteIndex; i < array.length && shift < bitLength; i++) {
         const byteValue = array[i];
-        let bitsToRead = 8 - bitOffset;
-        if (i === byteIndex) {
-          bitsToRead -= bitOffset;
-        }
-        bitsToRead = Math.min(bitsToRead, bitLength - shift);
+        const bitsToRead = Math.min(8 - bitOffset, bitLength - shift);
         const maskedValue = (byteValue >> bitOffset) & ((1 << bitsToRead) - 1);
         value |= maskedValue << shift;
         shift += bitsToRead;
