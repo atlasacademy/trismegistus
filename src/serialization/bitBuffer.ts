@@ -1,58 +1,62 @@
-export function createBitBuffer(array: Uint8Array) {
+export function createBitBuffer(size: number) {
+  if (size <= 0) throw new Error("Size should be greater than 0");
+  const data = new Uint8Array(Math.ceil(size / 8));
   let remainingBits = 8;
   let lastByteIndex = 0;
-  let lastByte = 0;
 
   return {
-    array,
-
+    buffer: () => data.buffer,
     addUnsignedInt(value: number, bitLength: number) {
-      const maxBitLength = 32;
-      bitLength = Math.min(bitLength, maxBitLength);
+      if (bitLength <= 0 || bitLength > 32) {
+        throw new RangeError("Bit length should be positive and less than 32");
+      }
 
-      const maxValue = (1 << bitLength) - 1;
+      const maxValue = bitmask(bitLength);
       value = Math.min(value, maxValue);
 
       let bitsToWrite = bitLength;
       while (bitsToWrite > 0) {
         if (bitsToWrite >= remainingBits) {
-          const mask = (1 << remainingBits) - 1;
-          lastByte |= (value & mask) << (8 - remainingBits);
-          value >>= remainingBits;
-          array[lastByteIndex] = lastByte;
-          lastByte = 0;
-          remainingBits = 8;
+          const maskOffset = bitsToWrite - remainingBits;
+          const mask = bitmask(remainingBits) << maskOffset;
+          data[lastByteIndex] |= (value & mask) >> maskOffset;
           bitsToWrite -= remainingBits;
+          remainingBits = 8;
           lastByteIndex++;
         } else {
-          const mask = (1 << bitsToWrite) - 1;
-          lastByte |= (value & mask) << (8 - remainingBits);
+          const mask = bitmask(bitsToWrite);
+          const bitOffset = remainingBits - bitsToWrite;
+          data[lastByteIndex] |= (value & mask) << bitOffset;
           remainingBits -= bitsToWrite;
           bitsToWrite = 0;
-          array[lastByteIndex] = lastByte;
         }
       }
     },
 
     getUnsignedInt(bitLength: number, offsetBits: number = 0): number {
-      const maxBitLength = 32;
-      bitLength = Math.min(bitLength, maxBitLength);
+      if (bitLength <= 0 || bitLength > 32) {
+        throw new RangeError("Bit length should be positive and less than 32");
+      }
 
       const byteIndex = Math.floor(offsetBits / 8);
       let bitOffset = offsetBits % 8;
 
       let value = 0;
-      let shift = 0;
-      for (let i = byteIndex; i < array.length && shift < bitLength; i++) {
-        const byteValue = array[i];
-        const bitsToRead = Math.min(8 - bitOffset, bitLength - shift);
-        const maskedValue = (byteValue >> bitOffset) & ((1 << bitsToRead) - 1);
-        value |= maskedValue << shift;
-        shift += bitsToRead;
+      let shift = bitLength;
+      for (let i = byteIndex; i < data.length && shift > 0; i++) {
+        const byteValue = data[i];
+        const bitsToRead = Math.min(8 - bitOffset, shift);
+        const mask = bitmask(bitsToRead);
+        const maskedValue = (byteValue >> (8 - bitOffset - bitsToRead)) & mask;
+        value |= maskedValue << (shift - bitsToRead);
+        shift -= bitsToRead;
         bitOffset = 0;
       }
 
       return value;
     },
   };
+  function bitmask(width: number) {
+    return width && -1 >>> (32 - width);
+  }
 }
