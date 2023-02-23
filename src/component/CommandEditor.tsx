@@ -10,7 +10,7 @@ import { SkillButton } from "@/component/SkillButton";
 import { useTeamContext } from "@/hooks/useTeamContext";
 import { useDispatch } from "@/store";
 import { addBattleCommand } from "@/store/slice/teamReducer";
-import { BattleCommandType, CommandType } from "@/types/proto/trismegistus";
+import { BattleCommandType, SkillNum } from "@/types/enums";
 
 interface CardIconProps {
   card: Card;
@@ -54,7 +54,7 @@ function useNoblePhantasmActivation() {
     dispatch(
       addBattleCommand(
         {
-          item: { type: BattleCommandType.NOBLE_PHANTASM, source },
+          item: { type: BattleCommandType.NoblePhantasm, source },
         },
         { teamId }
       )
@@ -77,9 +77,9 @@ export function CommandEditor({ servant, className }: CommandPortraitProps) {
         </button>
       </div>
       <div className="bg-overlay w-full pt-1">
-        <SkillButton skillNum={CommandType.SKILL_1} entity={servant} />
-        <SkillButton skillNum={CommandType.SKILL_2} entity={servant} />
-        <SkillButton skillNum={CommandType.SKILL_3} entity={servant} />
+        <SkillButton skillNum={SkillNum.Skill1} entity={servant} />
+        <SkillButton skillNum={SkillNum.Skill2} entity={servant} />
+        <SkillButton skillNum={SkillNum.Skill3} entity={servant} />
       </div>
     </section>
   );

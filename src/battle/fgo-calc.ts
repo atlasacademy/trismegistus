@@ -3,7 +3,8 @@ import { calcSvt, CalcVals } from "fgo-calc";
 import { funcToCalcStr } from "fgo-calc/dist/utils";
 
 import { BattleEngine, BattleResult } from "@/battle/index";
-import { MemberSlot, SkillActivation } from "@/types";
+import { SkillActivation } from "@/types";
+import { MemberSlot } from "@/types/enums";
 import { UserServant } from "@/types/userServant";
 
 export function createFgoCalcBattleEngine(): BattleEngine {
@@ -63,16 +64,16 @@ export function createFgoCalcBattleEngine(): BattleEngine {
 function getTeamMembers(
   source: MemberSlot,
   targetType: Func.FuncTargetType,
-  target: MemberSlot = MemberSlot.NONE
+  target: MemberSlot = MemberSlot.None
 ): MemberSlot[] {
   if (targetType === Func.FuncTargetType.PT_ALL) {
-    return [MemberSlot.FIELD_1, MemberSlot.FIELD_2, MemberSlot.FIELD_3];
+    return [MemberSlot.Field1, MemberSlot.Field2, MemberSlot.Field3];
   }
   if (targetType === Func.FuncTargetType.SELF) {
     return [source];
   }
   if (targetType === Func.FuncTargetType.PT_OTHER) {
-    return [MemberSlot.FIELD_1, MemberSlot.FIELD_2, MemberSlot.FIELD_3].filter(
+    return [MemberSlot.Field1, MemberSlot.Field2, MemberSlot.Field3].filter(
       (fieldSlot) => fieldSlot !== source
     );
   }
@@ -80,28 +81,28 @@ function getTeamMembers(
     return [target];
   }
   if (targetType === Func.FuncTargetType.PT_ONE_OTHER) {
-    return [MemberSlot.FIELD_1, MemberSlot.FIELD_2, MemberSlot.FIELD_3].filter(
+    return [MemberSlot.Field1, MemberSlot.Field2, MemberSlot.Field3].filter(
       (fieldSlot) => fieldSlot !== target
     );
   }
   if (targetType === Func.FuncTargetType.PT_FULL) {
     return [
-      MemberSlot.FIELD_1,
-      MemberSlot.FIELD_2,
-      MemberSlot.FIELD_3,
-      MemberSlot.SUB_1,
-      MemberSlot.SUB_2,
-      MemberSlot.SUB_3,
+      MemberSlot.Field1,
+      MemberSlot.Field2,
+      MemberSlot.Field3,
+      MemberSlot.Sub1,
+      MemberSlot.Sub2,
+      MemberSlot.Sub3,
     ];
   }
   if (targetType === Func.FuncTargetType.PT_OTHER_FULL) {
     return [
-      MemberSlot.FIELD_1,
-      MemberSlot.FIELD_2,
-      MemberSlot.FIELD_3,
-      MemberSlot.SUB_1,
-      MemberSlot.SUB_2,
-      MemberSlot.SUB_3,
+      MemberSlot.Field1,
+      MemberSlot.Field2,
+      MemberSlot.Field3,
+      MemberSlot.Sub1,
+      MemberSlot.Sub2,
+      MemberSlot.Sub3,
     ].filter((slot) => slot !== target);
   }
 

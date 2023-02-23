@@ -20,17 +20,16 @@ import {
 } from "redux-persist/es/constants";
 
 import { apiMiddleware, apiReducer, apiReducerPath } from "@/api";
-import { deserializeProto } from "@/helpers/deserializeProto";
+import { deserializeState } from "@/helpers/deserializeState";
 import { teamsReducer } from "@/store/slice/teamSlice";
 import { userReducer } from "@/store/slice/userSlice";
 
 const listenersMiddleware = createListenerMiddleware();
 
 function createStore() {
-  const serializedInitialState = new URLSearchParams(
-    window.location.search
-  ).get("o");
-  const teams = deserializeProto(serializedInitialState);
+  const queryParams = new URLSearchParams(window.location.search);
+  const serializedInitialState = queryParams.get("o") ?? "";
+  const teams = deserializeState(serializedInitialState);
 
   return configureStore({
     reducer: {

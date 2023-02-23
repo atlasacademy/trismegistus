@@ -9,7 +9,7 @@ import { useFactorySelector } from "@/hooks/useFactorySelector";
 import { useTeamContext } from "@/hooks/useTeamContext";
 import { createTeamMysticCodeSelector } from "@/store/selectors/mysticCode";
 import { TeamViewMode } from "@/types";
-import { CommandType } from "@/types/proto/trismegistus";
+import { SkillNum } from "@/types/enums";
 
 export function MysticCodeView() {
   const { teamId, mode } = useTeamContext();
@@ -48,15 +48,15 @@ export function MysticCodeView() {
                   {mode === TeamViewMode.SCRIPT ? (
                     <div className="bg-overlay w-full pt-1">
                       <SkillButton
-                        skillNum={CommandType.SKILL_1}
+                        skillNum={SkillNum.Skill1}
                         entity={mysticCode}
                       />
                       <SkillButton
-                        skillNum={CommandType.SKILL_2}
+                        skillNum={SkillNum.Skill2}
                         entity={mysticCode}
                       />
                       <SkillButton
-                        skillNum={CommandType.SKILL_3}
+                        skillNum={SkillNum.Skill3}
                         entity={mysticCode}
                       />
                     </div>

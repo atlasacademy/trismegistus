@@ -1,30 +1,31 @@
 import { z } from "zod";
 
-import {
-  BattleCommandType,
-  CommandType,
-  MemberSlot,
-} from "@/types/proto/trismegistus";
+import { BattleCommandEnum, MemberSlotEnum, SkillNumEnum } from "@/types/enums";
 
-export const UserCommand = z.object({
-  type: z.nativeEnum(CommandType),
-  source: z.nativeEnum(MemberSlot),
-  target: z.nativeEnum(MemberSlot),
+export const UserSkillActivation = z.object({
+  type: SkillNumEnum,
+  source: MemberSlotEnum,
+  target: MemberSlotEnum,
 });
-
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export type UserCommand = z.output<typeof UserCommand>;
+export type UserSkillActivation = z.infer<typeof UserSkillActivation>;
 
 export const UserBattleCommand = z.object({
-  type: z.nativeEnum(BattleCommandType),
-  source: z.nativeEnum(MemberSlot),
+  type: BattleCommandEnum,
+  source: MemberSlotEnum,
 });
-
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export type UserBattleCommand = z.output<typeof UserBattleCommand>;
+export type UserBattleCommand = z.infer<typeof UserBattleCommand>;
+
+export const UserCommand = z.discriminatedUnion("type", [
+  UserSkillActivation,
+  UserBattleCommand,
+]);
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type UserCommand = z.infer<typeof UserCommand>;
 
 export const UserBattleStep = z.object({
-  commands: z.array(UserCommand).default([]),
+  skills: z.array(UserSkillActivation).default([]),
   battleCommands: z.array(UserBattleCommand).default([]),
 });
 

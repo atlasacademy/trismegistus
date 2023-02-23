@@ -5,7 +5,7 @@ import {
   createUserBattleStep,
   InputCommandScript,
   UserBattleCommand,
-  UserCommand,
+  UserSkillActivation,
 } from "@/types/userCommandScript";
 import { InputTeam } from "@/types/userTeam";
 
@@ -28,15 +28,15 @@ export const {
     startNewTurn(state, _: Action) {
       state.push(createUserBattleStep());
     },
-    addCommand(state, action: PayloadAction<BattleStep<UserCommand>>) {
+    addCommand(state, action: PayloadAction<BattleStep<UserSkillActivation>>) {
       const {
-        payload: { step, item: userCommand },
+        payload: { step, item: userSkillActivation },
       } = action;
       if (state.length === 0) {
         state.push(createUserBattleStep());
       }
       const target = step ?? state.length - 1;
-      state[target]?.commands?.push(userCommand);
+      state[target]?.skills?.push(userSkillActivation);
     },
     addBattleCommand(
       state,

@@ -7,8 +7,8 @@ import { TrismegistusState } from "@/store";
 import { createSlotsSelectors } from "@/store/slice/slotSlice";
 import { selectTeamById } from "@/store/slice/teamSlice";
 import { selectServantDefaults } from "@/store/slice/userSlice";
-import { MemberSlot, SkillNum, TeamEntry } from "@/types";
-import { CommandType } from "@/types/proto/trismegistus";
+import { TeamEntry } from "@/types";
+import { MemberSlot, SkillNum } from "@/types/enums";
 import {
   createUserServant,
   InputServant,
@@ -38,11 +38,11 @@ export function selectUserServantSkillLevel(
   skillNum: SkillNum
 ): number {
   switch (skillNum) {
-    case CommandType.SKILL_1:
+    case SkillNum.Skill1:
       return userServant.skill1;
-    case CommandType.SKILL_2:
+    case SkillNum.Skill2:
       return userServant.skill2;
-    case CommandType.SKILL_3:
+    case SkillNum.Skill3:
       return userServant.skill3;
   }
 }

@@ -12,7 +12,7 @@ import { QueryDefinition, SkipToken } from "@reduxjs/toolkit/query";
 
 import { apiEndpoints } from "@/api/index";
 import type { TrismegistusState } from "@/store";
-import { SkillNum } from "@/types";
+import { SkillNum, skillNumToInt } from "@/types/enums";
 
 type DefinitionQuerySelectorFn<
   Definition extends QueryDefinition<any, any, any, any, any>
@@ -64,14 +64,13 @@ export function selectEntitySkill(
   skillNum: SkillNum
 ): Skill.Skill | undefined {
   const { skills } = entity;
+  const skill = skillNumToInt(skillNum);
   if (skills.length === 3) {
-    return skills[skillNum - 1];
+    const skillIndex = skill - 1;
+    return skills[skillIndex];
   }
   return skills.reduce<Skill.Skill | undefined>((result, next) => {
-    if (
-      next.num === skillNum &&
-      (next.priority ?? 0) > (result?.priority ?? 0)
-    ) {
+    if (next.num === skill && (next.priority ?? 0) > (result?.priority ?? 0)) {
       return next;
     }
     return result;

@@ -23,7 +23,7 @@ const {
   getSelectors: getTeamsSelectors,
   addOne: addTeam,
 } = createEntityAdapter<InputTeam>({
-  selectId: ({ teamId }) => teamId,
+  selectId: ({ teamId }) => teamId ?? "",
 });
 
 const teamSlice = createSlice({

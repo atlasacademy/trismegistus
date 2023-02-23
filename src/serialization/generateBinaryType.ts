@@ -6,8 +6,9 @@ import {
   BinaryBoolean,
   BinaryInt,
   BinaryObject,
-  BinaryType,
+  BinarySchema,
 } from "@/serialization/binaryTypes";
+import { BinaryEnum } from "@/serialization/binaryTypes/binaryEnum";
 
 /**
  * Accepts a Zod Schema and creates a {@link BinaryObject} from it.
@@ -15,7 +16,7 @@ import {
  * Currently, the implementation accepts the following types, within
  * the following conditions:
  *
- * - {@link z.ZodArray}: requires {@link z.ZodArray#max} (falls back to 256
+ * - {@link z.ZodArray}: requires {@link z.ZodArray#max} (falls back to 255
  * if not defined).
  * - {@link z.ZodObject}: field order must be defined in the given
  * {@link BinaryRegistry}.
@@ -30,17 +31,17 @@ import {
  * nullable, despite the zod field definition.
  *
  * @param registry a registry with the allowed {@link z.ZodObject}s
- * @param zodSchema the schema which will become a {@link BinaryType}
+ * @param zodSchema the schema which will become a {@link BinarySchema}
  */
 export function generateBinaryType(
   registry: BinaryRegistry,
   zodSchema: z.ZodSchema
-): BinaryType | undefined {
-  const ARRAY_MAX_LENGTH_FALLBACK = 256;
+): BinarySchema | undefined {
+  const ARRAY_MAX_LENGTH_FALLBACK = 255;
   const NUMBER_MIN_FALLBACK = 0;
   const NUMBER_MAX_FALLBACK = 4095;
   return generate(zodSchema);
-  function generate(schema: z.ZodSchema): BinaryType | undefined {
+  function generate(schema: z.ZodSchema): BinarySchema | undefined {
     const currentSchema =
       schema instanceof z.ZodDefault
         ? schema.removeDefault()
@@ -48,15 +49,18 @@ export function generateBinaryType(
         ? schema.unwrap()
         : schema;
 
+    if (currentSchema instanceof z.ZodEnum) {
+      return new BinaryEnum(currentSchema);
+    }
     if (currentSchema instanceof z.ZodBoolean) {
-      return new BinaryBoolean(currentSchema);
+      return new BinaryBoolean();
     }
     if (currentSchema instanceof z.ZodNumber) {
       const start = currentSchema.minValue ?? NUMBER_MIN_FALLBACK;
       const end = currentSchema.maxValue ?? NUMBER_MAX_FALLBACK;
 
       if (start > end) return undefined;
-      return new BinaryInt(currentSchema, start, end);
+      return new BinaryInt(start, end);
     }
     if (currentSchema instanceof z.ZodArray) {
       const maxLength =
@@ -65,7 +69,7 @@ export function generateBinaryType(
       const elementType = generate(currentSchema.element);
       if (elementType == null) return;
 
-      return new BinaryArray(currentSchema, elementType, maxLength);
+      return new BinaryArray(elementType, maxLength);
     }
     if (currentSchema instanceof z.ZodObject) {
       const registeredFields = registry.getRegisteredFields(currentSchema);
@@ -79,7 +83,7 @@ export function generateBinaryType(
         fields.push([fieldName, fieldType]);
       }
       if (fields.length <= 0) return undefined;
-      return new BinaryObject(currentSchema, fields);
+      return new BinaryObject(fields);
     }
   }
 }

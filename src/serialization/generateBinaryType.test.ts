@@ -6,7 +6,7 @@ import { BinaryRegistry } from "@/serialization/binaryRegistry";
 import {
   BinaryInt,
   BinaryObject,
-  BinaryType,
+  BinarySchema,
 } from "@/serialization/binaryTypes";
 import { generateBinaryType } from "@/serialization/generateBinaryType";
 import { rangedInt } from "@/types/utils";
@@ -15,7 +15,7 @@ function intFieldTest(
   fieldName: string,
   min: number,
   max: number
-): (arg: [string, BinaryType]) => boolean {
+): (arg: [string, BinarySchema]) => boolean {
   return ([field, fieldType]) => {
     return (
       fieldType instanceof BinaryInt &&

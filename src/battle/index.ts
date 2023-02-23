@@ -1,6 +1,7 @@
 import { CraftEssence, Servant } from "@atlasacademy/api-connector";
 
-import { MemberSlot, SkillActivation } from "@/types";
+import { SkillActivation } from "@/types";
+import { MemberSlot } from "@/types/enums";
 import { UserCraftEssence } from "@/types/userCraftEssence";
 import { UserServant } from "@/types/userServant";
 

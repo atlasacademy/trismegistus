@@ -1,28 +1,6 @@
 import { Servant, Skill } from "@atlasacademy/api-connector";
 
-import { CommandType, MemberSlot } from "@/types/proto/trismegistus";
-
-export { MemberSlot };
-
-export type SkillNum = Extract<
-  CommandType,
-  CommandType.SKILL_1 | CommandType.SKILL_2 | CommandType.SKILL_3
->;
-
-export type FieldSlot = Extract<
-  MemberSlot,
-  MemberSlot.FIELD_1 | MemberSlot.FIELD_2 | MemberSlot.FIELD_3
->;
-
-export type SubSlot = Extract<
-  MemberSlot,
-  MemberSlot.SUB_1 | MemberSlot.SUB_2 | MemberSlot.SUB_3
->;
-
-export interface SkillInfo {
-  owner: MemberSlot;
-  skillNum: SkillNum;
-}
+import { MemberSlot } from "@/types/enums";
 
 export interface TeamEntry {
   teamId: string;
@@ -59,4 +37,9 @@ export interface SkillActivation {
 
 export interface NoblePhantasmActivation {
   servant: Servant.Servant;
+}
+
+export interface EnumMapping<T extends string = string> {
+  indexes: Record<T, number>;
+  options: T[];
 }

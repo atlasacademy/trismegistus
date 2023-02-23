@@ -10,7 +10,8 @@ import { ResultView } from "@/component/ResultView";
 import { useFactorySelector } from "@/hooks/useFactorySelector";
 import { TeamContext } from "@/hooks/useTeamContext";
 import { createTeamUserServantSlotsSelector } from "@/store/selectors/servant";
-import { MemberSlot, TeamContextData, TeamEntry, TeamViewMode } from "@/types";
+import { TeamContextData, TeamEntry, TeamViewMode } from "@/types";
+import { MemberSlot } from "@/types/enums";
 import { nextMemberSlot } from "@/types/utils";
 
 function useSlotData(
@@ -22,10 +23,10 @@ function useSlotData(
     const next =
       slots.length > 0
         ? nextMemberSlot(slots[slots.length - 1])
-        : MemberSlot.FIELD_1;
+        : MemberSlot.Field1;
 
     return [
-      { teamId, slot: MemberSlot.NONE, mode },
+      { teamId, slot: MemberSlot.None, mode },
       ...(next != null && mode === TeamViewMode.EDIT
         ? [...slots, next]
         : mode === TeamViewMode.SCRIPT

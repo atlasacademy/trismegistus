@@ -6,7 +6,8 @@ import { composeSelectors } from "@/helpers/composeSelectors";
 import { TrismegistusState } from "@/store";
 import { createUserCraftEssenceBySlotSelector } from "@/store/slice/craftEssenceSlice";
 import { selectTeamById } from "@/store/slice/teamSlice";
-import { MemberSlot, TeamEntry } from "@/types";
+import { TeamEntry } from "@/types";
+import { MemberSlot } from "@/types/enums";
 import {
   createUserCraftEssence,
   InputCraftEssence,
