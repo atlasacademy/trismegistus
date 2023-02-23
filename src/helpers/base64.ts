@@ -56,7 +56,7 @@ function getBase64Code(charCode: number) {
   return code;
 }
 
-export function bytesToBase64(bytes: Uint8Array, padding: boolean = true) {
+export function bytesToBase64(bytes: Uint8Array) {
   let result = "",
     i,
     l = bytes.length;
@@ -70,14 +70,14 @@ export function bytesToBase64(bytes: Uint8Array, padding: boolean = true) {
     // 1 octet yet to write
     result += base64abc[bytes[i - 2]! >> 2];
     result += base64abc[(bytes[i - 2]! & 0x03) << 4];
-    if (padding) result += "==";
+    result += "==";
   }
   if (i === l) {
     // 2 octets yet to write
     result += base64abc[bytes[i - 2]! >> 2];
     result += base64abc[((bytes[i - 2]! & 0x03) << 4) | (bytes[i - 1]! >> 4)];
     result += base64abc[(bytes[i - 1]! & 0x0f) << 2];
-    if (padding) result += "=";
+    result += "=";
   }
   return result;
 }

@@ -47,11 +47,11 @@ export const DamageRange = connect(() => {
     { teamId, battleEngine, source, skills }: DamageRangeProps
   ): Partial<BattleResult> => {
     const userServant = selectUserServant(state, teamId, source);
-    const servant = selectServant(state, userServant.servantId);
+    const servant = selectServant(state, userServant.servantColNo);
     const userCraftEssence = selectUserCraftEssence(state, teamId, source);
     const craftEssence = selectCraftEssence(
       state,
-      userCraftEssence.craftEssenceId
+      userCraftEssence.craftEssenceColNo
     );
     const skillActivations = skills.map((userSkillActivation) =>
       selectSkillActivation(state, teamId, userSkillActivation)

@@ -20,13 +20,13 @@ function FieldMemberListItem({
   onSelect,
 }: SelectionItemProps<TeamMember>) {
   const { teamId, slot } = item;
-  const { servantId } = useFactorySelector(
+  const { servantColNo } = useFactorySelector(
     createTeamUserServantSelector,
     [true],
     teamId,
     slot
   );
-  const { data: servant } = useServantQuery(servantId);
+  const { data: servant } = useServantQuery(servantColNo);
 
   return (
     <button

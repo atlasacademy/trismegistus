@@ -45,6 +45,7 @@ export function TeamView({ teamId }: TeamCompViewProps) {
     [],
     teamId
   );
+  console.log(slots);
   const [mode, setMode] = useState<TeamViewMode>(
     slots.length > 0 ? TeamViewMode.VIEW : TeamViewMode.EDIT
   );

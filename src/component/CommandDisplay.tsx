@@ -28,7 +28,7 @@ function CommandItemDisplay({
   const sourceServant = useFactorySelector(
     createServantSelector,
     [],
-    commandSource.servantId
+    commandSource.servantColNo
   );
   const commandTarget = useFactorySelector(
     createTeamUserServantSelector,
@@ -39,7 +39,7 @@ function CommandItemDisplay({
   const targetServant = useFactorySelector(
     createServantSelector,
     [],
-    commandTarget.servantId
+    commandTarget.servantColNo
   );
   return (
     <div className="flex">

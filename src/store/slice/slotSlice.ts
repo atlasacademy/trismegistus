@@ -26,7 +26,7 @@ export function createSlotsSlice<N extends string, T>(
         } = action;
         const index = MemberSlotMapping.indexes[slot];
         if (index == null) return;
-        state.splice(index, 1, item as Draft<T>);
+        state[index] = item as Draft<T>;
       },
       add(state, action: PayloadAction<T>) {
         const { payload: item } = action;

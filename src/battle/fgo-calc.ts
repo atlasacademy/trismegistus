@@ -24,7 +24,7 @@ export function createFgoCalcBattleEngine(): BattleEngine {
       const [sourceSkill, skillLevel] = skill;
       return (
         sourceSkill?.functions.reduce((skillCalcStr, nextFunc) => {
-          const effects = funcToCalcStr(nextFunc, skillLevel);
+          const effects = funcToCalcStr(nextFunc, Math.max(0, skillLevel - 1));
           return Object.entries(effects).reduce(
             (funcToStr, [targetType, nextStr]) => {
               const type = targetType as Func.FuncTargetType;

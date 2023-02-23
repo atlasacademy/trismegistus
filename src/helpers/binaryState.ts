@@ -23,7 +23,7 @@ function createStateBinaryType(): BinarySchema | undefined {
   ]);
   registry.register(UserMysticCode, ["mysticCodeId", "mysticCodeLevel"]);
   registry.register(UserServant, [
-    "servantId",
+    "servantColNo",
     "servantLevel",
     "fou",
     "noblePhantasmLevel",
@@ -33,11 +33,13 @@ function createStateBinaryType(): BinarySchema | undefined {
     "append1",
     "append2",
     "append3",
+    "servantId",
   ]);
   registry.register(UserCraftEssence, [
-    "craftEssenceId",
+    "craftEssenceColNo",
     "craftEssenceLevel",
     "craftEssenceMLB",
+    "craftEssenceId",
   ]);
   registry.register(UserBattleStep, ["skills", "battleCommands"]);
   registry.register(UserSkillActivation, ["type", "source", "target"]);

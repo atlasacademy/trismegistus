@@ -70,8 +70,8 @@ export function createTeamServantSelector(): (
   const inputServantSelector = createTeamInputServantSelector();
   const selectServant = createServantSelector();
   return (state, teamId, slot) => {
-    const { servantId } = inputServantSelector(state, teamId, slot);
-    return selectServant(state, servantId);
+    const { servantColNo } = inputServantSelector(state, teamId, slot);
+    return selectServant(state, servantColNo);
   };
 }
 
@@ -121,7 +121,7 @@ export function createServantAttackSelector(): (
   const selectServant = createServantSelector();
   return (state, teamId, slot) => {
     const userServant = selectUserServant(state, teamId, slot);
-    const servant = selectServant(state, userServant.servantId);
+    const servant = selectServant(state, userServant.servantColNo);
     return selectServantAttack(userServant, servant);
   };
 }

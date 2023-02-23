@@ -92,10 +92,6 @@ function addCommandScript(
   }, result);
 }
 export function deserializeState(rawState: string): EntityState<InputTeam> {
-  const padding = rawState.length % 4;
-  if (padding !== 0) {
-    rawState += "=".repeat(padding);
-  }
   const uint8Array = base64ToBytes(rawState);
   const bitBuffer = new BitBuffer(uint8Array);
 

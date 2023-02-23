@@ -76,7 +76,7 @@ export function createCraftEssenceAttackSelector(): (
     const userCraftEssence = selectUserCraftEssence(state, teamId, slot);
     const craftEssence = selectCraftEssence(
       state,
-      userCraftEssence.craftEssenceId
+      userCraftEssence.craftEssenceColNo
     );
     return selectCraftEssenceAttack(userCraftEssence, craftEssence);
   };

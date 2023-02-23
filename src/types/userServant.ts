@@ -2,10 +2,10 @@ import { Servant } from "@atlasacademy/api-connector";
 import produce from "immer";
 import { z } from "zod";
 
-import { positiveInt, rangedInt } from "@/types/utils";
+import { rangedInt } from "@/types/utils";
 
 export const UserServant = z.object({
-  servantId: positiveInt(),
+  servantColNo: rangedInt(0, 4095),
   servantLevel: rangedInt(1, 120).describe("Servant Level"),
   fou: rangedInt(0, 2000).describe("Attack Fou"),
   noblePhantasmLevel: rangedInt(1, 5).describe("Noble Phantasm"),
@@ -15,6 +15,7 @@ export const UserServant = z.object({
   append1: rangedInt(0, 10).describe("Append 1"),
   append2: rangedInt(0, 10).describe("Append 2"),
   append3: rangedInt(0, 10).describe("Append 3"),
+  servantId: rangedInt(0, 4294967295),
 });
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare

@@ -6,5 +6,5 @@ import { InputTeam } from "@/types/userTeam";
 export function serializeState(userTeams: InputTeam[]): string {
   const bitBuffer = new BitBuffer(16);
   TrismegistusBinaryState.write(bitBuffer, userTeams);
-  return bytesToBase64(new Uint8Array(bitBuffer.buffer()), false);
+  return bytesToBase64(new Uint8Array(bitBuffer.buffer()));
 }
