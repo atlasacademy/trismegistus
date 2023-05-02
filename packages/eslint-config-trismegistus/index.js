@@ -1,36 +1,29 @@
-{
-  "root": true,
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
+module.exports = {
+  root: true,
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: "module",
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
-  "settings": {
-    "react": {
-      "version": "detect"
+  settings: {
+    react: {
+      version: "detect",
     },
     "import/resolver": {
-      "typescript": true,
-      "node": {
-        "paths": [
-          "src"
-        ],
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
-      }
-    }
+      typescript: true,
+      node: {
+        paths: ["src"],
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+      },
+    },
   },
-  "env": {
-    "browser": true,
-    "amd": true,
-    "node": true
+  env: {
+    browser: true,
+    amd: true,
+    node: true,
   },
   "extends": [
     "eslint:recommended",
@@ -39,25 +32,31 @@
     "plugin:react/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:prettier/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
   ],
   "plugins": [
     "import",
     "simple-import-sort",
     "prettier",
-    "@typescript-eslint"
+    "@typescript-eslint",
   ],
-  "rules": {
+  rules: {
     "prettier/prettier": [
       "error",
-      {},
       {
-        "usePrettierrc": true
-      }
+        semi: true,
+        singleQuote: false,
+        trailingComma: "es5",
+        arrowParens: "always",
+        endOfLine: "auto",
+        plugins: [
+          require("prettier-plugin-tailwindcss")
+        ],
+      },
     ],
     "react/function-component-definition": [
       2,
-      { "namedComponents": "function-declaration" }
+      { namedComponents: "function-declaration" },
     ],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
@@ -65,14 +64,14 @@
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
-        "argsIgnorePattern": "^_"
-      }
+        argsIgnorePattern: "^_",
+      },
     ],
     "@typescript-eslint/no-shadow": [
       "error",
       {
-        "builtinGlobals": true
-      }
+        builtinGlobals: true,
+      },
     ],
     "import/no-cycle": "error",
     "no-unused-vars": "off",
@@ -85,15 +84,9 @@
     "jsx-a11y/anchor-is-valid": [
       "error",
       {
-        "specialLink": [
-          "hrefLeft",
-          "hrefRight"
-        ],
-        "aspects": [
-          "invalidHref",
-          "preferButton"
-        ]
-      }
-    ]
-  }
-}
+        specialLink: ["hrefLeft", "hrefRight"],
+        aspects: ["invalidHref", "preferButton"],
+      },
+    ],
+  },
+};
