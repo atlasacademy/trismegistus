@@ -1,5 +1,5 @@
-import { BinaryReadContext } from "@/serialization/binaryTypes/context";
-import { BitBuffer } from "@/serialization/bitBuffer";
+import { BitBuffer } from "../bitBuffer";
+import { BinaryReadContext } from "./context";
 
 export abstract class BinarySchema {
   abstract read(bitBuffer: BitBuffer, context: BinaryReadContext): unknown;

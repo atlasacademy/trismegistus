@@ -1,16 +1,12 @@
 {
-  "name": "@trismegistus/zod-bit-buffer",
+  "name": "@trismegistus/commons",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
-    "test": "vitest",
     "build": "tsc && vite build",
     "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
     "type-check": "tsc"
-  },
-  "peerDependencies": {
-    "zod": "^3.21.4"
   },
   "devDependencies": {
     "eslint": "8.39.0",
@@ -25,16 +21,13 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/zod-bit-buffer.umd.js",
-  "module": "./dist/zod-bit-buffer.es.js",
+  "main": "./dist/commons.umd.js",
+  "module": "./dist/commons.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/zod-bit-buffer.es.js",
-      "require": "./dist/zod-bit-buffer.umd.js"
+      "import": "./dist/commons.es.js",
+      "require": "./dist/commons.umd.js"
     }
-  },
-  "dependencies": {
-    "@trismegistus/commons": "workspace:^"
   }
 }

@@ -2,14 +2,15 @@ import { fail } from "assert";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { BinaryRegistry } from "@/serialization/binaryRegistry";
-import {
-  BinaryInt,
-  BinaryObject,
-  BinarySchema,
-} from "@/serialization/binaryTypes";
-import { generateBinaryType } from "@/serialization/generateBinaryType";
-import { rangedInt } from "@/types/utils";
+import { BinaryRegistry } from "./binaryRegistry";
+import { BinaryInt } from "./binaryTypes/binaryInt";
+import { BinaryObject } from "./binaryTypes/binaryObject";
+import { BinarySchema } from "./binaryTypes/binarySchema";
+import { generateBinaryType } from "./generateBinaryType";
+
+export function rangedInt(min: number, max: number) {
+  return z.number().int().min(min).max(max).default(min);
+}
 
 function intFieldTest(
   fieldName: string,

@@ -1,9 +1,9 @@
+import { EnumMapping } from "@trismegistus/commons";
 import { z, ZodEnum } from "zod";
 
-import { BinarySchema } from "@/serialization/binaryTypes/binarySchema";
-import { BinaryReadContext } from "@/serialization/binaryTypes/context";
-import { BitBuffer } from "@/serialization/bitBuffer";
-import { EnumMapping } from "@/types";
+import { BitBuffer } from "../bitBuffer";
+import { BinarySchema } from "./binarySchema";
+import { BinaryReadContext } from "./context";
 
 export class BinaryEnum extends BinarySchema {
   private static readonly BASE_SCHEMA = z.string();

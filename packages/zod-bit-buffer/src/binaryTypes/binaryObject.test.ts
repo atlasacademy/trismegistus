@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { BinaryInt } from "@/serialization/binaryTypes/binaryInt";
-import { BinaryObject } from "@/serialization/binaryTypes/binaryObject";
-import { BinarySchema } from "@/serialization/binaryTypes/binarySchema";
-import { BinaryReadContext } from "@/serialization/binaryTypes/context";
-import { BitBuffer } from "@/serialization/bitBuffer";
+import { BitBuffer } from "../bitBuffer";
+import { BinaryInt } from "./binaryInt";
+import { BinaryObject } from "./binaryObject";
+import { BinarySchema } from "./binarySchema";
+import { BinaryReadContext } from "./context";
 
 describe("BinaryObject", () => {
   describe("Example1", () => {

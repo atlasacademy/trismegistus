@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { BinaryEnum } from "@/serialization/binaryTypes/binaryEnum";
-import { BinaryReadContext } from "@/serialization/binaryTypes/context";
-import { BitBuffer } from "@/serialization/bitBuffer";
+import { BitBuffer } from "../bitBuffer";
+import { BinaryEnum } from "./binaryEnum";
+import { BinaryReadContext } from "./context";
 
 describe("BinaryEnum", () => {
   it("should write the enum index", () => {

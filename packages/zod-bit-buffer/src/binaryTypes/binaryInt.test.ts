@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { BinaryInt } from "@/serialization/binaryTypes/binaryInt";
-import { BinaryReadContext } from "@/serialization/binaryTypes/context";
-import { BitBuffer } from "@/serialization/bitBuffer";
+import { BitBuffer } from "../bitBuffer";
+import { BinaryInt } from "./binaryInt";
+import { BinaryReadContext } from "./context";
 
 describe("BinaryInt", () => {
   it("should write the integer inside the range", () => {

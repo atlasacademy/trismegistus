@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { BinaryBoolean } from "@/serialization/binaryTypes/binaryBoolean";
-import { BinaryReadContext } from "@/serialization/binaryTypes/context";
-import { BitBuffer } from "@/serialization/bitBuffer";
+import { BitBuffer } from "../bitBuffer";
+import { BinaryBoolean } from "./binaryBoolean";
+import { BinaryReadContext } from "./context";
 
 describe("BinaryBoolean", () => {
   it("should write to a single bit", () => {

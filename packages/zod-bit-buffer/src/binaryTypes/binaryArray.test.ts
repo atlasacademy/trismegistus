@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { BinaryArray } from "@/serialization/binaryTypes/binaryArray";
-import { BinaryInt } from "@/serialization/binaryTypes/binaryInt";
-import { BinaryReadContext } from "@/serialization/binaryTypes/context";
-import { BitBuffer } from "@/serialization/bitBuffer";
+import { BitBuffer } from "../bitBuffer";
+import { BinaryArray } from "./binaryArray";
+import { BinaryInt } from "./binaryInt";
+import { BinaryReadContext } from "./context";
 
 describe("BinaryArray", () => {
   const Example1 = new BinaryArray(new BinaryInt(0, 255), 5);

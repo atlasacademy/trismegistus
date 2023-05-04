@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { BitBuffer } from "@/serialization/bitBuffer";
+import { BitBuffer } from "./bitBuffer";
 
 describe("BitBuffer tests", () => {
   it("should store the given values", () => {

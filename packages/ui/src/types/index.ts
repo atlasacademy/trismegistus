@@ -39,7 +39,3 @@ export interface NoblePhantasmActivation {
   servant: Servant.Servant;
 }
 
-export interface EnumMapping<T extends string = string> {
-  indexes: Record<T, number>;
-  options: T[];
-}

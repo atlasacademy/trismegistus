@@ -1,14 +1,12 @@
 import { z } from "zod";
 
-import { BinaryRegistry } from "@/serialization/binaryRegistry";
-import {
-  BinaryArray,
-  BinaryBoolean,
-  BinaryInt,
-  BinaryObject,
-  BinarySchema,
-} from "@/serialization/binaryTypes";
-import { BinaryEnum } from "@/serialization/binaryTypes/binaryEnum";
+import { BinaryRegistry } from "./binaryRegistry";
+import { BinaryArray } from "./binaryTypes/binaryArray";
+import { BinaryBoolean } from "./binaryTypes/binaryBoolean";
+import { BinaryEnum } from "./binaryTypes/binaryEnum";
+import { BinaryInt } from "./binaryTypes/binaryInt";
+import { BinaryObject } from "./binaryTypes/binaryObject";
+import { BinarySchema } from "./binaryTypes/binarySchema";
 
 /**
  * Accepts a Zod Schema and creates a {@link BinaryObject} from it.
