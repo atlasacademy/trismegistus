@@ -13,6 +13,7 @@ const appElement = document.getElementById("root")!;
 createRoot(appElement).render(
   <StrictMode>
     <Provider store={store}>
+
       <PersistGate persistor={persistor}>
         <Trismegistus />
       </PersistGate>

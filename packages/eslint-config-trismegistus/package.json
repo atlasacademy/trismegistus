@@ -1,12 +1,11 @@
 {
-  "name": "@trismegistus/eslint-config",
+  "name": "eslint-config-trismegistus",
   "version": "0.0.0",
   "main": "index.js",
   "private": true,
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "5.59.1",
     "@typescript-eslint/parser": "5.59.1",
-    "eslint": "8.39.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-import-resolver-typescript": "3.5.5",
     "eslint-plugin-import": "2.27.5",
@@ -17,9 +16,15 @@
     "eslint-plugin-simple-import-sort": "10.0.0",
     "prettier": "2.8.8",
     "prettier-eslint": "15.0.1",
-    "prettier-plugin-tailwindcss": "0.2.8"
+    "prettier-plugin-tailwindcss": "0.2.8",
+    "tailwindcss": "3.3.2",
+    "typescript": "5.0.4"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "eslint": "8.39.0",
+    "eslint-config-trismegistus": "workspace:^"
   }
 }
