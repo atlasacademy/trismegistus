@@ -11,7 +11,8 @@ import { useTeamContext } from "@/hooks/useTeamContext";
 import { TrismegistusState } from "@/store";
 import { createTeamUserServantSelector } from "@/store/selectors/servant";
 import { updateServant } from "@/store/slice/teamReducer";
-import { MemberSlot, TeamContextData, TeamEntry } from "@/types";
+import { TeamContextData, TeamEntry } from "@/types";
+import { MemberSlot } from "@/types/enums";
 import { InputServant, UserServant } from "@/types/userServant";
 import { extractFieldInfo } from "@/types/utils";
 

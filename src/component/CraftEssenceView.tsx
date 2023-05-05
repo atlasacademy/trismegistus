@@ -48,9 +48,9 @@ export function CraftEssenceSlotView() {
     slot
   );
 
-  const { craftEssenceId } = userCraftEssence;
+  const { craftEssenceColNo } = userCraftEssence;
   const { data: craftEssence, isLoading } =
-    useCraftEssenceQuery(craftEssenceId);
+    useCraftEssenceQuery(craftEssenceColNo);
   return (
     <section className="flex h-10 w-full grow-0 overflow-hidden bg-gradient-to-t from-slate-900 via-slate-800 to-gray-900/80">
       {isLoading ? (

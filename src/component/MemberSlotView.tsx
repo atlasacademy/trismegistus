@@ -51,10 +51,8 @@ function MemberView({ userServant, servant }: MemberViewProps) {
     dispatch(removeMember({ slot, teamId }));
   }, [teamId, slot, dispatch]);
   const handleSelection = useCallback(
-    (selected: Servant.ServantBasic) => {
-      dispatch(
-        updateServant({ slot, item: { servantId: selected.id } }, { teamId })
-      );
+    ({ collectionNo: servantColNo }: Servant.ServantBasic) => {
+      dispatch(updateServant({ slot, item: { servantColNo } }, { teamId }));
     },
     [teamId, slot, dispatch]
   );
@@ -118,13 +116,12 @@ export function MemberSlotView() {
     teamId,
     slot
   );
-  const { servantId } = userServant;
-  const { data: servant, isLoading } = useServantQuery(servantId);
+  const { data: servant, isLoading } = useServantQuery(
+    userServant.servantColNo
+  );
   const addServant = useCallback(
-    (selected: Servant.ServantBasic) => {
-      dispatch(
-        setServant({ slot, item: { servantId: selected.id } }, { teamId })
-      );
+    ({ collectionNo: servantColNo }: Servant.ServantBasic) => {
+      dispatch(setServant({ slot, item: { servantColNo } }, { teamId }));
     },
     [dispatch, teamId, slot]
   );

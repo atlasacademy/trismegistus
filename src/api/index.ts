@@ -54,11 +54,9 @@ const apiSlice = createApi({
           ? connector.servant(servantId, false)
           : Promise.resolve();
       },
-      providesTags: ["Data"],
     }),
     servantList: build.query<Servant.ServantBasic[], void>({
       query: () => (connector) => connector.servantList(),
-      providesTags: ["Data"],
     }),
     mysticCode: build.query<MysticCode.MysticCode, number | undefined>({
       query: (mysticCodeId) => (connector) => {
@@ -66,11 +64,9 @@ const apiSlice = createApi({
           ? connector.mysticCode(mysticCodeId)
           : Promise.resolve();
       },
-      providesTags: ["Data"],
     }),
     mysticCodeList: build.query<MysticCode.MysticCodeBasic[], void>({
       query: () => (connector) => connector.mysticCodeList(),
-      providesTags: ["Data"],
     }),
     craftEssence: build.query<CraftEssence.CraftEssence, number | undefined>({
       query: (craftEssenceId) => (connector) => {
@@ -81,7 +77,6 @@ const apiSlice = createApi({
     }),
     craftEssenceList: build.query<CraftEssence.CraftEssenceBasic[], void>({
       query: () => (connector) => connector.craftEssenceList(),
-      providesTags: ["Data"],
     }),
     checkRegionInfo: build.query<Info.Info, void>({
       query: () => (connector) => connector.info(),

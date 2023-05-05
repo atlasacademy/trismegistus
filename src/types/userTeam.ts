@@ -6,10 +6,10 @@ import { UserMysticCode } from "@/types/userMysticCode";
 import { UserServant } from "@/types/userServant";
 
 export const UserTeam = z.object({
-  teamId: z.string(),
+  teamId: z.string().default(""),
   mysticCode: UserMysticCode,
-  servants: z.array(UserServant),
-  craftEssences: z.array(UserCraftEssence),
+  servants: z.array(UserServant).max(6),
+  craftEssences: z.array(UserCraftEssence).max(6),
   commandScript: UserCommandScript,
 });
 

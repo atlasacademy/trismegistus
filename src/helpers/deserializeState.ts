@@ -1,5 +1,12 @@
 import { EntityState, nanoid } from "@reduxjs/toolkit";
 
+import { base64ToBytes } from "@/helpers/base64";
+import {
+  TrismegistusBinaryState,
+  TrismegistusTeams,
+} from "@/helpers/binaryState";
+import { BinaryReadContext } from "@/serialization/binaryTypes/context";
+import { BitBuffer } from "@/serialization/bitBuffer";
 import {
   addBattleCommand,
   addCommand,
@@ -14,35 +21,32 @@ import {
   teamsReducer,
 } from "@/store/slice/teamSlice";
 import { TeamEntry } from "@/types";
-import {
-  ProtoBattleStep,
-  ProtoMysticCode,
-  ProtoTeamSlot,
-  ProtoTrismegistusState,
-} from "@/types/proto/trismegistus";
-import { UserCraftEssence } from "@/types/userCraftEssence";
+import { MemberSlotMapping } from "@/types/enums";
+import { InputBattleStep } from "@/types/userCommandScript";
+import { InputCraftEssence } from "@/types/userCraftEssence";
+import { InputMysticCode } from "@/types/userMysticCode";
+import { InputServant } from "@/types/userServant";
 import { InputTeam } from "@/types/userTeam";
-import { indexToSlot } from "@/types/utils";
 
 function addServants(
-  servants: ProtoTeamSlot[],
+  servants: InputServant[],
   state: EntityState<InputTeam>,
   entry: TeamEntry
 ): EntityState<InputTeam> {
   return servants.reduce((mainState, servant, currentIndex) => {
-    const slot = indexToSlot(currentIndex);
+    const slot = MemberSlotMapping.options[currentIndex];
     if (slot == null) return mainState;
     return teamsReducer(mainState, setServant({ slot, item: servant }, entry));
   }, state);
 }
 
 function addCraftEssences(
-  craftEssences: UserCraftEssence[],
+  craftEssences: InputCraftEssence[],
   state: EntityState<InputTeam>,
   entry: TeamEntry
 ): EntityState<InputTeam> {
   return craftEssences.reduce((mainState, craftEssence, currentIndex) => {
-    const slot = indexToSlot(currentIndex);
+    const slot = MemberSlotMapping.options[currentIndex];
     if (slot == null) return mainState;
     return teamsReducer(
       mainState,
@@ -52,7 +56,7 @@ function addCraftEssences(
 }
 
 function addMysticCode(
-  mysticCode: ProtoMysticCode | undefined,
+  mysticCode: InputMysticCode | undefined,
   state: EntityState<InputTeam>,
   entry: TeamEntry
 ): EntityState<InputTeam> {
@@ -63,41 +67,49 @@ function addMysticCode(
 }
 
 function addCommandScript(
-  commandScript: ProtoBattleStep[],
+  commandScript: InputBattleStep[],
   result: EntityState<InputTeam>,
   entry: TeamEntry
 ) {
   return commandScript.reduce((mainState, next) => {
-    const { commands, battleCommands } = next;
+    const { skills, battleCommands } = next;
     let newTurn = teamsReducer(mainState, startNewTurn(undefined, entry));
 
-    newTurn = commands.reduce((acc, command) => {
-      return teamsReducer(acc, addCommand({ item: command }, entry));
-    }, newTurn);
+    newTurn =
+      skills?.reduce((acc, command) => {
+        return teamsReducer(acc, addCommand({ item: command }, entry));
+      }, newTurn) ?? newTurn;
 
-    newTurn = battleCommands.reduce((acc, battleCommand) => {
-      return teamsReducer(
-        acc,
-        addBattleCommand({ item: battleCommand }, entry)
-      );
-    }, newTurn);
+    newTurn =
+      battleCommands?.reduce((acc, battleCommand) => {
+        return teamsReducer(
+          acc,
+          addBattleCommand({ item: battleCommand }, entry)
+        );
+      }, newTurn) ?? newTurn;
 
     return newTurn;
   }, result);
 }
+export function deserializeState(rawState: string): EntityState<InputTeam> {
+  const uint8Array = base64ToBytes(rawState);
+  const bitBuffer = new BitBuffer(uint8Array);
 
-export function deserializeProtoState({
-  teams,
-}: ProtoTrismegistusState): EntityState<InputTeam> {
-  return teams.reduce((userTeams, protoTeam) => {
-    const { mysticCode, slots, commandScript } = protoTeam;
+  const teams = TrismegistusBinaryState.read(
+    bitBuffer,
+    new BinaryReadContext()
+  );
+  TrismegistusTeams.parse(teams);
+
+  return (teams as InputTeam[]).reduce((userTeams, protoTeam) => {
+    const { mysticCode, servants, craftEssences, commandScript } = protoTeam;
     const teamId = nanoid();
     const entry: TeamEntry = { teamId };
     let result = teamsReducer(userTeams, newTeam(teamId));
 
     result = addMysticCode(mysticCode, result, entry);
-    result = addServants(slots, result, entry);
-    result = addCraftEssences(slots, result, entry);
+    result = addServants(servants, result, entry);
+    result = addCraftEssences(craftEssences, result, entry);
     result = addCommandScript(commandScript, result, entry);
 
     return result;

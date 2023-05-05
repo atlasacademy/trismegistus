@@ -35,7 +35,7 @@ export function ServantSelection({
   return (
     <SelectionTrigger
       items={servants}
-      idSelector={({ id }) => id}
+      idSelector={({ collectionNo }) => collectionNo}
       onSelect={onSelectServant}
       SelectionItemComponent={ServantListItem}
       className={className}

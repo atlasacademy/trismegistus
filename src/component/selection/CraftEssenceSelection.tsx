@@ -39,8 +39,10 @@ export function CraftEssenceSelection({
   const { data: ces = [] } = useCraftEssenceListQuery();
 
   const onSelectCraftEssence = useCallback(
-    ({ id: craftEssenceId }: CraftEssence.CraftEssenceBasic) => {
-      dispatch(setCraftEssence({ slot, item: { craftEssenceId } }, { teamId }));
+    ({ collectionNo: craftEssenceColNo }: CraftEssence.CraftEssenceBasic) => {
+      dispatch(
+        setCraftEssence({ slot, item: { craftEssenceColNo } }, { teamId })
+      );
     },
     [dispatch, teamId, slot]
   );
@@ -48,7 +50,7 @@ export function CraftEssenceSelection({
   return (
     <SelectionTrigger
       items={ces}
-      idSelector={({ id }) => id}
+      idSelector={({ collectionNo }) => collectionNo}
       onSelect={onSelectCraftEssence}
       SelectionItemComponent={CraftEssenceListItem}
       className={className}

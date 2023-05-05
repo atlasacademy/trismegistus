@@ -5,8 +5,8 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { Member, MemberSlot } from "@/types";
-import { indexToSlot, slotToIndex } from "@/types/utils";
+import { Member } from "@/types";
+import { MemberSlot, MemberSlotMapping } from "@/types/enums";
 
 export interface MemberEntry<T> extends Member {
   item: T;
@@ -24,9 +24,9 @@ export function createSlotsSlice<N extends string, T>(
         const {
           payload: { slot, item },
         } = action;
-        const index = slotToIndex(slot);
+        const index = MemberSlotMapping.indexes[slot];
         if (index == null) return;
-        state.splice(index, 1, item as Draft<T>);
+        state[index] = item as Draft<T>;
       },
       add(state, action: PayloadAction<T>) {
         const { payload: item } = action;
@@ -38,7 +38,7 @@ export function createSlotsSlice<N extends string, T>(
           payload: { slot, item },
         } = action;
 
-        const index = slotToIndex(slot);
+        const index = MemberSlotMapping.indexes[slot];
         if (index == null) return;
         const draftItem = state[index];
         if (draftItem == null) return;
@@ -46,7 +46,7 @@ export function createSlotsSlice<N extends string, T>(
       },
       remove(state, action: PayloadAction<MemberSlot>) {
         const { payload: slot } = action;
-        const index = slotToIndex(slot);
+        const index = MemberSlotMapping.indexes[slot];
         if (index == null) return;
         state.splice(index, 1);
       },
@@ -58,7 +58,7 @@ export function createSlotsSelectors<T>(factory: () => T) {
   return {
     createBySlotSelector(): (state: T[], slot: MemberSlot) => T {
       return (state, slot) => {
-        const index = slotToIndex(slot);
+        const index = MemberSlotMapping.indexes[slot];
         if (index == null) return factory();
         return state[index] ?? factory();
       };
@@ -66,8 +66,8 @@ export function createSlotsSelectors<T>(factory: () => T) {
     createSlotsSelector(): (state: T[]) => MemberSlot[] {
       return createSelector([(state: T[]) => state.length], (amount) => {
         const result: MemberSlot[] = [];
-        for (let i = 0; i < Math.min(amount, 6); i++) {
-          const slot = indexToSlot(i);
+        for (let index = 0; index < Math.min(amount, 6); index++) {
+          const slot = MemberSlotMapping.options[index];
           if (slot == null) continue;
           result.push(slot);
         }

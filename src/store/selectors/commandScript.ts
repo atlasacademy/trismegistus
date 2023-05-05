@@ -10,8 +10,12 @@ import {
 } from "@/store/selectors/servant";
 import { selectCommandScript } from "@/store/slice/commandScriptSlice";
 import { selectTeamById } from "@/store/slice/teamSlice";
-import { MemberSlot, SkillActivation, SkillNum, TeamEntry } from "@/types";
-import { InputCommandScript, UserCommand } from "@/types/userCommandScript";
+import { SkillActivation, TeamEntry } from "@/types";
+import { MemberSlot, SkillNum } from "@/types/enums";
+import {
+  InputCommandScript,
+  UserSkillActivation,
+} from "@/types/userCommandScript";
 
 export function selectTeamCommandScript(
   state: TrismegistusState,
@@ -47,7 +51,7 @@ export function createCommandSkillSelector(): (
 export function createSkillActivationSelector(): (
   state: TrismegistusState,
   teamId: TeamEntry["teamId"],
-  userCommand: UserCommand
+  userSkillActivation: UserSkillActivation
 ) => SkillActivation {
   const selectCommandSkill = createCommandSkillSelector();
   return createSelector(
@@ -55,12 +59,12 @@ export function createSkillActivationSelector(): (
       (
         state: TrismegistusState,
         teamId: TeamEntry["teamId"],
-        { source }: UserCommand
+        { source }: UserSkillActivation
       ) => source,
       (
         state: TrismegistusState,
         teamId: TeamEntry["teamId"],
-        { target }: UserCommand
+        { target }: UserSkillActivation
       ) => target,
       (state, teamId, { source, type }) => {
         return selectCommandSkill(state, teamId, source, type);

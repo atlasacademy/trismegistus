@@ -6,33 +6,36 @@ import { DamageRange } from "@/component/DamageRange";
 import { useSelector } from "@/store";
 import { selectTeamCommandScript } from "@/store/selectors/commandScript";
 import { TeamEntry } from "@/types";
-import { BattleCommandType } from "@/types/proto/trismegistus";
-import { UserBattleCommand, UserCommand } from "@/types/userCommandScript";
+import { BattleCommandType } from "@/types/enums";
+import {
+  UserBattleCommand,
+  UserSkillActivation,
+} from "@/types/userCommandScript";
 
 export interface ResultViewProps extends TeamEntry {}
 
 interface BattleStepResultProps extends TeamEntry {
   battleEngine: BattleEngine;
   battleCommands: UserBattleCommand[];
-  commands: UserCommand[];
+  skills: UserSkillActivation[];
 }
 function BattleStepResult({
   teamId,
   battleEngine,
-  commands,
+  skills,
   battleCommands,
 }: BattleStepResultProps) {
   return (
     <>
       {battleCommands
-        .filter((command) => command.type === BattleCommandType.NOBLE_PHANTASM)
+        .filter((command) => command.type === BattleCommandType.NoblePhantasm)
         .map((command, index) => (
           <DamageRange
             teamId={teamId}
             key={index}
             source={command.source}
             battleEngine={battleEngine}
-            commands={commands}
+            skills={skills}
           />
         ))}
     </>
@@ -49,12 +52,12 @@ export function ResultView({ teamId }: ResultViewProps) {
 
   return (
     <section>
-      {commandScript.map(({ commands, battleCommands }, index) => (
+      {commandScript.map(({ skills, battleCommands }, index) => (
         <section key={index}>
           <BattleStepResult
             teamId={teamId}
             battleEngine={battleEngine}
-            commands={commands ?? []}
+            skills={skills ?? []}
             battleCommands={battleCommands ?? []}
           />
         </section>

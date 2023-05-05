@@ -6,7 +6,8 @@ import { FieldMemberSelection } from "@/component/selection/FieldMemberSelection
 import { useTeamContext } from "@/hooks/useTeamContext";
 import { useDispatch } from "@/store";
 import { addCommand } from "@/store/slice/teamReducer";
-import { MemberSlot, SkillNum, TeamMember } from "@/types";
+import { TeamMember } from "@/types";
+import { MemberSlot, SkillNum } from "@/types/enums";
 
 export interface SkillButtonProps {
   skillNum: SkillNum;

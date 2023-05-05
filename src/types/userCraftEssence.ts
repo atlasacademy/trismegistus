@@ -1,12 +1,13 @@
 import { CraftEssence } from "@atlasacademy/api-connector";
 import { z } from "zod";
 
-import { positiveInt, rangedInt } from "@/types/utils";
+import { rangedInt } from "@/types/utils";
 
 export const UserCraftEssence = z.object({
-  craftEssenceId: positiveInt(),
+  craftEssenceColNo: rangedInt(0, 65535),
   craftEssenceLevel: rangedInt(1, 100),
   craftEssenceMLB: z.boolean().default(false),
+  craftEssenceId: rangedInt(0, 4294967295),
 });
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare

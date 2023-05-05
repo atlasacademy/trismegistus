@@ -7,17 +7,17 @@ import { useFactorySelector } from "@/hooks/useFactorySelector";
 import { useSelector } from "@/store";
 import { selectTeamCommandScript } from "@/store/selectors/commandScript";
 import { createTeamUserServantSelector } from "@/store/selectors/servant";
-import { MemberSlot, TeamEntry } from "@/types";
-import { UserCommand } from "@/types/userCommandScript";
-import { isSkillNum } from "@/types/utils";
+import { TeamEntry } from "@/types";
+import { MemberSlot } from "@/types/enums";
+import { UserSkillActivation } from "@/types/userCommandScript";
 
 interface CommandItemDisplayProps extends TeamEntry {
-  userCommand: UserCommand;
+  userSkillActivation: UserSkillActivation;
 }
 
 function CommandItemDisplay({
   teamId,
-  userCommand: { source, target, type },
+  userSkillActivation: { source, target, type },
 }: CommandItemDisplayProps) {
   const commandSource = useFactorySelector(
     createTeamUserServantSelector,
@@ -28,7 +28,7 @@ function CommandItemDisplay({
   const sourceServant = useFactorySelector(
     createServantSelector,
     [],
-    commandSource.servantId
+    commandSource.servantColNo
   );
   const commandTarget = useFactorySelector(
     createTeamUserServantSelector,
@@ -39,20 +39,18 @@ function CommandItemDisplay({
   const targetServant = useFactorySelector(
     createServantSelector,
     [],
-    commandTarget.servantId
+    commandTarget.servantColNo
   );
   return (
     <div className="flex">
       {sourceServant != null ? (
         <>
           <ServantPortrait servant={sourceServant} className="h-12 w-12" />
-          {isSkillNum(type) ? (
-            <SkillButton skillNum={type} entity={sourceServant} disabled />
-          ) : undefined}
+          <SkillButton skillNum={type} entity={sourceServant} disabled />
         </>
       ) : undefined}
 
-      {target !== MemberSlot.NONE ? (
+      {target !== MemberSlot.None ? (
         <>
           <IconArrowRight />
           {targetServant != null ? (
@@ -71,11 +69,11 @@ export function CommandDisplay({ teamId }: CommandDisplayProps) {
     <section>
       {script.flatMap((battleStep, step) => {
         return (
-          battleStep?.commands?.map((userCommand, index) => (
+          battleStep?.skills?.map((userSkillActivation, index) => (
             <CommandItemDisplay
               key={index + index * step}
               teamId={teamId}
-              userCommand={userCommand}
+              userSkillActivation={userSkillActivation}
             />
           )) ?? []
         );

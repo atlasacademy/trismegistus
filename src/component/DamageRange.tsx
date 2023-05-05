@@ -9,13 +9,14 @@ import { TrismegistusState } from "@/store";
 import { createSkillActivationSelector } from "@/store/selectors/commandScript";
 import { createTeamUserCraftEssenceSelector } from "@/store/selectors/craftEssence";
 import { createTeamUserServantSelector } from "@/store/selectors/servant";
-import { MemberSlot, TeamEntry } from "@/types";
-import { UserCommand } from "@/types/userCommandScript";
+import { TeamEntry } from "@/types";
+import { MemberSlot } from "@/types/enums";
+import { UserSkillActivation } from "@/types/userCommandScript";
 
 interface DamageRangeProps extends TeamEntry {
   battleEngine: BattleEngine;
   source: MemberSlot;
-  commands: UserCommand[];
+  skills: UserSkillActivation[];
 }
 
 function Component({ damage }: Partial<BattleResult>) {
@@ -43,17 +44,17 @@ export const DamageRange = connect(() => {
 
   return (
     state: TrismegistusState,
-    { teamId, battleEngine, source, commands }: DamageRangeProps
+    { teamId, battleEngine, source, skills }: DamageRangeProps
   ): Partial<BattleResult> => {
     const userServant = selectUserServant(state, teamId, source);
-    const servant = selectServant(state, userServant.servantId);
+    const servant = selectServant(state, userServant.servantColNo);
     const userCraftEssence = selectUserCraftEssence(state, teamId, source);
     const craftEssence = selectCraftEssence(
       state,
-      userCraftEssence.craftEssenceId
+      userCraftEssence.craftEssenceColNo
     );
-    const skillActivations = commands.map((command) =>
-      selectSkillActivation(state, teamId, command)
+    const skillActivations = skills.map((userSkillActivation) =>
+      selectSkillActivation(state, teamId, userSkillActivation)
     );
 
     if (servant == null) return {};
