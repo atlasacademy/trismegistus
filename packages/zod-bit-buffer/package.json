@@ -9,8 +9,9 @@
     "lint": "pnpm type-scheck && eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
     "type-check": "tsc"
   },
-  "peerDependencies": {
-    "zod": "^3.21.4"
+  "dependencies": {
+    "@trismegistus/commons": "workspace:^",
+    "zod": "3.21.4"
   },
   "devDependencies": {
     "eslint": "8.39.0",
@@ -33,8 +34,5 @@
       "import": "./dist/zod-bit-buffer.mjs",
       "require": "./dist/zod-bit-buffer.umd.js"
     }
-  },
-  "dependencies": {
-    "@trismegistus/commons": "workspace:^"
   }
 }
