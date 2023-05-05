@@ -1,6 +1,5 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
-
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
@@ -13,11 +12,6 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ["zod"],
-      output: {
-        globals: {
-          zod: "Zod",
-        },
-      },
     },
   },
 });
