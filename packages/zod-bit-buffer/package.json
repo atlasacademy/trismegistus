@@ -1,12 +1,12 @@
 {
   "name": "@trismegistus/zod-bit-buffer",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "vite",
     "test": "vitest",
-    "build": "tsc && vite build",
-    "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
+    "build": "vite build",
+    "lint": "pnpm type-scheck && eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
     "type-check": "tsc"
   },
   "peerDependencies": {
@@ -26,11 +26,11 @@
     "dist"
   ],
   "main": "./dist/zod-bit-buffer.umd.js",
-  "module": "./dist/zod-bit-buffer.es.js",
+  "module": "./dist/zod-bit-buffer.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/zod-bit-buffer.es.js",
+      "import": "./dist/zod-bit-buffer.mjs",
       "require": "./dist/zod-bit-buffer.umd.js"
     }
   },

@@ -2,10 +2,14 @@
   "name": "trismegistus",
   "packageManager": "pnpm@7.15.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test"
+  },
   "devDependencies": {
     "eslint": "8.39.0",
     "eslint-config-trismegistus": "workspace:*",
-    "prettier": "2.8.8"
+    "prettier": "2.8.8",
+    "turbo": "^1.9.3"
   }
 }

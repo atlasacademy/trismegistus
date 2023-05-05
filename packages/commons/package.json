@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
+    "build": "vite build",
+    "lint": "pnpm type-scheck && eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
     "type-check": "tsc"
   },
   "devDependencies": {
@@ -22,11 +22,11 @@
     "dist"
   ],
   "main": "./dist/commons.umd.js",
-  "module": "./dist/commons.es.js",
+  "module": "./dist/commons.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/commons.es.js",
+      "import": "./dist/commons.mjs",
       "require": "./dist/commons.umd.js"
     }
   }

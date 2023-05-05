@@ -1,6 +1,7 @@
+import { BitBuffer } from "@trismegistus/zod-bit-buffer";
+
 import { bytesToBase64 } from "@/helpers/base64";
 import { TrismegistusBinaryState } from "@/helpers/binaryState";
-import { BitBuffer } from "@/serialization/bitBuffer";
 import { InputTeam } from "@/types/userTeam";
 
 export function serializeState(userTeams: InputTeam[]): string {

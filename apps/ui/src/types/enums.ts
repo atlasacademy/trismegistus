@@ -1,6 +1,5 @@
+import type { EnumMapping } from "@trismegistus/commons";
 import { z } from "zod";
-
-import type { EnumMapping } from "@/types/index";
 
 export const MemberSlotEnum = z.enum([
   "Field1",

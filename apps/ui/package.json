@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
+    "lint": "pnpm type-scheck && eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
     "type-check": "tsc"
   },
   "dependencies": {

@@ -24,7 +24,6 @@
     "access": "public"
   },
   "devDependencies": {
-    "eslint": "8.39.0",
-    "eslint-config-trismegistus": "workspace:^"
+    "eslint": "8.39.0"
   }
 }

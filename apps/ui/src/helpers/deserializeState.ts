@@ -1,5 +1,5 @@
 import { EntityState, nanoid } from "@reduxjs/toolkit";
-import { BinaryReadContext, BitBuffer } from "@trismegistus/zod-bit-buffer";
+import { BitBuffer, BitBufferReader } from "@trismegistus/zod-bit-buffer";
 
 import { base64ToBytes } from "@/helpers/base64";
 import {
@@ -94,10 +94,7 @@ export function deserializeState(rawState: string): EntityState<InputTeam> {
   const uint8Array = base64ToBytes(rawState);
   const bitBuffer = new BitBuffer(uint8Array);
 
-  const teams = TrismegistusBinaryState.read(
-    bitBuffer,
-    new BinaryReadContext()
-  );
+  const teams = TrismegistusBinaryState.read(new BitBufferReader(bitBuffer));
   TrismegistusTeams.parse(teams);
 
   return (teams as InputTeam[]).reduce((userTeams, protoTeam) => {

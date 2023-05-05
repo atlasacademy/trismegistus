@@ -1,8 +1,4 @@
-import {
-  BinaryRegistry,
-  BinarySchema,
-  generateBinaryType,
-} from "@trismegistus/zod-bit-buffer";
+import { BitSchema, ZodSchemaParser } from "@trismegistus/zod-bit-buffer";
 import { z } from "zod";
 
 import {
@@ -15,16 +11,16 @@ import { UserMysticCode } from "@/types/userMysticCode";
 import { UserServant } from "@/types/userServant";
 import { UserTeam } from "@/types/userTeam";
 
-function createStateBinaryType(): BinarySchema | undefined {
-  const registry = new BinaryRegistry();
-  registry.register(UserTeam, [
+function createStateBinaryType(): BitSchema | undefined {
+  const parser = new ZodSchemaParser();
+  parser.register(UserTeam, [
     "mysticCode",
     "servants",
     "craftEssences",
     "commandScript",
   ]);
-  registry.register(UserMysticCode, ["mysticCodeId", "mysticCodeLevel"]);
-  registry.register(UserServant, [
+  parser.register(UserMysticCode, ["mysticCodeId", "mysticCodeLevel"]);
+  parser.register(UserServant, [
     "servantColNo",
     "servantLevel",
     "fou",
@@ -37,16 +33,16 @@ function createStateBinaryType(): BinarySchema | undefined {
     "append3",
     "servantId",
   ]);
-  registry.register(UserCraftEssence, [
+  parser.register(UserCraftEssence, [
     "craftEssenceColNo",
     "craftEssenceLevel",
     "craftEssenceMLB",
     "craftEssenceId",
   ]);
-  registry.register(UserBattleStep, ["skills", "battleCommands"]);
-  registry.register(UserSkillActivation, ["type", "source", "target"]);
-  registry.register(UserBattleCommand, ["type", "source"]);
-  return generateBinaryType(registry, TrismegistusTeams);
+  parser.register(UserBattleStep, ["skills", "battleCommands"]);
+  parser.register(UserSkillActivation, ["type", "source", "target"]);
+  parser.register(UserBattleCommand, ["type", "source"]);
+  return parser.parse(TrismegistusTeams);
 }
 export const TrismegistusTeams = z.array(UserTeam).max(128);
 export const TrismegistusBinaryState = createStateBinaryType()!;
