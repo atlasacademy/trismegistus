@@ -1,43 +1,38 @@
 import { z } from "zod";
 
-import { BitBuffer } from "../bitBuffer";
-import { BinarySchema } from "./binarySchema";
-import { BinaryReadContext } from "./context";
+import { BitBuffer } from "../bit-buffer";
+import { BitBufferReader } from "../bit-buffer-reader";
+import { BitSchema } from "./bit-schema";
 
-export class BinaryObject extends BinarySchema {
+export class BitObject extends BitSchema {
   private static readonly BASE_SCHEMA = z.record(z.any());
-  readonly fields: [string, BinarySchema][];
+  readonly fields: [string, BitSchema][];
   private readonly headerBitLength: number;
 
-  constructor(fields: [string, BinarySchema][]) {
+  constructor(fields: [string, BitSchema][]) {
     super();
     this.fields = fields;
     this.headerBitLength = fields.length;
   }
 
-  read(bitBuffer: BitBuffer, context: BinaryReadContext): Record<string, any> {
+  read(reader: BitBufferReader): Record<string, any> {
+    const { bitBuffer, offset } = reader;
     const record: Record<string, any> = {};
-    const flags = bitBuffer.getUnsignedInt(
-      this.headerBitLength,
-      context.offset
-    );
-    context.offset += this.headerBitLength;
-    const presentFields = BinarySchema.bitsToBoolean(
-      flags,
-      this.headerBitLength
-    );
+    const flags = bitBuffer.getUnsignedInt(this.headerBitLength, offset);
+    reader.offset += this.headerBitLength;
+    const presentFields = BitSchema.bitsToBoolean(flags, this.headerBitLength);
     for (let i = 0; i < presentFields.length; i++) {
       const fieldPresent = presentFields[i];
       if (fieldPresent) {
         const [field, type] = this.fields[i];
-        record[field] = type.read(bitBuffer, context);
+        record[field] = type.read(reader);
       }
     }
     return record;
   }
 
   write(bitBuffer: BitBuffer, data: unknown): void {
-    const parse = BinaryObject.BASE_SCHEMA.safeParse(data);
+    const parse = BitObject.BASE_SCHEMA.safeParse(data);
     if (!parse.success) {
       bitBuffer.addUnsignedInt(0, this.fields.length);
       return;
@@ -50,7 +45,7 @@ export class BinaryObject extends BinarySchema {
       const fieldData = checkedData[field];
       presentFields.push(fieldData != null);
     }
-    const value = BinarySchema.booleanToBits(presentFields);
+    const value = BitSchema.booleanToBits(presentFields);
     bitBuffer.addUnsignedInt(value, this.headerBitLength);
 
     for (let i = 0; i < this.fields.length; i++) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { BitBuffer } from "./bitBuffer";
+import { BitBuffer } from "./bit-buffer";
 
 describe("BitBuffer tests", () => {
   it("should store the given values", () => {

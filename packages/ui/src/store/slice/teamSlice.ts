@@ -5,7 +5,7 @@ import {
   nanoid,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import produce from "immer";
+import { produce } from "immer";
 import { z } from "zod";
 
 import type { TrismegistusState } from "@/store";

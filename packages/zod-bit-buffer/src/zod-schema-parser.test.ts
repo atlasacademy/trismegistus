@@ -2,11 +2,10 @@ import { fail } from "assert";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { BinaryRegistry } from "./binaryRegistry";
-import { BinaryInt } from "./binaryTypes/binaryInt";
-import { BinaryObject } from "./binaryTypes/binaryObject";
-import { BinarySchema } from "./binaryTypes/binarySchema";
-import { generateBinaryType } from "./generateBinaryType";
+import { BitFixedInt } from "./schemas/bit-fixed-int";
+import { BitObject } from "./schemas/bit-object";
+import { BitSchema } from "./schemas/bit-schema";
+import { ZodSchemaParser } from "./zod-schema-parser";
 
 export function rangedInt(min: number, max: number) {
   return z.number().int().min(min).max(max).default(min);
@@ -16,10 +15,10 @@ function intFieldTest(
   fieldName: string,
   min: number,
   max: number
-): (arg: [string, BinarySchema]) => boolean {
+): (arg: [string, BitSchema]) => boolean {
   return ([field, fieldType]) => {
     return (
-      fieldType instanceof BinaryInt &&
+      fieldType instanceof BitFixedInt &&
       field === fieldName &&
       fieldType.start === min &&
       fieldType.end === max
@@ -36,12 +35,12 @@ describe("generateBinaryTypes", () => {
       f: rangedInt(0, 10),
       e: rangedInt(0, 10),
     });
-    const registry = new BinaryRegistry();
-    registry.register(Example1, ["a", "b", "c", "d", "f", "e"]);
-    const type = generateBinaryType(registry, Example1);
+    const parser = new ZodSchemaParser();
+    parser.register(Example1, ["a", "b", "c", "d", "f", "e"]);
+    const type = parser.parse(Example1);
     if (type == null) fail("type should not be null");
 
-    if (!(type instanceof BinaryObject)) fail("type should be object");
+    if (!(type instanceof BitObject)) fail("type should be object");
     it("should have all fields defined in the field order", () => {
       const { fields } = type;
       expect(fields.length).toBe(6);

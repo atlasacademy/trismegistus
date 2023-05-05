@@ -65,7 +65,7 @@ export function SliderInput({
     "focus:outline-none focus:ring-0"
   );
   return (
-    <section className="items-left mx-2 block rounded py-1 px-2">
+    <section className="items-left mx-2 block rounded px-2 py-1">
       <div className="flex justify-between">
         <div className="flex w-52 items-center rounded bg-black/30 px-2.5">
           <label htmlFor={title} className="shrink-0">

@@ -1,37 +1,35 @@
 import { z } from "zod";
 
-import { BitBuffer } from "../bitBuffer";
-import { BinarySchema } from "./binarySchema";
-import { BinaryReadContext } from "./context";
+import { BitBuffer } from "../bit-buffer";
+import { BitBufferReader } from "../bit-buffer-reader";
+import { BitSchema } from "./bit-schema";
 
-export class BinaryArray extends BinarySchema {
+export class BitArray extends BitSchema {
   private static readonly BASE_SCHEMA = z.array(z.any()).min(1);
 
-  readonly elementType: BinarySchema;
+  readonly elementType: BitSchema;
   readonly maxLength: number;
   private readonly headerBitLength: number;
-  constructor(elementType: BinarySchema, maxLength: number) {
+  constructor(elementType: BitSchema, maxLength: number) {
     super();
     this.elementType = elementType;
     this.maxLength = maxLength;
-    this.headerBitLength = BinaryArray.getBitLength(0, maxLength);
+    this.headerBitLength = BitArray.getBitLength(0, maxLength);
   }
 
-  read(bitBuffer: BitBuffer, context: BinaryReadContext): Array<any> {
+  read(reader: BitBufferReader): Array<any> {
+    const { bitBuffer, offset } = reader;
     const result: any[] = [];
-    const dataLength = bitBuffer.getUnsignedInt(
-      this.headerBitLength,
-      context.offset
-    );
-    context.offset += this.headerBitLength;
+    const dataLength = bitBuffer.getUnsignedInt(this.headerBitLength, offset);
+    reader.offset += this.headerBitLength;
     for (let i = 0; i < dataLength; i++) {
-      result.push(this.elementType.read(bitBuffer, context));
+      result.push(this.elementType.read(reader));
     }
     return result;
   }
 
   write(bitBuffer: BitBuffer, data: unknown): void {
-    const parse = BinaryArray.BASE_SCHEMA.safeParse(data);
+    const parse = BitArray.BASE_SCHEMA.safeParse(data);
     if (!parse.success) {
       bitBuffer.addUnsignedInt(0, this.headerBitLength);
       return;

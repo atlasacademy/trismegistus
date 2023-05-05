@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { BitBuffer } from "../bitBuffer";
-import { BinaryArray } from "./binaryArray";
-import { BinaryInt } from "./binaryInt";
-import { BinaryReadContext } from "./context";
+import { BitBuffer } from "../bit-buffer";
+import { BitBufferReader } from "../bit-buffer-reader";
+import { BitArray } from "./bit-array";
+import { BitFixedInt } from "./bit-fixed-int";
 
-describe("BinaryArray", () => {
-  const Example1 = new BinaryArray(new BinaryInt(0, 255), 5);
+describe("BitArray", () => {
+  const Example1 = new BitArray(new BitFixedInt(0, 255), 5);
 
   it("should only write up to max length", () => {
-    const context = new BinaryReadContext();
-    const bitBuffer = new BitBuffer(128);
+    const reader = new BitBufferReader(new BitBuffer(128));
+    const { bitBuffer } = reader;
 
     Example1.write(bitBuffer, [10, 20, 30, 40, 50, 60, 70, 80]);
     expect(bitBuffer.getUnsignedInt(3)).toBe(5);
@@ -24,7 +24,7 @@ describe("BinaryArray", () => {
     expect(bitBuffer.getUnsignedInt(8, 58)).toBe(0);
     expect(bitBuffer.getUnsignedInt(8, 66)).toBe(0);
 
-    const result = Example1.read(bitBuffer, context);
+    const result = Example1.read(reader);
     expect(result.length).toBe(5);
     expect(result[0]).toBe(10);
     expect(result[1]).toBe(20);

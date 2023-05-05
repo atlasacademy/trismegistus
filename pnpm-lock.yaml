@@ -122,6 +122,9 @@ importers:
       '@tabler/icons-react':
         specifier: 2.17.0
         version: 2.17.0(react@18.2.0)
+      '@trismegistus/commons':
+        specifier: workspace:^
+        version: link:../commons
       '@trismegistus/zod-bit-buffer':
         specifier: workspace:^
         version: link:../zod-bit-buffer

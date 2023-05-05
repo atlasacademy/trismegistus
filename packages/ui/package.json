@@ -6,9 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
-    "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
-    "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
-    "lint": "pnpm lint:format && pnpm lint:fix ",
+    "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix",
     "type-check": "tsc"
   },
   "dependencies": {
@@ -22,6 +20,7 @@
     "@react-hook/debounce": "4.0.0",
     "@reduxjs/toolkit": "1.9.5",
     "@tabler/icons-react": "2.17.0",
+    "@trismegistus/commons": "workspace:^",
     "@trismegistus/zod-bit-buffer": "workspace:^",
     "classnames": "2.3.2",
     "fgo-calc": "1.30.0",

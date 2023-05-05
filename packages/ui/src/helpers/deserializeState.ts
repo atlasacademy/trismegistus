@@ -1,12 +1,11 @@
 import { EntityState, nanoid } from "@reduxjs/toolkit";
+import { BinaryReadContext, BitBuffer } from "@trismegistus/zod-bit-buffer";
 
 import { base64ToBytes } from "@/helpers/base64";
 import {
   TrismegistusBinaryState,
   TrismegistusTeams,
 } from "@/helpers/binaryState";
-import { BinaryReadContext } from "@/serialization/binaryTypes/context";
-import { BitBuffer } from "@/serialization/bitBuffer";
 import {
   addBattleCommand,
   addCommand,

@@ -1,8 +1,10 @@
+import {
+  BinaryRegistry,
+  BinarySchema,
+  generateBinaryType,
+} from "@trismegistus/zod-bit-buffer";
 import { z } from "zod";
 
-import { BinaryRegistry } from "@/serialization/binaryRegistry";
-import { BinarySchema } from "@/serialization/binaryTypes";
-import { generateBinaryType } from "@/serialization/generateBinaryType";
 import {
   UserBattleCommand,
   UserBattleStep,

@@ -38,4 +38,3 @@ export interface SkillActivation {
 export interface NoblePhantasmActivation {
   servant: Servant.Servant;
 }
-

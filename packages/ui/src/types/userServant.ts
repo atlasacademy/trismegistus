@@ -1,5 +1,5 @@
 import { Servant } from "@atlasacademy/api-connector";
-import produce from "immer";
+import { produce } from "immer";
 import { z } from "zod";
 
 import { rangedInt } from "@/types/utils";

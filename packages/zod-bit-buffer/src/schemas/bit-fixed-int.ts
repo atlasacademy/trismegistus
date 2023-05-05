@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-import { BitBuffer } from "../bitBuffer";
-import { BinarySchema } from "./binarySchema";
-import { BinaryReadContext } from "./context";
+import { BitBuffer } from "../bit-buffer";
+import { BitBufferReader } from "../bit-buffer-reader";
+import { BitSchema } from "./bit-schema";
 
-export class BinaryInt extends BinarySchema {
+export class BitFixedInt extends BitSchema {
   private static readonly BASE_SCHEMA = z.number().int();
   readonly start: number;
   readonly end: number;
@@ -14,17 +14,18 @@ export class BinaryInt extends BinarySchema {
     super();
     this.start = start;
     this.end = end;
-    this.bitLength = BinaryInt.getBitLength(start, end);
+    this.bitLength = BitFixedInt.getBitLength(start, end);
   }
 
-  read(bitBuffer: BitBuffer, context: BinaryReadContext): number {
-    const value = bitBuffer.getUnsignedInt(this.bitLength, context.offset);
-    context.offset += this.bitLength;
+  read(reader: BitBufferReader): number {
+    const { bitBuffer, offset } = reader;
+    const value = bitBuffer.getUnsignedInt(this.bitLength, offset);
+    reader.offset += this.bitLength;
     return Math.min(value + this.start, this.end);
   }
 
   write(bitBuffer: BitBuffer, data: unknown): void {
-    const parse = BinaryInt.BASE_SCHEMA.safeParse(data);
+    const parse = BitFixedInt.BASE_SCHEMA.safeParse(data);
     if (!parse.success) {
       bitBuffer.addUnsignedInt(0, this.bitLength);
       return;

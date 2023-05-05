@@ -1,8 +1,8 @@
-import { BitBuffer } from "../bitBuffer";
-import { BinaryReadContext } from "./context";
+import { BitBuffer } from "../bit-buffer";
+import { BitBufferReader } from "../bit-buffer-reader";
 
-export abstract class BinarySchema {
-  abstract read(bitBuffer: BitBuffer, context: BinaryReadContext): unknown;
+export abstract class BitSchema {
+  abstract read(reader: BitBufferReader): unknown;
   abstract write(bitBuffer: BitBuffer, data: unknown): void;
 
   protected static getBitLength(minValue: number, maxValue: number) {
