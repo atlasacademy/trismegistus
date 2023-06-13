@@ -1,4 +1,3 @@
-import { BitSchema, ZodSchemaParser } from "@trismegistus/zod-bit-buffer";
 import { z } from "zod";
 
 import {
@@ -10,6 +9,7 @@ import { UserCraftEssence } from "@/types/userCraftEssence";
 import { UserMysticCode } from "@/types/userMysticCode";
 import { UserServant } from "@/types/userServant";
 import { UserTeam } from "@/types/userTeam";
+import { BitSchema, ZodSchemaParser } from "@/zod-bit-buffer";
 
 function createStateBinaryType(): BitSchema | undefined {
   const parser = new ZodSchemaParser();

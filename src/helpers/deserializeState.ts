@@ -1,5 +1,4 @@
 import { EntityState, nanoid } from "@reduxjs/toolkit";
-import { BitBuffer, BitBufferReader } from "@trismegistus/zod-bit-buffer";
 
 import { base64ToBytes } from "@/helpers/base64";
 import {
@@ -26,6 +25,7 @@ import { InputCraftEssence } from "@/types/userCraftEssence";
 import { InputMysticCode } from "@/types/userMysticCode";
 import { InputServant } from "@/types/userServant";
 import { InputTeam } from "@/types/userTeam";
+import { BitBuffer, BitBufferReader } from "@/zod-bit-buffer";
 
 function addServants(
   servants: InputServant[],
